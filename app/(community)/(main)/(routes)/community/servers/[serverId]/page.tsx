@@ -3,6 +3,7 @@ import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import { ServerLandingHero } from "@/components/community/server/landing/server-landing-hero";
 
 interface ServerIdPageProps {
     params: {
@@ -22,11 +23,11 @@ const ServerIdPage = async ({
     const server = await db.server.findUnique({
         where: {
             id: params.serverId,
-            members: {
-                some: {
-                    profileId: profile.id,
-                }
-            }
+            // members: {
+            //     some: {
+            //         profileId: profile.id,
+            //     }
+            // }
         },
         include: {
             channels: {
@@ -51,8 +52,10 @@ const ServerIdPage = async ({
     return (   
 
         <div>
-            Server Page
-            {/* <PageHero /> */}
+            <ServerLandingHero 
+                serverId={params.serverId}
+
+            />
         </div>
     );
 }
