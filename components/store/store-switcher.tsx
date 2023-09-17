@@ -44,7 +44,7 @@ export default function StoreSwitcher({ className, items = [] }: StoreSwitcherPr
   
     const onStoreSelect = (store: { value: string, label: string }) => {
       setOpen(false);
-      router.push(`/${store.value}`);
+      router.push(`/dashboard/${store.value}`);
     };
 
     return (
@@ -71,7 +71,7 @@ export default function StoreSwitcher({ className, items = [] }: StoreSwitcherPr
                         <CommandGroup heading="Stores">{formattedItems.map((store) => (
                             <CommandItem
                                 key={store.value}
-                                onClick={() => onStoreSelect(store)}
+                                onSelect={() => onStoreSelect(store)}
                                 className="text-sm"
                             >
                                 <Store className="mr-2 h-4 w-4"/>

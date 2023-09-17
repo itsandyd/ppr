@@ -7,6 +7,7 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "../community/mode-toggle";
 
 const font = Montserrat({ weight: '600', subsets: ['latin'] });
 
@@ -47,6 +48,7 @@ export const LandingNavbar = () => {
             Get Started
           </Button>
         </Link> */}
+        <ModeToggle />
         <UserButton />
       </div>
     </nav>
