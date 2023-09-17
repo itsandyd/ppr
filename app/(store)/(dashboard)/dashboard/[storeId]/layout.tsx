@@ -1,4 +1,5 @@
 import { LandingNavbar } from "@/components/landing/landing-navbar";
+import Navbar from "@/components/store/navbar";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
@@ -29,7 +30,7 @@ export default async function DashboardLayout({
 
     return (
         <>
-            <LandingNavbar />
+            <Navbar />
             {children}
         </>
     );
