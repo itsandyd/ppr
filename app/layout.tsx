@@ -2,11 +2,12 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "../components/community/providers/theme-provider";
+import { ThemeProvider } from "../providers/theme-provider";
 import { cn } from "@/lib/utils";
-import { ModalProvider } from "../components/community/providers/modal-provider";
-import { SocketProvider } from "../components/community/providers/socket-provider";
-import { QueryProvider } from "../components/community/providers/query-provider";
+import { ModalProvider } from "../providers/modal-provider";
+import { SocketProvider } from "../providers/socket-provider";
+import { QueryProvider } from "../providers/query-provider";
+import { ToasterProvider } from "@/providers/toast-provider";
 
 const font = Open_Sans({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
             storageKey="discord-theme"
           >
             <SocketProvider>
+              <ToasterProvider />
               <ModalProvider />
               <QueryProvider>{children}</QueryProvider>
             </SocketProvider>

@@ -5,6 +5,7 @@ import { useAuth } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Server } from "@prisma/client";
 import { db } from "@/lib/db";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface ServerLandingHeroProps {
   serverId: string;
@@ -13,6 +14,8 @@ interface ServerLandingHeroProps {
 export const ServerLandingHero = async ({
   serverId,
 }: ServerLandingHeroProps) => {
+
+  // const { onOpen } = useModal();
 
   const server = await db.server.findUnique({
     where: {
@@ -56,13 +59,6 @@ export const ServerLandingHero = async ({
             }}
           /> */}
         </div>
-      </div>
-      <div>
-        {/* <Link href={isSignedIn ? "/community" : "/sign-up"}>
-          <Button variant="default" className="md:text-lg p-4 md:p-6 rounded-full font-semibold">
-                Get Started
-          </Button>
-        </Link> */}
       </div>
       <div className="text-zinc-400 text-xs md:text-sm font-normal">
       </div>

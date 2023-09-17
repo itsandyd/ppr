@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useModal } from "@/hooks/use-modal-store";
 
 import {
     Card,
@@ -18,12 +19,15 @@ interface ServerCardProps {
         id: string;
         name: string;
         imageUrl: string;
+        inviteCode: string;
     }
 }
   
   export const ServerCard = ({ server }: ServerCardProps) => {
 
     const router = useRouter();
+
+    const { onOpen } = useModal();
 
     return (
       <Card>

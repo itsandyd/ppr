@@ -4,13 +4,14 @@ import { useState, useEffect } from "react"
 
 import { CreateServerModal } from "@/components/community/modals/create-server-modal"
 import { InviteModal } from "@/components/community/modals/invite-modal";
-import { EditServerModal } from "../modals/edit-server-modal";
-import { MembersModal } from "../modals/members-modal";
+import { EditServerModal } from "../components/community/modals/edit-server-modal";
+import { MembersModal } from "../components/community/modals/members-modal";
 import { CreateChannelModal } from "@/components/community/modals/create-channel-modal";
-import { DeleteServerModal } from "../modals/delete-server-modal";
-import { DeleteChannelModal } from "../modals/delete-channel-modal";
-import { EditChannelModal } from "../modals/edit-channel-modal";
-import { MessageFileModal } from "../modals/message-file-modal";
+import { DeleteServerModal } from "../components/community/modals/delete-server-modal";
+import { DeleteChannelModal } from "../components/community/modals/delete-channel-modal";
+import { EditChannelModal } from "../components/community/modals/edit-channel-modal";
+import { MessageFileModal } from "../components/community/modals/message-file-modal";
+import { StoreModal } from "@/components/store/modals/store-modal";
 
 export const ModalProvider = () => {
 
@@ -35,6 +36,7 @@ export const ModalProvider = () => {
             <DeleteChannelModal />
             <EditChannelModal />
             <MessageFileModal />
+            <StoreModal />
         </>
     )
 }

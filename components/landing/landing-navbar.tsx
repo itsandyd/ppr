@@ -35,6 +35,11 @@ export const LandingNavbar = () => {
                 Community
             </Button>
         </Link>
+        <Link href="/store">
+            <Button variant="ghost" className="rounded-full">
+                Sounds
+            </Button>
+        </Link>
       </div>
       <div className="flex items-center gap-x-2">
         {/* <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
