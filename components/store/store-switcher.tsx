@@ -76,7 +76,14 @@ export default function StoreSwitcher({ className, items = [] }: StoreSwitcherPr
                             >
                                 <Store className="mr-2 h-4 w-4"/>
                                 {store.label}
-                                <Check />
+                                <Check
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      currentStore?.value === store.value
+                        ? "opacity-100"
+                        : "opacity-0"
+                    )}
+                  />
                             </CommandItem>
                         ))
                         }</CommandGroup>
@@ -90,7 +97,7 @@ export default function StoreSwitcher({ className, items = [] }: StoreSwitcherPr
                                     storeModal.onOpen();
                                 }}
                             >
-                                <PlusCircle />
+                                <PlusCircle className="mr-2 h-5 w-5" />
                                 Create a new store
                             </CommandItem>
                         </CommandGroup>
