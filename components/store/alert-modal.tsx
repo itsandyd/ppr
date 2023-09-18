@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 interface AlertModalProps {
     isOpen: boolean
     onClose: () => void;
-    onConfirm: () => void;
+    onConfirm?: () => void;
     loading: boolean;
 }
 
