@@ -5,6 +5,9 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { ModeToggle } from "../community/mode-toggle";
+import { Button } from "../ui/button";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 const Navbar = async () => {
     const { userId } = auth();
@@ -22,6 +25,11 @@ const Navbar = async () => {
     return ( 
       <div className="border-b">
         <div className="flex h-16 items-center px-4">
+        <Button variant="ghost" className="rounded-full">
+                <Link href="/">
+                    <ArrowLeft className="text-zinc-500 h-6 w-6" />
+                </Link>
+            </Button>
           <StoreSwitcher items={stores} />
           <MainNav className="mx-6" />
           <div className="ml-auto flex items-center space-x-4">
