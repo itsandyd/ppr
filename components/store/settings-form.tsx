@@ -15,6 +15,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import AlertModal from "./alert-modal";
+import { ApiAlert } from "../ui/api-alert";
+import { useOrigin } from "@/hooks/use-origin";
 
 interface SettingsFormProps {
     initialData: Store;
@@ -32,6 +34,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
 
     const params = useParams();
     const router = useRouter();
+    const origin = useOrigin();
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -114,6 +117,8 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
                     </Button>
             </form>
         </Form> 
+        <Separator />
+        <ApiAlert title="NEXT_PUBLIC_API_KEY" description={`${origin}/api/${params?.storeId}`} variant="public"/>
         </>
      );
 }
