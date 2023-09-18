@@ -17,6 +17,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
 import AlertModal from "@/components/store/alert-modal";
+import ImageUpload from "@/components/ui/image-upload";
 
 interface BillboardFormProps {
     initialData: Billboard | null;
@@ -33,6 +34,12 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
     initialData
 }) => {
     const title = initialData ? "Edit Billboard" : "Create Billboard";
+    const description = initialData ? "Edit a Billboard" : "Add a new Billboard";
+    const toastMessage = initialData ? "Billboard updated." : "Billboard created.";
+    const action = initialData ? "Save changes." : "Create";
+
+
+
     const params = useParams();
     const router = useRouter();
     const origin = useOrigin();
@@ -86,19 +93,37 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
         <div className="flex items-center justify-between">
             <Heading
                 title={title}
-                description="Update your store settings"
+                description={description}
             />
-            <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => {setOpen(true)}}
-            >
-                <Trash className="h-4 w-4" />
-            </Button>
+            {initialData && (
+                <Button disabled={loading} variant="destructive" size="icon" onClick={() => setOpen(true)}>
+                    <Trash className="w-4 h-4" />
+                </Button>
+                )}
         </div>
         <Separator />
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+                <FormField 
+                    control={form.control}
+                    name="imageUrl"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Background Image
+                            </FormLabel>
+                            <FormControl>
+                                <ImageUpload 
+                                    value={field.value ? [field.value] : []}
+                                    disabled={loading}
+                                    onChange={(url) => field.onChange(url)}
+                                    onRemove={() => field.onChange("")}
+                                />
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
                 <div className="grid grid-cols-3 gap-8">
                     <FormField 
                         control={form.control}
@@ -106,10 +131,10 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>
-                                    Store Name
+                                    Label
                                 </FormLabel>
                                 <FormControl>
-                                    <Input disabled={loading} placeholder="Store name" {...field} />
+                                    <Input disabled={loading} placeholder="Billboard label" {...field} />
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
@@ -117,12 +142,11 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
                     />
                 </div>
                     <Button disabled={loading} className="ml-auto" type="submit">
-                        Save Changes
+                        {action}
                     </Button>
             </form>
         </Form> 
         <Separator />
-        <ApiAlert title="NEXT_PUBLIC_API_KEY" description={`${origin}/api/${params?.storeId}`} variant="public"/>
         </>
      );
 }
