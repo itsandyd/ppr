@@ -42,7 +42,7 @@ export const CommunityLandingContent = async () => {
         //       </CardContent>
         //     </CardHeader>
         //   </Card>
-        <ServerCard key={server.id} server={server} />
+        <ServerCard key={server.id} server={server}/>
         ))}
       </div>
     </div>
