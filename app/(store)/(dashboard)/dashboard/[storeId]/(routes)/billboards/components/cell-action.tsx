@@ -43,7 +43,6 @@ export const CellAction: React.FC<CellActionProps>= ({
         }
       }
 
-
     return ( 
         <>
         <AlertModal 
