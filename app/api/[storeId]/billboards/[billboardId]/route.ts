@@ -56,7 +56,6 @@ export async function PATCH(
   }
 };
 
-
 export async function DELETE(
   req: Request,
   { params }: { params: { storeId: string, billboardId: string } }
