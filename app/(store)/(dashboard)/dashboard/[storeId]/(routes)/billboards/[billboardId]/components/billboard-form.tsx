@@ -3,7 +3,7 @@
 import { Billboard } from "@prisma/client"
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
-import { FormInput, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -14,8 +14,6 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
-import { ApiAlert } from "@/components/ui/api-alert";
-import { useOrigin } from "@/hooks/use-origin";
 import AlertModal from "@/components/store/alert-modal";
 import ImageUpload from "@/components/ui/image-upload";
 
@@ -42,7 +40,6 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 
     const params = useParams();
     const router = useRouter();
-    const origin = useOrigin();
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 

@@ -25,11 +25,6 @@ const Navbar = async () => {
     return ( 
       <div className="border-b">
         <div className="flex h-16 items-center px-4">
-        <Button variant="ghost" className="rounded-full mr-4">
-                <Link href="/">
-                    <ArrowLeft className="text-zinc-500 h-6 w-6" />
-                </Link>
-            </Button>
           <StoreSwitcher items={stores} />
           <MainNav className="mx-6" />
           <div className="ml-auto flex items-center space-x-4">
