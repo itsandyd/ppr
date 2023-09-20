@@ -4,16 +4,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
-
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-  } from "@/components/ui/card";
-import { currentUser } from "@clerk/nextjs";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
+import Link from "next/link";
 
 interface ServerCardProps {
     server: {
@@ -23,35 +15,33 @@ interface ServerCardProps {
         inviteCode: string;
     }
 }
-  
-  export const ServerCard = ({ server }: ServerCardProps) => {
 
-    const router = useRouter();
-    // const user = currentUser();
+export const ServerCard = ({ server }: ServerCardProps) => {
 
-    const { onOpen } = useModal();
+  const router = useRouter();
 
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{server.name}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Image src={server.imageUrl} alt={server.name} width={200} height={200}/>
-        </CardContent>
-        <CardFooter>
-          {/* {user || } */}
-          <Button 
-            className="py-2 px-4 flex bg-blue-500 font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-            onClick={() => router.push(`/community/servers/${server.id}`)}>
-            Go to Server
-          </Button>
-          <Button 
-            className="py-2 px-4 flex bg-blue-500 font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-            onClick={() => router.push(`${origin}/community/invite/${server.inviteCode}`)}>
-            Join Server
-          </Button>
-        </CardFooter>
-      </Card>
+        <Card className="bg-primary/10 rounded-xl cursor-pointer transition border-0">
+            <Link href={`/community/servers/${server.id}`}>
+                <CardHeader className="flex items-center justify-center text-center text-muted-foreground">
+                    <div className="relative w-32 h-32">
+                        <Image fill src={server.imageUrl} alt={server.name} className="rounded-xl object-cover" />
+                    </div>
+                    <p className="font-bold">{server.name}</p>
+                </CardHeader>
+            </Link>
+            <CardFooter className="flex flex-col items-center justify-between text-xs text-muted-foreground">
+                <Button 
+                    variant="ghost"
+                    onClick={() => router.push(`/community/servers/${server.id}`)}>
+                    Go to Server
+                </Button>
+                <Button 
+                    variant="default"
+                    onClick={() => router.push(`${origin}/community/invite/${server.inviteCode}`)}>
+                    Join Server
+                </Button>
+            </CardFooter>
+        </Card>
     );
-  };
+};

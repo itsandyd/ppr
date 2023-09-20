@@ -31,14 +31,14 @@ export const LandingNavbar = () => {
         </h1>
       </Link>
       <div>
-        <Link href="/community">
-            <Button variant="ghost" className="rounded-full">
-                Community
-            </Button>
-        </Link>
         <Link href="/sounds">
             <Button variant="ghost" className="rounded-full">
                 Sounds
+            </Button>
+        </Link>
+        <Link href="/community">
+            <Button variant="ghost" className="rounded-full">
+                Community
             </Button>
         </Link>
         <Link href="/dashboard">

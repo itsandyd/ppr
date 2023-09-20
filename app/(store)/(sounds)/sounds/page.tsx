@@ -8,6 +8,7 @@ const SoundsPage = () => {
             <div>
                 <h1>Sounds Page</h1>
             </div>
+            <Footer />
         </div>
      );
 }
