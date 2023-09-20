@@ -38,10 +38,14 @@ interface ServerCardProps {
           <Image src={server.imageUrl} alt={server.name} width={200} height={200}/>
         </CardContent>
         <CardFooter>
-          <Button onClick={() => router.push(`/community/servers/${server.id}`)}>
+          <Button 
+            className="py-2 px-4 flex bg-blue-500 font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+            onClick={() => router.push(`/community/servers/${server.id}`)}>
             Go to Server
           </Button>
-          <Button onClick={() => router.push(`${origin}/community/invite/${server.inviteCode}`)}>
+          <Button 
+            className="py-2 px-4 flex bg-blue-500 font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+            onClick={() => router.push(`${origin}/community/invite/${server.inviteCode}`)}>
             Join Server
           </Button>
         </CardFooter>
