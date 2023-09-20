@@ -41,7 +41,7 @@ interface ServerCardProps {
           <Button onClick={() => router.push(`/community/servers/${server.id}`)}>
             Go to Server
           </Button>
-          <Button onClick={() => router.push(`${origin}/invite/${server.inviteCode}`)}>
+          <Button onClick={() => router.push(`${origin}/community/invite/${server.inviteCode}`)}>
             Join Server
           </Button>
         </CardFooter>

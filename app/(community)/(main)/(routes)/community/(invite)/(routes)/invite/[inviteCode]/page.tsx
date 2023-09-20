@@ -35,7 +35,7 @@ const InviteCodePage = async ({
   });
 
   if (existingServer) {
-    return redirect(`/servers/${existingServer.id}`);
+    return redirect(`/community/servers/${existingServer.id}`);
   }
 
   const server = await db.server.update({
@@ -54,7 +54,7 @@ const InviteCodePage = async ({
   });
 
   if (server) {
-    return redirect(`/servers/${server.id}`);
+    return redirect(`/community/servers/${server.id}`);
   }
   
   return null;

@@ -40,7 +40,7 @@ export const ServerLandingHero = async ({
   // const { isSignedIn } = useAuth();
 
   return (
-    <div className="text-white font-bold py-36 text-center space-y-5">
+    <div className="font-bold py-36 text-center space-y-5">
       <div className="text-sm md:text-xl font-light text-zinc-400">
         Welcome to
       </div>
