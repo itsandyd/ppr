@@ -4,8 +4,10 @@ import Navbar from "@/components/store/store/navbar";
 export const SoundsPage = () => {
     return ( 
         <div>
-        <Navbar />
-        <Footer />
+            <Navbar />
+            <div>
+                <h1>Sounds Page</h1>
+            </div>
         </div>
      );
 }
