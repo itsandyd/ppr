@@ -13,6 +13,7 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card";
+import { currentUser } from "@clerk/nextjs";
 
 interface ServerCardProps {
     server: {
@@ -26,6 +27,7 @@ interface ServerCardProps {
   export const ServerCard = ({ server }: ServerCardProps) => {
 
     const router = useRouter();
+    // const user = currentUser();
 
     const { onOpen } = useModal();
 
@@ -38,6 +40,7 @@ interface ServerCardProps {
           <Image src={server.imageUrl} alt={server.name} width={200} height={200}/>
         </CardContent>
         <CardFooter>
+          {/* {user || } */}
           <Button 
             className="py-2 px-4 flex bg-blue-500 font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
             onClick={() => router.push(`/community/servers/${server.id}`)}>
