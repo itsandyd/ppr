@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast"
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
-import AlertModal from "@/components/store/alert-modal";
+import AlertModal from "@/components/store/dashboard/alert-modal";
 
 interface CellActionProps {
     data: BillboardColumn;

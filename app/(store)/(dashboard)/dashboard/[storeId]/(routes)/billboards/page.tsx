@@ -1,4 +1,4 @@
-import SettingsForm from "@/components/store/settings-form";
+import SettingsForm from "@/components/store/dashboard/settings-form";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";

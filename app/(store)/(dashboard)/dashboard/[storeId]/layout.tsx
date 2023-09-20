@@ -1,5 +1,5 @@
 import { LandingNavbar } from "@/components/landing/landing-navbar";
-import Navbar from "@/components/store/navbar";
+import Navbar from "@/components/store/dashboard/navbar";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";

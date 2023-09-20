@@ -4,8 +4,8 @@ import StoreSwitcher from "./store-switcher";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { ModeToggle } from "../community/mode-toggle";
-import { Button } from "../ui/button";
+import { ModeToggle } from "../../community/mode-toggle";
+import { Button } from "../../ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 

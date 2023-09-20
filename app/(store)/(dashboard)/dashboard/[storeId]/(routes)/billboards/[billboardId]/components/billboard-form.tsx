@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
-import AlertModal from "@/components/store/alert-modal";
+import AlertModal from "@/components/store/dashboard/alert-modal";
 import ImageUpload from "@/components/ui/image-upload";
 
 interface BillboardFormProps {

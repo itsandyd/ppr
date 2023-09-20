@@ -11,7 +11,7 @@ import { DeleteServerModal } from "../components/community/modals/delete-server-
 import { DeleteChannelModal } from "../components/community/modals/delete-channel-modal";
 import { EditChannelModal } from "../components/community/modals/edit-channel-modal";
 import { MessageFileModal } from "../components/community/modals/message-file-modal";
-import { StoreModal } from "@/components/store/modals/store-modal";
+import { StoreModal } from "@/components/store/dashboard/modals/store-modal";
 
 export const ModalProvider = () => {
 
