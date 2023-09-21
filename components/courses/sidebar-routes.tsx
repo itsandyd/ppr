@@ -1,0 +1,48 @@
+"use client"
+
+import { BarChart, Compass, Layout, List } from "lucide-react"
+import { SidebarItem } from "./sidebar-item"
+
+const guestRoutes = [
+    {
+        icon: Layout,
+        label: "Dashboard",
+        href: "/courses/dashboard"
+    },
+    {
+        icon: Compass,
+        label: "Browse",
+        href: "/courses/search"
+    }
+];
+
+const teacherRoutes = [
+    {
+        icon: List,
+        label: "Courses",
+        href: "/courses/teacher/courses"
+    },
+    {
+        icon: BarChart,
+        label: "Analytics",
+        href: "/courses/teacher/analytics"
+    }
+]
+
+export const SidebarRoutes = () => {
+
+    const routes = guestRoutes
+
+    return (
+        <div className="flex flex-col w-full">
+            {routes.map((route) => (
+                <SidebarItem 
+                    key={route.href}
+                    icon={route.icon}
+                    label={route.label}
+                    href={route.href}
+                />
+            ))}
+        </div>
+    )
+}
