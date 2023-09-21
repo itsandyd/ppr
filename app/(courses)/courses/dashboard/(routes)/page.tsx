@@ -1,4 +1,4 @@
-export const CoursePage = () => {
+export const CourseDashboardPage = () => {
     return ( 
         <div>
             <h1>Course Dashboard Page</h1>
@@ -6,4 +6,4 @@ export const CoursePage = () => {
      );
 }
 
-export default CoursePage;
+export default CourseDashboardPage;
