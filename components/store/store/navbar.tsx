@@ -4,6 +4,7 @@ import Container from "./ui/container";
 import MainNav from "./main-nav";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import NavbarActions from "./navbar-actions";
 
 const Navbar = () => {
     return (
@@ -19,6 +20,7 @@ const Navbar = () => {
                         <p className="font-bold text-xl">Sounds</p>
                     </Link>
                     <MainNav data={[]}/>
+                    <NavbarActions />
                 </div>
             </Container>
         </div>
