@@ -1,4 +1,4 @@
-export const TeacherCoursesPage = () => {
+const TeacherCoursesPage = () => {
     return ( 
         <div>
             <h1>Teacher Courses Page</h1>
