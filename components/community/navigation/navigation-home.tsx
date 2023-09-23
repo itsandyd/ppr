@@ -24,10 +24,10 @@ export const NavigationHome = () => {
                     <div className="
                         flex mx-3 h-[48px] w-[48px] rounded-[24px] group-hover:rounded-[16px] 
                         transition-all overflow-hidden items-center justify-center 
-                        bg-background dark:bg-neutral-700 group-hover:bg-emerald-500"
+                        bg-background dark:bg-neutral-700 group-hover:bg-[#99d8f5]"
                     >
                         <Home
-                            className="group-hover:text-white transition text-emerald-500"
+                            className="group-hover:text-white transition text-[#99d8f5]"
                             size={25}
                         />
                     </div>

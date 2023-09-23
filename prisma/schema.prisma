@@ -315,3 +315,42 @@ model StoreCategory {
   @@index([storeId])
   @@index([billboardId])
 }
+
+model Course {
+  id          String  @id @default(uuid())
+  userId      String
+  title       String  @db.Text
+  description String? @db.Text
+  imageUrl    String? @db.Text
+  price       Float?
+  isPublished Boolean @default(false)
+
+  attachments Attachment[]
+
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  CourseCategory   CourseCategory? @relation(fields: [courseCategoryId], references: [id])
+  courseCategoryId String?
+
+  @@index([courseCategoryId])
+}
+
+model Attachment {
+  id   String @id @default(uuid())
+  name String
+  url  String @db.Text
+
+  courseId String
+  Course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+model CourseCategory {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  courses Course[]
+}
