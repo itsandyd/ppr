@@ -4,6 +4,8 @@ import { auth } from "@clerk/nextjs";
 import { LayoutDashboard } from "lucide-react";
 import { redirect } from "next/navigation";
 import TitleForm from "./components/title-form";
+import DescriptionForm from "./components/description-form";
+import ImageForm from "./components/image-form";
 
 const CourseIdPage = async ({
     params,
@@ -61,6 +63,14 @@ const CourseIdPage = async ({
                         <h2 className="text-xl font-bold">Customize your course</h2>
                     </div>
                     <TitleForm 
+                        initialData={course}
+                        courseId={course.id}
+                    />
+                    <DescriptionForm 
+                        initialData={course}
+                        courseId={course.id}
+                    />
+                    <ImageForm 
                         initialData={course}
                         courseId={course.id}
                     />
