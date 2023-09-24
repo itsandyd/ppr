@@ -1,7 +1,7 @@
 import { IconBadge } from "@/components/courses/icon-badge";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, ListChecks } from "lucide-react";
 import { redirect } from "next/navigation";
 import TitleForm from "./components/title-form";
 import DescriptionForm from "./components/description-form";
@@ -67,7 +67,9 @@ const CourseIdPage = async ({
                 <div>
                     <div className="flex items-center gap-x-2">
                         <IconBadge icon={LayoutDashboard} variant="success" />
-                        <h2 className="text-xl font-bold">Customize your course</h2>
+                        <h2 className="text-xl font-bold">
+                            Customize your course
+                        </h2>
                     </div>
                     <TitleForm 
                         initialData={course}
@@ -89,6 +91,34 @@ const CourseIdPage = async ({
                             value: category.id,
                         }))}
                     />
+                </div>
+                <div className="space-y-6">
+                    <div>
+                        <div className="flex items-center gap-x-2">
+                            <IconBadge
+                                icon={ListChecks}
+                            />
+                            <h2 className="text-xl font-bold">
+                                Course chapters
+                            </h2>
+                        </div>
+                        <div>
+                            TODO: Chapters
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex items-center gap-x-2">
+                            <IconBadge
+                                icon={ListChecks}
+                            />
+                            <h2 className="text-xl font-bold">
+                                Course exercises
+                            </h2>
+                        </div>
+                        <div>
+                            TODO: Exercises
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
