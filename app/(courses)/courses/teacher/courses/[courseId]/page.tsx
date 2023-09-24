@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import TitleForm from "./components/title-form";
 import DescriptionForm from "./components/description-form";
 import ImageForm from "./components/image-form";
+import CategoryForm from "./components/category-form";
 
 const CourseIdPage = async ({
     params,
@@ -30,6 +31,12 @@ const CourseIdPage = async ({
     if (!course) {
         return redirect("/");
     }
+
+    const categories = await db.courseCategory.findMany({
+        orderBy: {
+            name: "asc",
+        }
+    });
 
     const requiredFields = [
         course.title,
@@ -73,6 +80,14 @@ const CourseIdPage = async ({
                     <ImageForm 
                         initialData={course}
                         courseId={course.id}
+                    />
+                    <CategoryForm 
+                        initialData={course}
+                        courseId={course.id}
+                        options={categories.map((category) => ({
+                            label: category.name,
+                            value: category.id,
+                        }))}
                     />
                 </div>
             </div>
