@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Button } from "../ui/button";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
+import { ModeToggle } from "../community/mode-toggle";
 
 export const CourseNavbarRoutes = () => {
     const pathname = usePathname();
@@ -15,6 +16,7 @@ export const CourseNavbarRoutes = () => {
 
     return (
         <div className="flex gap-x-2 ml-auto">
+            {/* <ModeToggle /> */}
             {isTeacherPage || isPlayerPage ? (
             <Link href="/courses/"> 
                 <Button size="sm" variant="ghost">

@@ -8,7 +8,7 @@ import DescriptionForm from "./components/description-form";
 import ImageForm from "./components/image-form";
 import CategoryForm from "./components/category-form";
 import PriceForm from "./components/price-form";
-import AttachmentForm from "./components/attachment-form";
+import { AttachmentForm } from "./components/attachment-form";
 
 const CourseIdPage = async ({
     params,
@@ -27,6 +27,7 @@ const CourseIdPage = async ({
     const course = await db.course.findUnique({
         where: {
             id: params.courseId,
+            userId,
         },
         include: {
             attachments: {
