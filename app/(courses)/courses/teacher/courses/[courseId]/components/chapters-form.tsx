@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Pencil, PlusCircle } from "lucide-react";
+import { Loader2, Pencil, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -63,8 +63,30 @@ export const ChaptersForm = ({
     }
   }
 
+  const onReorder = async (updateData: { id: string, position: number }[]) => {
+    try {
+      setIsUpdating(true);
+
+      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
+        list: updateData,
+      });
+      toast.success("Chapters reordered");
+      router.refresh();
+
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setIsUpdating(false);
+    }
+  }
+
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
+      {isUpdating && (
+        <div>
+          <Loader2 className="animate-spin"/>
+        </div>
+      )}
       <div className="font-medium flex items-center justify-between">
         Course chapters
         <Button onClick={toggleCreating} variant="ghost">
@@ -78,12 +100,12 @@ export const ChaptersForm = ({
           )}
         </Button>
       </div>
-      {!isCreating && (
+      {/* {!isCreating && (
         <p className={cn("text-sm mt-2", !initialData.description && "text-slate-500 italic"
         )}>
           {initialData.description || "No description"}
         </p>
-      )}
+      )} */}  
       {isCreating && (
         <Form {...form}>
           <form
@@ -125,7 +147,7 @@ export const ChaptersForm = ({
            {!initialData.chapters?.length && "No chapters"}
           <ChaptersList 
             onEdit={() => {}}
-            onReorder={() => {}}
+            onReorder={onReorder}
             items={initialData.chapters || []}
           />
         </div>

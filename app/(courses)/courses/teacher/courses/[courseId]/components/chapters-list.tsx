@@ -52,7 +52,7 @@ export const ChaptersList = ({
           }));
       
           onReorder(bulkUpdateData);
-        }
+        }   
     
       if (!isMounted) {
         return null;
