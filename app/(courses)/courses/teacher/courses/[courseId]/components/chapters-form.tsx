@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Course, CourseChapter } from "@prisma/client";
+import ChaptersList from "./chapters-list";
 
 interface ChaptersFormProps {
   initialData: Course & { chapters: CourseChapter[] };
@@ -122,7 +123,11 @@ export const ChaptersForm = ({
           !initialData.chapters?.length && "text-slate-500 italic"
         )}>
            {!initialData.chapters?.length && "No chapters"}
-          {/* To DO: Add A list of Chapters */}
+          <ChaptersList 
+            onEdit={() => {}}
+            onReorder={() => {}}
+            items={initialData.chapters || []}
+          />
         </div>
       )}
       {!isCreating && (
