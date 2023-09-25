@@ -9,6 +9,7 @@ import ImageForm from "./components/image-form";
 import CategoryForm from "./components/category-form";
 import PriceForm from "./components/price-form";
 import { AttachmentForm } from "./components/attachment-form";
+import ChaptersForm from "./components/chapters-form";
 
 const CourseIdPage = async ({
     params,
@@ -30,6 +31,11 @@ const CourseIdPage = async ({
             userId,
         },
         include: {
+            CourseChapter: {
+                orderBy: {
+                    position: "asc",
+                }
+            },
             attachments: {
                 orderBy: {
                     createdAt: "desc",
@@ -53,7 +59,8 @@ const CourseIdPage = async ({
         course.description,
         course.imageUrl,
         course.price,
-        course.courseCategoryId
+        course.courseCategoryId,
+        course.CourseChapter.some(chapter => chapter.title),
     ];
 
     const totalFields = requiredFields.length;
@@ -112,9 +119,10 @@ const CourseIdPage = async ({
                                 Course chapters
                             </h2>
                         </div>
-                        <div>
-                            TODO: Chapters
-                        </div>
+                        <ChaptersForm 
+                            initialData={{...course, chapters: course.CourseChapter}}
+                            courseId={course.id}
+                        />
                     </div>
                     <div>
                         <div className="flex items-center gap-x-2">
