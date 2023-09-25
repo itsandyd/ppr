@@ -1,12 +1,14 @@
 import { IconBadge } from "@/components/courses/icon-badge";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
-import { LayoutDashboard, ListChecks } from "lucide-react";
+import { CircleDollarSign, File, LayoutDashboard, ListChecks } from "lucide-react";
 import { redirect } from "next/navigation";
 import TitleForm from "./components/title-form";
 import DescriptionForm from "./components/description-form";
 import ImageForm from "./components/image-form";
 import CategoryForm from "./components/category-form";
+import PriceForm from "./components/price-form";
+import AttachmentForm from "./components/attachment-form";
 
 const CourseIdPage = async ({
     params,
@@ -26,6 +28,13 @@ const CourseIdPage = async ({
         where: {
             id: params.courseId,
         },
+        include: {
+            attachments: {
+                orderBy: {
+                    createdAt: "desc",
+                }
+            }
+        }
     });
 
     if (!course) {
@@ -108,16 +117,27 @@ const CourseIdPage = async ({
                     </div>
                     <div>
                         <div className="flex items-center gap-x-2">
-                            <IconBadge
-                                icon={ListChecks}
-                            />
+                            <IconBadge icon={CircleDollarSign} />
                             <h2 className="text-xl font-bold">
-                                Course exercises
+                                Sell your course
                             </h2>
                         </div>
-                        <div>
-                            TODO: Exercises
+                        <PriceForm 
+                            initialData={course}
+                            courseId={course.id}
+                        />
+                    </div>
+                    <div>
+                        <div className="flex items-center gap-x-2">
+                            <IconBadge icon={File} />
+                            <h2 className="text-xl font-bold">
+                                Resources & Attachments
+                            </h2>
                         </div>
+                        <AttachmentForm 
+                            initialData={course}
+                            courseId={course.id}
+                        />
                     </div>
                 </div>
             </div>
