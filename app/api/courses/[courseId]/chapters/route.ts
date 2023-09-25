@@ -26,7 +26,7 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const lastChapter = await db.courseChapter.findFirwst({
+        const lastChapter = await db.courseChapter.findFirst({
             where: {
                 courseId: params.courseId,
             },
