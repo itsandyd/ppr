@@ -80,14 +80,17 @@ export const ChaptersForm = ({
     }
   }
 
+  const onEdit = (id: string) => {
+    router.push(`/courses/teacher/courses/${courseId}/chapters/${id}`);
+  }
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       {isUpdating && (
-        <div>
-          <Loader2 className="animate-spin"/>
+        <div className="">
+          <Loader2 className="animate-spin w-6 h-6 text-sky-700"/>
         </div>
       )}
-      <div className="font-medium flex items-center justify-between">
+      <div className="font-medium flex items-center justify-between ">
         Course chapters
         <Button onClick={toggleCreating} variant="ghost">
           {isCreating ? (
@@ -146,7 +149,7 @@ export const ChaptersForm = ({
         )}>
            {!initialData.chapters?.length && "No chapters"}
           <ChaptersList 
-            onEdit={() => {}}
+            onEdit={onEdit}
             onReorder={onReorder}
             items={initialData.chapters || []}
           />
