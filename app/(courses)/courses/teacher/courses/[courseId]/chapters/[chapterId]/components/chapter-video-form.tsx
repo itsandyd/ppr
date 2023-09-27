@@ -3,18 +3,18 @@
 import * as z from "zod";
 import axios from "axios";
 
-import { ImageIcon, Pencil, PlusCircle, Video } from "lucide-react";
+import { Pencil, PlusCircle, Video } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 
 import { Course, CourseChapter, MuxData } from "@prisma/client";
 import Image from "next/image";
 import { FileUpload } from "@/components/courses/file-upload";
+import MuxPlayer from "@mux/mux-player-react";
 
 interface ChapterVideoProps {
   initialData: CourseChapter & { muxData?: MuxData | null };
@@ -40,7 +40,7 @@ export const ChapterVideoForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
-      toast.success("Course updated");
+      toast.success("Chapter updated");
       toggleEdit();
       router.refresh();
     } catch {
@@ -77,24 +77,19 @@ export const ChapterVideoForm = ({
         </div>
       ) : (
         <div className="relative aspect-video mt-2">
-          <Image 
-            alt="upload"
-            fill
-            className="object-cover rounded-md"
-            src={initialData?.videoUrl}
+          <MuxPlayer 
+            playbackId={initialData?.muxData?.playbackId || ""}
           />
         </div>
       )
     )}
       {isEditing && (
        <div>
-          <FileUpload 
-            endpoint="courseVideo"
-            onChange={(url) =>{
+          <FileUpload
+            endpoint="chapterVideo"
+            onChange={(url) => {
               if (url) {
-                onSubmit({
-                  videoUrl: url
-                })
+                onSubmit({ videoUrl: url });
               }
             }}
           />
