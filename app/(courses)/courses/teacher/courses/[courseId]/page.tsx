@@ -10,6 +10,7 @@ import CategoryForm from "./components/category-form";
 import PriceForm from "./components/price-form";
 import { AttachmentForm } from "./components/attachment-form";
 import ChaptersForm from "./components/chapters-form";
+import { Actions } from "./components/actions";
 
 const CourseIdPage = async ({
     params,
@@ -68,6 +69,8 @@ const CourseIdPage = async ({
 
     const completionText = `(${completedFields}/${totalFields})`
 
+    const isComplete = requiredFields.every(Boolean);
+
     return ( 
         <div className="p-6">
             <div className="flex items-center justify-between">
@@ -79,6 +82,11 @@ const CourseIdPage = async ({
                         Complete all the fields {completionText}
                     </span>
                 </div>
+                <Actions
+                    disabled={!isComplete}
+                    courseId={params.courseId}
+                    isPublished={course.isPublished}
+                />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
                 <div>

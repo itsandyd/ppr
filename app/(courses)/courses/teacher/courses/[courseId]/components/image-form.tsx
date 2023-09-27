@@ -62,7 +62,7 @@ export const ImageForm = ({
               Add an image
             </>
           )}
-          {!isEditing && (
+          {isEditing && (
             <>
               <Pencil className="h-4 w-4 mr-2" />
               Edit an image
