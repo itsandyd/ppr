@@ -6,6 +6,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react"
 import Link from "next/link"
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 
 export const columns: ColumnDef<Course>[] = [
   {
@@ -49,6 +51,16 @@ export const columns: ColumnDef<Course>[] = [
           </Button>
         )
       },
+      cell: ({ row }) => {
+        const price = parseFloat(row.getValue("price") || "0");
+        const formatted = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(price)
+
+        return (
+            <div>
+                {formatted}
+            </div>
+        )
+      },
   },
   {
     accessorKey: "isPublished",
@@ -63,6 +75,15 @@ export const columns: ColumnDef<Course>[] = [
           </Button>
         )
       },
+      cell: ({ row }) => {
+        const isPublished = row.getValue("isPublished") || false;
+
+        return (
+            <Badge className={cn("bg-slate-500", isPublished && "bg-sky-500")}>
+                {isPublished ? "Published" : "Draft"}
+            </Badge>
+        )
+      }
   },
   {
     id: "actions",
