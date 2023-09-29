@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { CourseSidebar } from "./components/course-sidebar";
+import { CourseNavbar } from "./components/course-navbar";
 
 const CourseLayout = async ({
     children,
@@ -21,40 +22,46 @@ const CourseLayout = async ({
 
     const course = await db.course.findUnique({
         where: {
-            id: params.courseId,
+          id: params.courseId,
         },
         include: {
-            courseChapter: {
-                where: {
-                    isPublished: true,
-                },
-                include: {
-                    userProgress: {
-                        where: {
-                            userId,
-                        },
-                    },
-                },
-                orderBy: {
-                    position: "asc",
-                }
+          courseChapter: {
+            where: {
+              isPublished: true,
             },
-        }
-    });
-
-    if (!course) {
-        return redirect("/academy/courses");
-    }
-
+            include: {
+              userProgress: {
+                where: {
+                  userId,
+                }
+              }
+            },
+            orderBy: {
+              position: "asc"
+            }
+          },
+        },
+      });
+    
+      if (!course) {
+        return redirect("/");
+      }
+    
     const progressCount = await getProgress(userId, course.id);
 
     return ( 
         <div className="h-full">
           <div className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-50">
-            {/* <CourseNavbar /> */}
+            <CourseNavbar
+                course={course}
+                progressCount={progressCount}
+            />
           </div>
           <div className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50">
-            <CourseSidebar />
+            <CourseSidebar 
+                course={course}
+                progressCount={progressCount}
+            />
           </div>
           <main className="md:pl-56 pt-[80px] h-full">
             {children}

@@ -27,7 +27,7 @@ const TeacherCoursesPage = async () => {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
                 <h1 className="text-3xl font-bold text-gray-900">No Courses</h1>
-                <Link href="/courses/create" className="p-6">
+                <Link href="/academy/dashboard/teacher/create" className="p-6">
                     <Button>Create Course</Button>
                 </Link>
             </div>
