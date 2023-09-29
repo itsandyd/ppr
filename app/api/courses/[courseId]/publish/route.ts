@@ -19,7 +19,7 @@ export async function PATCH(
                 userId,
             },
             include: {
-                CourseChapter: {
+                courseChapter: {
                     include: {
                         muxData: true,
                     },
@@ -31,7 +31,7 @@ export async function PATCH(
             return new NextResponse("Not found", { status: 404 });
         }
 
-        const hasPublishedChapter = course.CourseChapter.some((chapter) => chapter.isPublished);
+        const hasPublishedChapter = course.courseChapter.some((chapter) => chapter.isPublished);
 
         if (!course.title || !course.description || !course.imageUrl || !course.courseCategoryId || !hasPublishedChapter) {
             return new NextResponse("Missing required fields", { status: 401 });
