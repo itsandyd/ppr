@@ -36,9 +36,9 @@ export const LandingNavbar = () => {
                 Sounds
             </Button>
         </Link>
-        <Link href="/courses">
+        <Link href="/academy">
             <Button variant="ghost" className="rounded-full">
-                Courses
+                Academy
             </Button>
         </Link>
         <Link href="/community">

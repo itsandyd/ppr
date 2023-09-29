@@ -81,7 +81,7 @@ export const ChaptersForm = ({
   }
 
   const onEdit = (id: string) => {
-    router.push(`/courses/teacher/courses/${courseId}/chapters/${id}`);
+    router.push(`/academy/dashboard/teacher/courses/${courseId}/chapters/${id}`);
   }
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
