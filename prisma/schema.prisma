@@ -329,10 +329,10 @@ model Course {
 
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-  CourseCategory   CourseCategory?  @relation(fields: [courseCategoryId], references: [id])
+  courseCategory   CourseCategory?  @relation(fields: [courseCategoryId], references: [id])
   courseCategoryId String?
-  CourseChapter    CourseChapter[]
-  PurchaseCourse   PurchaseCourse[]
+  courseChapter    CourseChapter[]
+  purchaseCourse   PurchaseCourse[]
 
   @@index([courseCategoryId])
   @@fulltext([title])
@@ -344,7 +344,7 @@ model Attachment {
   url  String @db.Text
 
   courseId String
-  Course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

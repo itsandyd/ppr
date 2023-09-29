@@ -26,7 +26,7 @@ export async function DELETE(
         userId: userId,
       },
       include: {
-        CourseChapter: {
+        courseChapter: {
           include: {
             muxData: true,
           }
@@ -39,7 +39,7 @@ export async function DELETE(
       return new NextResponse("Not found", { status: 404 });
     }
 
-    for (const chapter of course.CourseChapter) {
+    for (const chapter of course.courseChapter) {
       if (chapter.muxData?.assetId) {
         await Video.Assets.del(chapter.muxData.assetId);
       }

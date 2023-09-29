@@ -11,7 +11,7 @@ interface CourseCardProps {
     chaptersLength: number;
     price: number;
     progress: number | null;
-    category: string | null;
+    courseCategory: string | null;
 }
 
 export const CourseCard = ({
@@ -21,7 +21,7 @@ export const CourseCard = ({
     chaptersLength,
     price,
     progress,
-    category,
+    courseCategory,
 }: CourseCardProps) => {
     return ( 
         <Link href={`/courses/${id}`}>
@@ -34,7 +34,7 @@ export const CourseCard = ({
                         {title}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                        {category}
+                        {courseCategory}
                     </p>
                     {/* <div className="flex items-center gap-x-1 text-slate-500">
                         <IconBadge size="sm" icon={BookOpen}/>

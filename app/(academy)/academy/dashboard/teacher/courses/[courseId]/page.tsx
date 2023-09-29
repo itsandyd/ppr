@@ -33,7 +33,7 @@ const CourseIdPage = async ({
             userId,
         },
         include: {
-            CourseChapter: {
+            courseChapter: {
                 orderBy: {
                     position: "asc",
                 }
@@ -62,7 +62,7 @@ const CourseIdPage = async ({
         course.imageUrl,
         course.price,
         course.courseCategoryId,
-        course.CourseChapter.some(chapter => chapter.title),
+        course.courseChapter.some(chapter => chapter.title),
     ];
 
     const totalFields = requiredFields.length;
@@ -135,7 +135,7 @@ const CourseIdPage = async ({
                             </h2>
                         </div>
                         <ChaptersForm 
-                            initialData={{...course, chapters: course.CourseChapter}}
+                            initialData={{...course, chapters: course.courseChapter}}
                             courseId={course.id}
                         />
                     </div>

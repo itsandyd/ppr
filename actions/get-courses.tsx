@@ -4,21 +4,21 @@ import { getProgress } from "@/actions/get-progress";
 import { db } from "@/lib/db";
 
 type CourseWithProgressWithCategory = Course & {
-    courseCategory: CourseCategory | null;
-    courseChapters: { id: string }[];
+    courseCategory: CourseCategory | null; // changed from 'category' to 'courseCategory'
+    courseChapter: { id: string }[]; // changed from 'chapters' to 'courseChapter'
     progress: number | null;
   };
 
 type GetCourses = {
   userId: string;
   title?: string;
-  courseCategoryId?: string;
+  categoryId?: string;
 };
 
 export const getCourses = async ({
   userId,
   title,
-  courseCategoryId
+  categoryId
 }: GetCourses): Promise<CourseWithProgressWithCategory[]> => {
   try {
     const courses = await db.course.findMany({
@@ -27,11 +27,11 @@ export const getCourses = async ({
         title: {
           contains: title,
         },
-        courseCategoryId
+        courseCategoryId: categoryId,
       },
       include: {
-        CourseCategory: true,
-        CourseChapter: {
+        courseCategory: true,
+        courseChapter: {
           where: {
             isPublished: true,
           },
@@ -39,7 +39,7 @@ export const getCourses = async ({
             id: true,
           }
         },
-        PurchaseCourse: {
+        purchaseCourse: {
           where: {
             userId,
           }
@@ -52,12 +52,9 @@ export const getCourses = async ({
 
     const coursesWithProgress: CourseWithProgressWithCategory[] = await Promise.all(
         courses.map(async course => {
-          const courseCategory = course.CourseCategory || { id: '', name: '' };
-          if (course.PurchaseCourse.length === 0) {
+          if (course.purchaseCourse.length === 0) { // changed from 'purchases' to 'purchaseCourse'
             return {
               ...course,
-              courseCategory,
-              courseChapters: course.CourseChapter,
               progress: null,
             }
           }
@@ -66,8 +63,6 @@ export const getCourses = async ({
       
           return {
             ...course,
-            courseCategory,
-            courseChapters: course.CourseChapter,
             progress: progressPercentage,
           };
         })
