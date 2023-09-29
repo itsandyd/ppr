@@ -45,9 +45,11 @@ export const CourseSidebar = async ({
         </Link>
       </div> */}
       <div className="p-8 flex flex-col border-b">
+        <Link href={`/academy/courses/${course.id}`}>
         <h1 className="font-semibold">
             {course.title}
         </h1>
+        </Link>
       </div>
       <div className="flex flex-col w-full">
         {course.courseChapter.map((chapter) => (
