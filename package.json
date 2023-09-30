@@ -55,6 +55,7 @@
     "next": "13.4.12",
     "next-cloudinary": "^4.22.0",
     "next-themes": "^0.2.1",
+    "openai": "^3.3.0",
     "postcss": "8.4.29",
     "prisma": "^5.2.0",
     "query": "github:tanstack/react-query",
