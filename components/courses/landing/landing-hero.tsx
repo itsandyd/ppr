@@ -31,11 +31,11 @@ export const LandingHero = () => {
         Elevate Your Music Production
       </div>
       <div>
-        {/* <Link href={isSignedIn ? "/community" : "/sign-up"}>
+        <Link href={isSignedIn ? "/academy/search" : "/sign-up"}>
           <Button variant="default" className="md:text-lg p-4 md:p-6 rounded-full font-semibold">
-                Get Started
+                Browse Courses
           </Button>
-        </Link> */}
+        </Link>
       </div>
       <div className="text-zinc-400 text-xs md:text-sm font-normal">
       </div>

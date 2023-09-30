@@ -1,9 +1,10 @@
 "use client"
 
-import Image from 'next/image'
-import { useParams, useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { ActionTooltip } from '../action-tooltip';
+import Image from "next/image";
+import { ActionTooltip } from "../action-tooltip";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface NavigationItemProps {
     id: string;
@@ -32,7 +33,7 @@ export const NavigationItem = ({
         >
             <button 
                 onClick={onCLick}
-                className="group relative flex items-center"
+                className="group relative flex items-center transition-all" // Add transition-all here
             >
                 <div className={cn(
                     "absolute left-0 bg-primary rounded-r-full transition-all w-[4px]",
@@ -47,6 +48,7 @@ export const NavigationItem = ({
                         src={imageUrl}
                         fill
                         alt={name}
+                        className="transition-all" // Add transition-all here
                     />
                 </div>
 
