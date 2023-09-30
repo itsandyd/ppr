@@ -53,7 +53,7 @@ export const CourseSidebar = async ({
                 alt={course.title}
                 className="items-center"
             /> */}
-        <h1 className="font-semibold align">
+        <h1 className="font-semibold">
             {course.title}
         </h1>
         </Link>
