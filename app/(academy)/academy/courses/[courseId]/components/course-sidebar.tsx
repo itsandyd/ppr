@@ -40,22 +40,23 @@ export const CourseSidebar = async ({
 
   return (
     <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
-      <div className="p-6">
+      {/* <div className="p-6">
         <Link href="/academy">
         </Link>
-      </div>
+      </div> */}
       <div className="p-8 flex flex-col border-b">
-        {/* <Link href={`/academy/courses/${course.id}`}> */}
+        <Link href={`/academy/courses/${course.id}`}>
         {/* <Image 
                 width={100}
                 height={100}
                 src={course.imageUrl || "@/public/ppr.svg"}
                 alt={course.title}
+                className="items-center"
             /> */}
         <h1 className="font-semibold">
             {course.title}
         </h1>
-        {/* </Link> */}
+        </Link>
       </div>
       <div className="flex flex-col w-full">
         {course.courseChapter.map((chapter) => (
