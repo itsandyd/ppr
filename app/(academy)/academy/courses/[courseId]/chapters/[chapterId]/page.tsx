@@ -1,3 +1,5 @@
+import react from 'react';
+
 export const ChapterIdPage = () => {
     return ( 
         <div>
