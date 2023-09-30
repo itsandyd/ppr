@@ -51,6 +51,11 @@ export const LandingNavbar = () => {
                 Dashboard
             </Button>
         </Link>
+        <Link href="https://ai.pauseplayrepeat.com">
+            <Button variant="ghost" className="rounded-full">
+                AI
+            </Button>
+        </Link>
       </div>
       <div className="flex items-center gap-x-2">
         {/* <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
