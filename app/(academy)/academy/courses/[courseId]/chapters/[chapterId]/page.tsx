@@ -7,6 +7,9 @@ import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import react from 'react';
 import { VideoPlayer } from './components/video-player';
+import { CourseEnrollButton } from './components/course-enroll-button';
+import { Separator } from '@/components/ui/separator';
+import { Preview } from '@/components/courses/preview';
 
 const ChapterIdPage = async ({
   params
@@ -68,10 +71,26 @@ const ChapterIdPage = async ({
                         completeOnEnd={completeOnEnd}
                     />
                 </div>
-            </div>
-            <div>
-                {chapter.title}
-                {chapter.description}
+                <div>
+                    <div className="p-4 flex flex-col md:flex-row items-center justify-between">
+                        <h2 className="text-2xl font-semibold mb-2">{chapter.title}</h2>
+                        {purchase ? (
+                            <div>
+                                Course Progression
+                            </div>
+                        ) : (
+                            <CourseEnrollButton 
+                                courseId={params.courseId}
+                                price={course.price!}
+                            />
+
+                        )}
+                    </div>
+                    <Separator />
+                    <div>
+                        <Preview value={chapter.description!}/>
+                    </div>
+                </div>
             </div>
         </div>
      );
