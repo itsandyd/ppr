@@ -1,8 +1,6 @@
 import AiNavbar from "@/components/ai/ai-navbar";
 import AiSidebar from "@/components/ai/ai-sidebar";
 
-
-
 const DashboardLayout = ({
     children
 }: {

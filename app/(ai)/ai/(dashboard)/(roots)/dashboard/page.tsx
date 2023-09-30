@@ -7,13 +7,13 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const tools = [
-    // {
-    //     label: "Conversation",
-    //     icon: MessageSquare,
-    //     href: "/conversation",
-    //     bgColor: "text-violet-500/10",
-    //     color: "text-violet-500",
-    // },
+    {
+        label: "Conversation",
+        icon: MessageSquare,
+        href: "/ai/conversation",
+        bgColor: "text-violet-500/10",
+        color: "text-violet-500",
+    },
     {
         label: "Album Artwork Generation",
         icon: ImageIcon,
