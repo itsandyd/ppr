@@ -17,7 +17,7 @@ const tools = [
     {
         label: "Album Artwork Generation",
         icon: ImageIcon,
-        href: "/image",
+        href: "/ai/image",
         bgColor: "text-pink-500/10",
         color: "text-pink-500",
     },
@@ -31,7 +31,7 @@ const tools = [
     {
         label: "Sample Generation",
         icon: Music,
-        href: "/music",
+        href: "/ai/music",
         bgColor: "text-blue-500/10",
         color: "text-blue-500",
     },
@@ -45,7 +45,7 @@ const tools = [
     {
         label: "Companions",
         icon: HelpingHand,
-        href: "/companion",
+        href: "/ai/companion",
         bgColor: "text-grey-500/10",
         color: "text-grey-500",
     },
