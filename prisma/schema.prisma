@@ -214,6 +214,7 @@ model User {
   accounts     Account[]
   listings     Listing[]
   reservations Reservation[]
+  songs        Song[]
 }
 
 model Favorite {
@@ -427,4 +428,17 @@ model StripeCustomer {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Song {
+  id        String @id
+  userId    String
+  author    String
+  title     String
+  songPath  String
+  imagePath String
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
