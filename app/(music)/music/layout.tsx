@@ -1,13 +1,7 @@
 import { Figtree } from 'next/font/google'
-
-
-// import ToasterProvider from '@/providers/ToasterProvider'
-import UserProvider from '@/providers/UserProvider'
-import ModalProvider from '@/providers/ModalProvider'
-// import SupabaseProvider from '@/providers/SupabaseProvider'
-import { SpotifyProvider } from '@/providers/SpotifyProvider';
-// import SpotifyAuthModal from './spotify/components/SpotifyAuthModal'
-
+// import UserProvider from '@/providers/UserProvider'
+// import ModalProvider from '@/providers/ModalProvider'
+// import { SpotifyProvider } from '@/providers/SpotifyProvider';
 import './globals.css'
 import Player from '@/components/music/player'
 import Sidebar from '@/components/music/sidebar'
@@ -28,45 +22,35 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
   const { userId } = auth() 
 
-  const userSongs = await db.song.findMany({
-    where: {
-      userId: userId,
-    },
-    include: {
-      user: true,
-    },
-    // orderBy: {
-    //   createdAt: "desc",
-    // },
-  });
+  try {
+    const userSongs = await db.song.findMany({
+      // where: {
+      //   userId: userId,
+      // },
+      // include: {
+      //   user: true,
+      // },
+    });
 
-  return songs;
-} catch (error) {
-  console.log("[GET_SONGS]", error);
-  return [];
-}
-};
-
-  return (
-    <html lang="en">
-      <body className={font.className}>
-        {/* <ToasterProvider /> */}
-        {/* <SupabaseProvider> */}
-          <UserProvider>
-            <ModalProvider />
-            <SpotifyProvider> {/* Include the SpotifyProvider here */}
-              {/* <SpotifyAuthModal /> Include the SpotifyAuthModal here */}
+    return (
+      <html lang="en">
+        <body className={font.className}>
+          {/* <UserProvider> */}
+            {/* <ModalProvider /> */}
+            {/* <SpotifyProvider> */}
               <Sidebar songs={userSongs}>
                 {children}
               </Sidebar>
               <Player />
-            </SpotifyProvider>
-          </UserProvider>
-        {/* </SupabaseProvider> */}
-      </body>
-    </html>
-  )
+            {/* </SpotifyProvider> */}
+          {/* </UserProvider> */}
+        </body>
+      </html>
+    )
+  } catch (error) {
+    console.log("[GET_SONGS]", error);
+    return [];
+  }
 }
