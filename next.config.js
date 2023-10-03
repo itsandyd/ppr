@@ -7,6 +7,8 @@ const nextConfig = {
       "res.cloudinary.com",
       "replicate.com",
       "pbxt.replicate.delivery",
+      "oaidalleapiprodscus.blob.core.windows.net",
+      "googleusercontent.com",
     ],
   },
 };

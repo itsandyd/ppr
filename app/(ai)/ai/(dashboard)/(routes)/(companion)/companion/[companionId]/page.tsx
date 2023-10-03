@@ -1,8 +1,10 @@
+import { redirect } from "next/navigation";
+import { auth, redirectToSignIn } from "@clerk/nextjs";
+
 import { db } from "@/lib/db";
+
 import { CompanionForm } from "./components/companion-form";
 import { checkSubscription } from "@/lib/subscriptions";
-import { auth, redirectToSignIn } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
 
 interface CompanionIdPageProps {
   params: {
@@ -19,11 +21,11 @@ const CompanionIdPage = async ({
     return redirectToSignIn();
   }
 
-  const validSubscription = await checkSubscription();
+  // const validSubscription = await checkSubscription();
 
-  if (!validSubscription) {
-    return redirect("/companion/settings");
-  }
+  // if (!validSubscription) {
+  //   return redirect("/");
+  // }
 
   const companion = await db.companion.findUnique({
     where: {
