@@ -8,8 +8,8 @@ import { AiOutlinePlus } from 'react-icons/ai';
 
 // import useAuthModal from '@/hooks/useAuthModal';
 
-import { useUser } from '@/hooks/useUser';
-import useUploadModal from '@/hooks/useUploadModal';
+// import { useUser } from '@/hooks/useUser';
+// import useUploadModal from '@/hooks/useUploadModal';
 
 
 import { Song } from '@prisma/client';
@@ -21,16 +21,16 @@ interface LibraryProps {
 
 const Library: React.FC<LibraryProps> = ({ songs }) => {
     // const authModal = useAuthModal();
-    const { user } = useUser();
-    const uploadModal = useUploadModal();
+    // const { user } = useUser();
+    // const uploadModal = useUploadModal();
 
-    const onClick = () => {
-        if (!user) {
-            return ('/')
-        }
-        // TODO: Check for subscription
-        return uploadModal.onOpen();
-    };
+    // const onClick = () => {
+    //     if (!user) {
+    //         return ('/')
+    //     }
+    //     // TODO: Check for subscription
+    //     return uploadModal.onOpen();
+    // };
 
   return (
     <div className="flex flex-col">
@@ -52,7 +52,7 @@ const Library: React.FC<LibraryProps> = ({ songs }) => {
                 </p>
             </div>
             <AiOutlinePlus 
-            onClick={onClick}
+            // onClick={onClick}
             size={26}
             className="
             text-neutral-400

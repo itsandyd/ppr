@@ -2,7 +2,7 @@ import { Figtree } from 'next/font/google'
 // import UserProvider from '@/providers/UserProvider'
 // import ModalProvider from '@/providers/ModalProvider'
 // import { SpotifyProvider } from '@/providers/SpotifyProvider';
-import './globals.css'
+// import './globals.css'
 import Player from '@/components/music/player'
 import Sidebar from '@/components/music/sidebar'
 import { db } from '@/lib/db';
