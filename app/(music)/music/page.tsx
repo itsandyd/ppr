@@ -9,7 +9,7 @@ import Header from "@/components/music/header";
 import { useEffect, useState } from "react";
 import { Song } from "@prisma/client";
 
-interface Songs {
+interface MusicSongsProps {
   songs: Song[];
 }
 
@@ -17,7 +17,7 @@ interface Songs {
 
 const MuiscPage = async ({
   songs
-}: Songs) => {
+}: MusicSongsProps) => {
   // const songs = await db.song.findMany({
   // });
 
