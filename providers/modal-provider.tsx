@@ -12,6 +12,7 @@ import { DeleteChannelModal } from "../components/community/modals/delete-channe
 import { EditChannelModal } from "../components/community/modals/edit-channel-modal";
 import { MessageFileModal } from "../components/community/modals/message-file-modal";
 import { StoreModal } from "@/components/store/dashboard/modals/store-modal";
+import UploadModal from "@/components/music/upload-modal";
 
 export const ModalProvider = () => {
 
@@ -37,6 +38,7 @@ export const ModalProvider = () => {
             <EditChannelModal />
             <MessageFileModal />
             <StoreModal />
+            <UploadModal />
         </>
     )
 }

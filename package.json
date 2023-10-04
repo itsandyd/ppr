@@ -82,6 +82,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "typewriter-effect": "^2.20.1",
+    "uniqid": "^5.4.0",
     "uploadthing": "^5.5.3",
     "use-sound": "^4.0.0",
     "uuid": "^9.0.0",
@@ -89,6 +90,7 @@
     "zustand": "^4.4.1"
   },
   "devDependencies": {
+    "@types/uniqid": "^5.3.2",
     "@types/uuid": "^9.0.3"
   }
 }

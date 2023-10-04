@@ -14,6 +14,7 @@ import { AiOutlinePlus } from 'react-icons/ai';
 
 import { Song } from '@prisma/client';
 import MediaItem from './media-item';
+import { useModal } from '@/hooks/use-modal-store';
 
 interface LibraryProps {
     songs: Song[];
@@ -24,6 +25,8 @@ const Library: React.FC<LibraryProps> = ({ songs }) => {
     // const { user } = useUser();
     // const uploadModal = useUploadModal();
 
+    const { onOpen } = useModal();
+
     // const onClick = () => {
     //     if (!user) {
     //         return ('/')
@@ -31,6 +34,7 @@ const Library: React.FC<LibraryProps> = ({ songs }) => {
     //     // TODO: Check for subscription
     //     return uploadModal.onOpen();
     // };
+    
 
   return (
     <div className="flex flex-col">
@@ -52,7 +56,7 @@ const Library: React.FC<LibraryProps> = ({ songs }) => {
                 </p>
             </div>
             <AiOutlinePlus 
-            // onClick={onClick}
+            onClick={() => onOpen("uploadSong")}
             size={26}
             className="
             text-neutral-400

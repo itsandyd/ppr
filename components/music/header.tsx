@@ -15,6 +15,7 @@ import { toast } from 'react-hot-toast';
 // import useUploadModal from '@/hooks/useUploadModal';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { UserButton, auth } from '@clerk/nextjs';
+import { cn } from '@/lib/utils';
 
 interface HeaderProps {
   children: React.ReactNode;
@@ -31,10 +32,10 @@ const Header: React.FC<HeaderProps> = ({
 //   const supabaseClient = useSupabaseClient();
 
   return (
-    <div className={twMerge(`
+    <div className={cn(`
       h-fit
       bg-gradient-to-b
-      from-pink-500
+      from-sky-300
       p-6
     `, className)}>
       <div className="w-full mb-4 flex items-center justify-between">

@@ -16,12 +16,9 @@ const useOnPlay = (songs: Song[]) => {
   const player = usePlayer();
 //   const subscribeModal = useSubscribeModal();
   // const authModal = useAuthModal();
-  const { userId } = auth();
+  // const { userId } = auth();
 
   const onPlay = (id: string) => {
-    if (!userId) {
-      return redirect('/music')
-    }
 
     // if (!subscription) {
     //   return subscribeModal.onOpen();

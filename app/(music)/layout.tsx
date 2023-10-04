@@ -1,4 +1,4 @@
-import { Figtree } from 'next/font/google'
+// import { Figtree } from 'next/font/google'
 // import UserProvider from '@/providers/UserProvider'
 // import ModalProvider from '@/providers/ModalProvider'
 // import { SpotifyProvider } from '@/providers/SpotifyProvider';
@@ -8,21 +8,16 @@ import Sidebar from '@/components/music/sidebar'
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 
-const font = Figtree({ subsets: ['latin'] })
-
-export const metadata = {
-  title: 'Spotify Clone',
-  description: 'Spotify Clone',
-}
-
+// const font = Figtree({ subsets: ['latin'] })
 export const revalidate = 0;
 
-export default async function RootLayout({
-  children,
+const MusicLayout = async ({
+    children,
 }: {
-  children: React.ReactNode
-}) {
-  const { userId } = auth() 
+    children: React.ReactNode;
+}) => {
+
+  const { userId } = auth();
 
   try {
     const userSongs = await db.song.findMany({
@@ -36,7 +31,7 @@ export default async function RootLayout({
 
     return (
       <html lang="en">
-        <body className={font.className}>
+        <body className="bg-black">
           {/* <UserProvider> */}
             {/* <ModalProvider /> */}
             {/* <SpotifyProvider> */}
@@ -54,3 +49,5 @@ export default async function RootLayout({
     return [];
   }
 }
+
+export default MusicLayout;
