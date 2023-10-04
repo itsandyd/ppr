@@ -9,15 +9,13 @@ import Header from "@/components/music/header";
 import { useEffect, useState } from "react";
 import { Song } from "@prisma/client";
 
-interface MusicSongsProps {
-  songs: Song[];
-}
+// interface MusicSongsProps {
+//   songs: Song[];
+// }
 
 // export const revalidate = 0;
 
-const MuiscPage = async ({
-  songs
-}: MusicSongsProps) => {
+const MuiscPage = async () => {
   // const songs = await db.song.findMany({
   // });
 
