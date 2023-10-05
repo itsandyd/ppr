@@ -16,6 +16,7 @@ import { toast } from 'react-hot-toast';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { UserButton, auth } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
+import { useModal } from '@/hooks/use-modal-store';
 
 interface HeaderProps {
   children: React.ReactNode;
@@ -27,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({
     className 
 }) => {
     // const authModal = useAuthModal();
-    // const uploadModal = useUploadModal();
+    const uploadModal = useModal();
     const router = useRouter();
 //   const supabaseClient = useSupabaseClient();
 
@@ -42,13 +43,13 @@ const Header: React.FC<HeaderProps> = ({
         <div className="hidden md:flex gap-x-2 items-center">
           <button
             onClick={() => router.back()}
-            className="rounded-full bg-black flex items-center justify-center hover:opacity-75 transition"
+            className="rounded-full bg-black text-white flex items-center justify-center hover:opacity-75 transition"
           >
             <RxCaretLeft size={35} />
           </button>
           <button
             onClick={() => router.forward()}
-            className="rounded-full bg-black flex items-center justify-center hover:opacity-75 transition"
+            className="rounded-full bg-black text-white flex items-center justify-center hover:opacity-75 transition"
           >
             <RxCaretRight size={35} />
           </button>
@@ -67,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({
           <BiSearch className="text-black" size={20} />
         </button>
           <button className="rounded-full p-2 bg-white flex items-center justify-center hover:opacity-75 transition">
-            {/* <AiOutlinePlus className="text-black" size={20} onClick={uploadModal.onOpen} /> */}
+            <AiOutlinePlus className="text-black" size={20} onClick={uploadModal.onOpen} />
           </button>
         </div>
         <div className="flex justify-between items-center gap-x-4">
