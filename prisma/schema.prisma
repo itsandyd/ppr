@@ -214,7 +214,6 @@ model User {
   accounts     Account[]
   listings     Listing[]
   reservations Reservation[]
-  songs        Song[]
 }
 
 model Favorite {
@@ -431,14 +430,10 @@ model StripeCustomer {
 }
 
 model Song {
-  id        String @id
+  id        String @id @default(uuid())
   userId    String
   author    String
   title     String
   songPath  String
   imagePath String
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@index([userId])
 }

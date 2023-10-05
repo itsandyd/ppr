@@ -1,10 +1,6 @@
 "use client";
 
 import Image from "next/image";
-
-// import useLoadImage from "@/hooks/useLoadImage";
-
-
 import { Song } from "@prisma/client";
 import usePlayer from "@/hooks/music/usePlayer";
 
@@ -13,12 +9,8 @@ interface MediaItemProps {
   onClick?: (id: string) => void;
 }
 
-const MediaItem: React.FC<MediaItemProps> = ({
-  data,
-  onClick,
-}) => {
+const MediaItem: React.FC<MediaItemProps> = ({ data, onClick }) => {
   const player = usePlayer();
-//   const imageUrl = useLoadImage(data);
 
   const handleClick = () => {
     if (onClick) {
@@ -28,33 +20,17 @@ const MediaItem: React.FC<MediaItemProps> = ({
     return player.setId(data.id);
   };
 
-  return ( 
+  return (
     <div
       onClick={handleClick}
-      className="
-        flex 
-        items-center 
-        gap-x-3 
-        cursor-pointer 
-        hover:bg-neutral-800/50 
-        w-full 
-        p-2 
-        rounded-md
-      "
+      className="flex items-center gap-x-3 cursor-pointer hover:bg-neutral-800/50 w-full p-2 rounded-md"
     >
       <div 
-        className="
-          relative 
-          rounded-md 
-          min-h-[48px] 
-          min-w-[48px] 
-          overflow-hidden
-        "
+        className="relative rounded-md min-h-[48px] min-w-[48px] overflow-hidden"
       >
         <Image
           fill
-          src={"/images/music-placeholder.png"}
-        //   imageUrl || 
+          src={data.imagePath}
           alt="MediaItem"
           className="object-cover"
         />
