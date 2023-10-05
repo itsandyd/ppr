@@ -1,34 +1,34 @@
 import { Song } from "@prisma/client";
 import { db } from "../lib/db"
+import { useAuth } from "@clerk/nextjs";
 
 type GetSongs = {
     userId: string;
   };
+
+
   
-  type SongWithUser = Song & {
-    user: {
-      id: string;
-      name: string | null;
-    };
-  };
+//   type SongWithUser = Song & {
+//     user: {
+//       id: string;
+//       name: string | null;
+//     };
+//   };
   
-export const getSongsByUserId = async ({
-    userId,
-  }: GetSongs): Promise<SongWithUser[]> => {
+export const getSongsByUserId = async ({ }: GetSongs) => {
     try {
-      const songs = await db.song.findMany({
-        where: {
-          userId: userId,
-        },
-        include: {
-          user: true,
-        },
+
+      // const songs = await db.song.findMany({
+      //   where: {
+      //     userId: userId
+      //   },
+
         // orderBy: {
         //   createdAt: "desc",
         // },
-      });
+      // });
   
-      return songs;
+      return;
     } catch (error) {
       console.log("[GET_SONGS]", error);
       return [];
