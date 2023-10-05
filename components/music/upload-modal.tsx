@@ -72,8 +72,8 @@ export const UploadModal = () => {
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>
-            <DialogContent className="bg-white text-black p-0 overflow-hidden">
-                <DialogHeader className="pt-8 px-6">
+            <DialogContent className="bg-white text-black p-0 overflow-auto max-h-screen">
+                <DialogHeader className="pt-8 px-6 top-0">
                     <DialogTitle className="text-2xl text-center font-bold">
                         Upload a song
                     </DialogTitle>
