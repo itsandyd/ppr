@@ -169,7 +169,7 @@ export const UploadModal = () => {
                                 )}
                             />
                         </div>
-                        <DialogFooter className="bg-gray-100 px-6 py-6">
+                        <DialogFooter className="bg-gray-100 px-6 py-6 pb-16">
                             <Button variant="default" type="submit" disabled={isLoading}>
                                 Upload
                             </Button>
