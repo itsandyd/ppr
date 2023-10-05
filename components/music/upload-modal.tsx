@@ -72,7 +72,7 @@ export const UploadModal = () => {
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>
-            <DialogContent className="bg-white text-black p-0 overflow-auto max-h-screen">
+            <DialogContent className="bg-white text-black p-0 overflow-auto max-h-screen mt-4 mb-4">
                 <DialogHeader className="pt-8 px-6 top-0">
                     <DialogTitle className="text-2xl text-center font-bold">
                         Upload a song
@@ -169,7 +169,7 @@ export const UploadModal = () => {
                                 )}
                             />
                         </div>
-                        <DialogFooter className="bg-gray-100 px-6 py-4">
+                        <DialogFooter className="bg-gray-100 px-6 py-6">
                             <Button variant="default" type="submit" disabled={isLoading}>
                                 Upload
                             </Button>
