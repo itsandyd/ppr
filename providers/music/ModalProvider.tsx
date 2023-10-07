@@ -1,7 +1,8 @@
 "use client";
 
 import AuthModal from "@/components/music/AuthModal";
-import UploadModal from "@/components/music/upload-modal";
+import UploadModal from "@/components/music/UploadModal";
+
 import { useEffect, useState } from "react";
 
 const ModalProvider = () => {

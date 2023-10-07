@@ -1,17 +1,15 @@
 import React from 'react';
-
+import { Song } from '@/types';
 import MediaItem from '@/components/music/MediaItem';
 import LikeButton from '@/components/music/LikeButton';
 import { BsPlayFill, BsPauseFill } from 'react-icons/bs';
 import { AiFillStepBackward, AiFillStepForward } from 'react-icons/ai';
 import { HiSpeakerWave, HiSpeakerXMark } from 'react-icons/hi2';
-
+import Slider from './Slider';
 import usePlayer from '@/hooks/music/usePlayer';
 import { useState } from 'react';
 import useSound from 'use-sound';
 import { useEffect } from 'react';
-import { Song } from '@/types';
-import Slider from './Slider';
 
 interface PlayerContentProps {
   song: Song;

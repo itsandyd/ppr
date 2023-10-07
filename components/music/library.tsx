@@ -11,10 +11,9 @@ import useAuthModal from '@/hooks/music/useAuthModal';
 import { useUser } from '@/hooks/music/useUser';
 import useUploadModal from '@/hooks/music/useUploadModal';
 
-
+import MediaItem from '@/components/music/MediaItem';
 
 import { Song } from '@/types'; 
-import MediaItem from './MediaItem';
 
 interface LibraryProps {
     songs: Song[];
