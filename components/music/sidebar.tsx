@@ -10,10 +10,10 @@ import { HiHome } from 'react-icons/hi';
 
 import { BiSearch } from 'react-icons/bi';
 
-import { Song } from '@prisma/client';
-import SidebarItem from './sidebar-item';
-import Box from './box';
-import Library from './library';
+import { Song } from '@/types';
+import SidebarItem from './SidebarItem';
+import Box from './Box';
+import Library from './Library';
 
 
 

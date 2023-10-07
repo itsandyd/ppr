@@ -9,6 +9,7 @@ const nextConfig = {
       "pbxt.replicate.delivery",
       "oaidalleapiprodscus.blob.core.windows.net",
       "googleusercontent.com",
+      "mqxcvzhanbisvevjcnwu.supabase.co",
     ],
   },
 };

@@ -1,37 +1,14 @@
 "use client";
 
-import SongItem from "@/components/music/song-item";
-// import useOnPlay from "@/hooks/music/useOnPlay";
-import usePlayer from "@/hooks/music/usePlayer";
-import { auth } from "@clerk/nextjs";
-
-import { Song } from "@prisma/client";
-import { redirect } from "next/navigation";
+import { Song } from "@/types";
+import useOnPlay from "@/hooks/music/useOnPlay";
+import SongItem from "@/components/music/SongItem";
 
 interface PageContentProps {
   songs: Song[];
 }
 
-const useOnPlay = (songs: Song[]) => {
-  const player = usePlayer();
-//   const subscribeModal = useSubscribeModal();
-  // const authModal = useAuthModal();
-  // const { userId } = auth();
-
-  const onPlay = (id: string) => {
-
-    // if (!subscription) {
-    //   return subscribeModal.onOpen();
-    // }
-
-    player.setId(id);
-    player.setIds(songs.map((song) => song.id));
-  }
-
-  return onPlay;
-};
-
-const MusicPageContent: React.FC<PageContentProps> = ({
+const PageContent: React.FC<PageContentProps> = ({
   songs
 }) => {
   const onPlay = useOnPlay(songs);
@@ -69,4 +46,4 @@ const MusicPageContent: React.FC<PageContentProps> = ({
   );
 }
  
-export default MusicPageContent;
+export default PageContent;

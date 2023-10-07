@@ -11,7 +11,7 @@ export const LandingHero = () => {
 
   return (
     <div className="font-bold py-36 text-center space-y-5">
-      <div className="text-7xl space-y-5 font-extrabold">
+      <div className="text-5xl space-y-5 font-extrabold">
       {/* sm:text-5xl md:text-6xl lg:text-7xl */}
         <h1>Welcome to Communities</h1>
         <div className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">

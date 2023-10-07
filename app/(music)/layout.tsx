@@ -1,53 +1,47 @@
-// import { Figtree } from 'next/font/google'
-// import UserProvider from '@/providers/UserProvider'
-// import ModalProvider from '@/providers/ModalProvider'
-// import { SpotifyProvider } from '@/providers/SpotifyProvider';
-// import './globals.css'
-import Player from '@/components/music/player'
-import Sidebar from '@/components/music/sidebar'
-import { db } from '@/lib/db';
-import { auth } from '@clerk/nextjs';
+import { Figtree } from 'next/font/google'
 
-// const font = Figtree({ subsets: ['latin'] })
+import getSongsByUserId from '@/actions/getSongsByUserId'
+import Sidebar from '@/components/music/Sidebar'
+import ToasterProvider from '@/providers/music/ToasterProvider'
+import UserProvider from '@/providers/music/UserProvider'
+import ModalProvider from '@/providers/music/ModalProvider'
+import SupabaseProvider from '@/providers/music/SupabaseProvider'
+import { SpotifyProvider } from '@/providers/music/SpotifyProvider';
+import Player from '@/components/music/Player'
+
+const font = Figtree({ subsets: ['latin'] })
+
+export const metadata = {
+  title: 'Spotify Clone',
+  description: 'Spotify Clone',
+}
+
 export const revalidate = 0;
 
-const MusicLayout = async ({
-    children,
+export default async function RootLayout({
+  children,
 }: {
-    children: React.ReactNode;
-}) => {
+  children: React.ReactNode
+}) {
+  const userSongs = await getSongsByUserId();
 
-  const { userId } = auth();
-
-  try {
-    const userSongs = await db.song.findMany({
-      // where: {
-      //   userId: userId,
-      // },
-      // include: {
-      //   user: true,
-      // },
-    });
-
-    return (
-      <html lang="en">
-        <body className="bg-black">
-          {/* <UserProvider> */}
-            {/* <ModalProvider /> */}
-            {/* <SpotifyProvider> */}
+  return (
+    <html lang="en">
+      <body className={font.className}>
+        <ToasterProvider />
+        <SupabaseProvider>
+          <UserProvider>
+            <ModalProvider />
+            <SpotifyProvider> {/* Include the SpotifyProvider here */}
+              {/* <SpotifyAuthModal /> Include the SpotifyAuthModal here */}
               <Sidebar songs={userSongs}>
                 {children}
               </Sidebar>
               <Player />
-            {/* </SpotifyProvider> */}
-          {/* </UserProvider> */}
-        </body>
-      </html>
-    )
-  } catch (error) {
-    console.log("[GET_SONGS]", error);
-    return [];
-  }
+            </SpotifyProvider>
+          </UserProvider>
+        </SupabaseProvider>
+      </body>
+    </html>
+  )
 }
-
-export default MusicLayout;

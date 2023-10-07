@@ -6,35 +6,32 @@ import { TbPlaylist } from 'react-icons/tb';
 
 import { AiOutlinePlus } from 'react-icons/ai';
 
-// import useAuthModal from '@/hooks/useAuthModal';
+import useAuthModal from '@/hooks/music/useAuthModal';
 
-// import { useUser } from '@/hooks/useUser';
-// import useUploadModal from '@/hooks/useUploadModal';
+import { useUser } from '@/hooks/music/useUser';
+import useUploadModal from '@/hooks/music/useUploadModal';
 
 
-import { Song } from '@prisma/client';
-import MediaItem from './media-item';
-import { useModal } from '@/hooks/use-modal-store';
+
+import { Song } from '@/types'; 
+import MediaItem from './MediaItem';
 
 interface LibraryProps {
     songs: Song[];
 }
 
 const Library: React.FC<LibraryProps> = ({ songs }) => {
-    // const authModal = useAuthModal();
-    // const { user } = useUser();
-    // const uploadModal = useUploadModal();
+    const authModal = useAuthModal();
+    const { user } = useUser();
+    const uploadModal = useUploadModal();
 
-    const { onOpen } = useModal();
-
-    // const onClick = () => {
-    //     if (!user) {
-    //         return ('/')
-    //     }
-    //     // TODO: Check for subscription
-    //     return uploadModal.onOpen();
-    // };
-    
+    const onClick = () => {
+        if (!user) {
+            authModal.onOpen();
+        }
+        // TODO: Check for subscription
+        return uploadModal.onOpen();
+    };
 
   return (
     <div className="flex flex-col">
@@ -56,7 +53,7 @@ const Library: React.FC<LibraryProps> = ({ songs }) => {
                 </p>
             </div>
             <AiOutlinePlus 
-            onClick={() => onOpen("uploadSong")}
+            onClick={onClick}
             size={26}
             className="
             text-neutral-400

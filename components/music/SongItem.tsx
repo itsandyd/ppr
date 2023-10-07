@@ -1,7 +1,7 @@
-// import useLoadImage from "@/hooks/useLoadImage";
+import { Song } from "@/types";
+import useLoadImage from "@/hooks/music/useLoadImage";
 import Image from "next/image";
-import PlayButton from "./play-button";
-import { Song } from "@prisma/client";
+import PlayButton from "./PlayButton";
 
 interface SongItemProps {
     data: Song;
@@ -9,7 +9,7 @@ interface SongItemProps {
 }
 
 const SongItem: React.FC<SongItemProps> = ({ data, onClick }) => {
-    // const imagePath = useLoadImage(data);
+    const imagePath = useLoadImage(data);
 
     return (
         <div
@@ -28,8 +28,7 @@ const SongItem: React.FC<SongItemProps> = ({ data, onClick }) => {
             >
                 <Image 
                     className="object-cover"
-                    src={data.imagePath || '/liked.png'}
-                    // imagePath || 
+                    src={imagePath || '/images/liked.png'}
                     fill
                     alt="Image"
                 />

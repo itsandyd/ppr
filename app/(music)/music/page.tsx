@@ -1,23 +1,12 @@
-// import getSongs from "@/actions/getSongs";
-
-
-
-import ListItem from "@/components/music/list-item";
+import getSongs from "@/actions/getSongs";
+import Header from "@/components/music/Header";
+import ListItem from "@/components/music/ListItem";
 import MusicPageContent from "./components/music-page-content";
-import { db } from "@/lib/db";
-import Header from "@/components/music/header";
-import { useEffect, useState } from "react";
-import { Song } from "@prisma/client";
 
-// interface MusicSongsProps {
-//   songs: Song[];
-// }
+export const revalidate = 0;
 
-// export const revalidate = 0;
-
-const MuiscPage = async () => {
-  // const songs = await db.song.findMany({
-  // });
+export default async function MusicHome() {
+  const songs = await getSongs();
 
   return (
     <div
@@ -42,7 +31,7 @@ const MuiscPage = async () => {
           </h1>
           <div 
             className="
-              grid s
+              grid 
               grid-cols-1 
               sm:grid-cols-2 
               xl:grid-cols-3 
@@ -53,7 +42,7 @@ const MuiscPage = async () => {
           >
             <ListItem 
               name="Liked Songs" 
-              image="/liked.png" 
+              image="/images/liked.png" 
               href="liked" 
             />
           </div>
@@ -65,10 +54,8 @@ const MuiscPage = async () => {
             Newest songs
           </h1>
         </div>
-        {/* <MusicPageContent songs={songs} /> */}
+        <MusicPageContent songs={songs} />
       </div>
     </div>
   )
 }
-
-export default MuiscPage;
