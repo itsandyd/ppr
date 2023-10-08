@@ -46,7 +46,7 @@ export const LandingNavbar = () => {
                 Community
             </Button>
         </Link>
-        <Link href="/music">
+        <Link href="https://music.pauseplayrepeat.com/">
             <Button variant="ghost" className="rounded-full">
                 Music
             </Button>
