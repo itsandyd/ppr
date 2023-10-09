@@ -34,7 +34,19 @@ const ImagePage = () => {
           base_model: "realisticVisionV20_v20",
           steps: 25,
           guidance_scale: 0.5,
-          frames: 16
+          frames: 16,
+          width: 512,
+          height: 512,
+          seed: -1,
+          zoom_in_motion_strength: 0,
+          zoom_out_motion_strength: 0,
+          pan_left_motion_strength: 0,
+          pan_right_motion_strength: 0,
+          pan_up_motion_strength: 0,
+          pan_down_motion_strength: 0,
+          rolling_clockwise_motion_strength: 0,
+          rolling_anticlockwise_motion_strength: 0,
+          output_format: "mp4",
         },
     });
 
@@ -64,7 +76,7 @@ const ImagePage = () => {
     return (
         <div>
             <AiHeading
-                title="Video Generation"
+                title="Animate Diffusion"
                 description="Generate Music Visuals from a prompt."
                 Icon={VideoIcon}
                 iconColor="text-orange-500"
@@ -219,6 +231,222 @@ type="number"
 </FormControl>
 </FormItem>
 )}
+/>
+<FormField
+  control={form.control}
+  name="seed"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Seed</div>
+      <FormControl className="m-0 p-0">
+        <Input
+          className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+          disabled={isLoading}
+          placeholder="Enter seed"
+          type="number"
+          {...field}
+        />
+      </FormControl>
+      <FormDescription>
+        Seed for different images and reproducibility. Use -1 to randomise seed.
+      </FormDescription>
+    </FormItem>
+  )}
+/>
+<FormField
+  control={form.control}
+  name="zoom_in_motion_strength"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Zoom In Motion Strength</div>
+      <FormControl className="m-0 p-0">
+        <Slider
+          defaultValue={[field.value]}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={values => field.onChange(values)}
+        />
+      </FormControl>
+      <FormDescription>
+        Strength of Zoom In Motion LoRA. 0 disables the LoRA.
+      </FormDescription>
+    </FormItem>
+  )}
+/>
+
+<FormField
+  control={form.control}
+  name="zoom_out_motion_strength"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Zoom Out Motion Strength</div>
+      <FormControl className="m-0 p-0">
+        <Slider
+          defaultValue={[field.value]}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={values => field.onChange(values)}
+        />
+      </FormControl>
+      <FormDescription>
+        Strength of Zoom Out Motion LoRA. 0 disables the LoRA.
+      </FormDescription>
+    </FormItem>
+  )}
+/>
+
+<FormField
+  control={form.control}
+  name="pan_left_motion_strength"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Pan Left Motion Strength</div>
+      <FormControl className="m-0 p-0">
+        <Slider
+          defaultValue={[field.value]}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={values => field.onChange(values)}
+        />
+      </FormControl>
+      <FormDescription>
+        Strength of Pan Left Motion LoRA. 0 disables the LoRA.
+      </FormDescription>
+    </FormItem>
+  )}
+/>
+
+<FormField
+  control={form.control}
+  name="pan_right_motion_strength"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Pan Right Motion Strength</div>
+      <FormControl className="m-0 p-0">
+        <Slider
+          defaultValue={[field.value]}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={values => field.onChange(values)}
+        />
+      </FormControl>
+      <FormDescription>
+        Strength of Pan Right Motion LoRA. 0 disables the LoRA.
+      </FormDescription>
+    </FormItem>
+  )}
+/>
+
+<FormField
+  control={form.control}
+  name="pan_up_motion_strength"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Pan Up Motion Strength</div>
+      <FormControl className="m-0 p-0">
+        <Slider
+          defaultValue={[field.value]}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={values => field.onChange(values)}
+        />
+      </FormControl>
+      <FormDescription>
+        Strength of Pan Up Motion LoRA. 0 disables the LoRA.
+      </FormDescription>
+    </FormItem>
+  )}
+/>
+
+<FormField
+  control={form.control}
+  name="pan_down_motion_strength"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Pan Down Motion Strength</div>
+      <FormControl className="m-0 p-0">
+        <Slider
+          defaultValue={[field.value]}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={values => field.onChange(values)}
+        />
+      </FormControl>
+      <FormDescription>
+        Strength of Pan Down Motion LoRA. 0 disables the LoRA.
+      </FormDescription>
+    </FormItem>
+  )}
+/>
+
+<FormField
+  control={form.control}
+  name="rolling_clockwise_motion_strength"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Rolling Clockwise Motion Strength</div>
+      <FormControl className="m-0 p-0">
+        <Slider
+          defaultValue={[field.value]}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={values => field.onChange(values)}
+        />
+      </FormControl>
+      <FormDescription>
+        Strength of Rolling Clockwise Motion LoRA. 0 disables the LoRA.
+      </FormDescription>
+    </FormItem>
+  )}
+/>
+
+<FormField
+  control={form.control}
+  name="rolling_anticlockwise_motion_strength"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Rolling Anticlockwise Motion Strength</div>
+      <FormControl className="m-0 p-0">
+        <Slider
+          defaultValue={[field.value]}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={values => field.onChange(values)}
+        />
+      </FormControl>
+      <FormDescription>
+        Strength of Rolling Anticlockwise Motion LoRA. 0 disables the LoRA.
+      </FormDescription>
+    </FormItem>
+  )}
+/>
+<FormField
+  control={form.control}
+  name="output_format"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Output Format</div>
+      <FormControl className="m-0 p-0">
+        <Select {...field}>
+          <SelectTrigger className="flex">
+            <SelectValue placeholder="Select output format" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="mp4">mp4</SelectItem>
+            <SelectItem value="gif">gif</SelectItem>
+          </SelectContent>
+        </Select>
+      </FormControl>
+    </FormItem>
+  )}
 />
                             <Button className="col-span-12 w-full" type="submit" disabled={isLoading} size="icon">
                                 Generate

@@ -39,7 +39,7 @@ const routes = [
         color: "text-orange-500",
     },
     {
-        label: "Video Generation",
+        label: "Animate Diffusion",
         icon: VideoIcon,
         href: "/ai/animatediffusion",
         color: "text-orange-500",

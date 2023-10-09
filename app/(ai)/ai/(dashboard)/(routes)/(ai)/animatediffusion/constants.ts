@@ -8,7 +8,17 @@ export const formSchema = z.object({
   guidance_scale: z.number().min(0).max(10).default(7.5),
   frames: z.number().int().min(1).default(16),
   width: z.number().int().min(1).default(512),
-height: z.number().int().min(1).default(512),
+  height: z.number().int().min(1).default(512),
+  seed: z.number().int(),
+  zoom_in_motion_strength: z.number().min(0).max(1),
+  zoom_out_motion_strength: z.number().min(0).max(1),
+  pan_left_motion_strength: z.number().min(0).max(1),
+  pan_right_motion_strength: z.number().min(0).max(1),
+  pan_up_motion_strength: z.number().min(0).max(1),
+  pan_down_motion_strength: z.number().min(0).max(1),
+  rolling_clockwise_motion_strength: z.number().min(0).max(1),
+  rolling_anticlockwise_motion_strength: z.number().min(0).max(1),
+  output_format: z.enum(['mp4', 'gif']),
 });
 
 // export const amountOptions = [

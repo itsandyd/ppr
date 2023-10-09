@@ -21,6 +21,18 @@ const tools = [
         bgColor: "text-pink-500/10",
         color: "text-pink-500",
     },
+    {
+        label: "Stable Diffusion Animation",
+        icon: VideoIcon,
+        href: "/ai/sdanimate",
+        color: "text-orange-500",
+    },
+    {
+        label: "Animate Diffusion",
+        icon: VideoIcon,
+        href: "/ai/animatediffusion",
+        color: "text-orange-500",
+    },
     // {
     //     label: "Video Generation",
     //     icon: VideoIcon,
@@ -56,6 +68,7 @@ const tools = [
         bgColor: "text-grey-500/10",
         color: "text-grey-500",
     },
+    
 ];
 
 const DashboardPage = () => {
