@@ -98,20 +98,19 @@ model Channel {
 }
 
 model Message {
-  id          String     @id @default(uuid())
-  content     String     @db.Text
-  fileUrl     String?    @db.Text
+  id          String   @id @default(uuid())
+  content     String   @db.Text
+  fileUrl     String?  @db.Text
   memberId    String
-  member      Member     @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
   channelId   String
-  channel     Channel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  deleted     Boolean    @default(false)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  channel     Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  deleted     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   companionId String?
   role        Role?
   userId      String?
-  companion   Companion? @relation(fields: [companionId], references: [id], onDelete: Cascade)
 
   @@index([channelId])
   @@index([memberId])
@@ -171,7 +170,7 @@ model Companion {
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId String
 
-  messages Message[]
+  messages CompanionMessage[]
 
   @@index([categoryId])
   @@fulltext([name])
@@ -436,4 +435,19 @@ model Song {
   title     String
   songPath  String
   imagePath String
+}
+
+model CompanionMessage {
+  id        String   @id @default(uuid())
+  role      Role
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  companionId String
+  userId      String
+
+  companion Companion @relation(fields: [companionId], references: [id], onDelete: Cascade)
+
+  @@index([companionId])
 }
