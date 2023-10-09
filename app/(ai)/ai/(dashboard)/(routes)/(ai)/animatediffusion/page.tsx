@@ -128,7 +128,10 @@ const ImagePage = () => {
     <FormItem className="col-span-12">
       <div className="text-l font-bold">Base Model</div>
       <FormControl className="m-0 p-0">
-        <Select {...field}>
+        <Select 
+          value={field.value} 
+          onValueChange={(value) => field.onChange(value)}
+        >
           <SelectTrigger className="flex">
             <SelectValue placeholder="Select a base model" />
           </SelectTrigger>
@@ -435,7 +438,10 @@ type="number"
     <FormItem className="col-span-12">
       <div className="text-l font-bold">Output Format</div>
       <FormControl className="m-0 p-0">
-        <Select {...field}>
+      <Select 
+          value={field.value} 
+          onValueChange={(value) => field.onChange(value)}
+        >
           <SelectTrigger className="flex">
             <SelectValue placeholder="Select output format" />
           </SelectTrigger>
@@ -467,29 +473,29 @@ type="number"
                         <AiEmpty label="No images generated." />
                     )}
                     <div className="grid grid-cols-1 mid:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
-                        {images.map((src, index) => (
-                            <div className="pb-4" key={index}>
-                                <Card
-                                    key={src}
-                                    className="rounded-lg overflow-hidden"
-                                >
-                                    <div className="relative aspect-square">
-                                        <Image
-                                            alt="Image"
-                                            fill
-                                            src={src}
-                                        />
-                                    </div>
-                                    <CardFooter className="p-2">
-                                        <Button variant="secondary" className="w-full" onClick={() => window.open(src)}>
-                                            <Download className="h-4 w-4 mr-2">
-                                                Download
-                                            </Download>
-                                        </Button>
-                                    </CardFooter>
-                                </Card>
-                            </div>
-                        ))}
+                    {images.map((src, index) => (
+  <div className="pb-4" key={index}>
+    <Card key={src} className="rounded-lg overflow-hidden">
+      <div className="relative aspect-square">
+        {src.endsWith('.mp4') ? (
+          <video controls>
+            <source src={src} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <Image alt="Image" fill src={src} />
+        )}
+      </div>
+      <CardFooter className="p-2">
+        <Button variant="secondary" className="w-full" onClick={() => window.open(src)}>
+          <Download className="h-4 w-4 mr-2">
+            Download
+          </Download>
+        </Button>
+      </CardFooter>
+    </Card>
+  </div>
+))}
                     </div>
                 </div>
             </div>
