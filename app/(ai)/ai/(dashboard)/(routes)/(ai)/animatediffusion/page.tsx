@@ -61,7 +61,7 @@ const ImagePage = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             setImages([]);
-            const response = await axios.post("/api/ai/sdanimate", {
+            const response = await axios.post("/api/ai/animatediffusion", {
                 ...values,
             });
             setImages(response.data);
