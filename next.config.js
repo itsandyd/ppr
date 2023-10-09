@@ -6,6 +6,7 @@ const nextConfig = {
       "utfs.io",
       "res.cloudinary.com",
       "replicate.com",
+      "replicate.delivery",
       "pbxt.replicate.delivery",
       "oaidalleapiprodscus.blob.core.windows.net",
       "googleusercontent.com",

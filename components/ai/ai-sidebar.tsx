@@ -32,12 +32,18 @@ const routes = [
         href: "/ai/image",
         color: "text-pink-500",
     },
-    // {
-    //     label: "Video Generation",
-    //     icon: VideoIcon,
-    //     href: "/video",
-    //     color: "text-orange-500",
-    // },
+    {
+        label: "Stable Diffusion Animation",
+        icon: VideoIcon,
+        href: "/ai/sdanimate",
+        color: "text-orange-500",
+    },
+    {
+        label: "Video Generation",
+        icon: VideoIcon,
+        href: "/ai/animatediffusion",
+        color: "text-orange-500",
+    },
     {
         label: "Sample Generation",
         icon: Music,
