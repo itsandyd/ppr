@@ -11,6 +11,8 @@ import { db } from "@/lib/db";
 
 dotenv.config({ path: `.env` });
 
+// export const runtime = 'edge';
+
 export async function POST(
   request: Request,
   { params }: { params: { chatId: string } }
@@ -85,7 +87,7 @@ export async function POST(
     // Call Replicate for inference
     const model = new Replicate({
       model:
-        "meta/llama-2-70b-chat:02e509c789964a7ea8736978a43525956ef40397be9033abf9fd2badfe68c9e3",
+      "meta/llama-2-70b-chat:02e509c789964a7ea8736978a43525956ef40397be9033abf9fd2badfe68c9e3",
       input: {
         max_length: 2048,
       },
@@ -94,13 +96,12 @@ export async function POST(
     });
 
     // Turn verbose on for debugging
-    model.verbose = true;
+    model.verbose = false;
 
     const resp = String(
       await model
         .call(
-          `
-        ONLY generate plain sentences without prefix of who is speaking. DO NOT use ${companion.name}: prefix. 
+          `ONLY generate plain sentences without prefix of who is speaking. DO NOT use ${companion.name}: prefix. 
 
         ${companion.instructions}
 
@@ -144,6 +145,7 @@ export async function POST(
 
     return new StreamingTextResponse(s);
   } catch (error) {
+    console.log(error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 };
