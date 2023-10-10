@@ -5,10 +5,10 @@ import { Copy } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { cn } from "@/lib/utils";
-import { BotAvatar } from "./bot-avatar"
-import { UserAvatar } from "./user-avatar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { BotAvatar } from "./bot-avatar";
+import { UserAvatar } from "./user-avatar";
 
 export interface ChatMessageProps {
   role: "system" | "user",

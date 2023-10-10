@@ -89,7 +89,7 @@ export async function POST(
       model:
       "meta/llama-2-70b-chat:02e509c789964a7ea8736978a43525956ef40397be9033abf9fd2badfe68c9e3",
       input: {
-        max_length: 2048,
+        max_new_tokens: 5000,
       },
       apiKey: process.env.REPLICATE_API_TOKEN,
       callbackManager: CallbackManager.fromHandlers(handlers),
@@ -108,15 +108,15 @@ export async function POST(
         Below are relevant details about ${companion.name}'s past and the conversation you are in.
         ${relevantHistory}
 
-
-        ${recentChatHistory}\n${companion.name}:`
+        ${recentChatHistory}n${companion.name}:`
         )
         .catch(console.error)
     );
 
     const cleaned = resp.replaceAll(",", "");
     const chunks = cleaned.split("\n");
-    const response = chunks[0];
+    const response = chunks.join("\n");
+
 
     await memoryManager.writeToHistory("" + response.trim(), companionKey);
     var Readable = require("stream").Readable;
