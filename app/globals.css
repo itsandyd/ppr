@@ -80,3 +80,7 @@
 }
 
 @import "~@uploadthing/react/styles.css";
+
+.leaflet-container {
+  z-index: 1 !important; /* Adjust as needed */
+}

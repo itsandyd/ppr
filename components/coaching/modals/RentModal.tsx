@@ -7,7 +7,7 @@ import Heading from '../Heading';
 import CategoryInput from '../inputs/CategoryInput';
 import { categories } from '../navbar/Categories';
 
-// import CountrySelect from '../inputs/CountrySelect';
+import CountrySelect from '../inputs/CountrySelect';
 import dynamic from 'next/dynamic';
 import Counter from '../inputs/Counter';
 // import ImageUpload from '../inputs/ImageUpload';
@@ -140,16 +140,16 @@ const RentModal = () => {
         bodyContent = ( 
         <div className="flex flex-col gap-8"> 
             <Heading 
-                title="Where's your place located?"
+                title="Where are you from?"
                 subtitle="Enter a location"
             />
-            {/* <CountrySelect
+            <CountrySelect
                 value={watch('location')}
                 onChange={(value) => setCustomValue('location', value)}
-            /> */}
-            {/* <Map 
+            />
+            <Map 
                 center={location?.latlng}
-            /> */}
+            />
         </div>
         )
     }
@@ -203,7 +203,7 @@ const RentModal = () => {
         bodyContent = (
             <div className="flex flex-col gap-8">
                 <Heading
-                    title="Describe your place to guests"
+                    title="Describe yourself to students"
                     subtitle="Write a description"
                     />
                     <Input 
@@ -214,7 +214,7 @@ const RentModal = () => {
                         errors={errors}
                         required
                     />
-                    <hr />
+                    {/* <hr /> */}
                     <Input 
                         id="description"
                         label="Description"
@@ -231,7 +231,7 @@ const RentModal = () => {
             <div className="flex flex-col gap-8">
                 <Heading 
                     title="Now, set your price"
-                    subtitle="How much do you want to charge per night?"
+                    subtitle="How much do you want to charge per coaching session?"
                 />
                 <Input
                     id="price"

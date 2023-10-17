@@ -87,6 +87,7 @@
     "react-icons": "^4.11.0",
     "react-leaflet": "^4.2.1",
     "react-quill": "^2.0.0",
+    "react-select": "^5.7.7",
     "react-spinners": "^0.13.8",
     "replicate": "^0.9.3",
     "socket.io": "^4.7.2",
@@ -108,9 +109,9 @@
     "zustand": "^4.4.1"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.3",
     "@types/uniqid": "^5.3.2",
     "@types/uuid": "^9.0.3",
-    "supabase": "^1.75.3",
-    "@types/leaflet": "^1.9.3"
+    "supabase": "^1.75.3"
   }
 }
