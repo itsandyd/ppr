@@ -11,9 +11,9 @@ import {
   SafeUser 
 } from "@/types";
 
-import HeartButton from "../HeartButton";
+// import HeartButton from "../HeartButton";
 import Button from "../Button";
-import ClientOnly from "../ClientOnly";
+// import ClientOnly from "../ClientOnly";
 import useCountries from "@/hooks/useCountries";
 
 interface ListingCardProps {
@@ -102,10 +102,10 @@ const ListingCard: React.FC<ListingCardProps> = ({
             top-3
             right-3
           ">
-            <HeartButton 
+            {/* <HeartButton 
               listingId={data.id} 
               currentUser={currentUser}
-            />
+            /> */}
           </div>
         </div>
         <div className="font-semibold text-lg">
