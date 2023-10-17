@@ -108,7 +108,7 @@ export const CompanionForm = ({
             });
 
             router.refresh();
-            router.push("/companion");
+            router.push("/ai/companion");
             
         } catch (error) {
             toast({

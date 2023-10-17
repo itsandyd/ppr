@@ -11,8 +11,6 @@ import { db } from "@/lib/db";
 
 dotenv.config({ path: `.env` });
 
-// export const runtime = 'edge';
-
 export async function POST(
   request: Request,
   { params }: { params: { chatId: string } }
@@ -89,7 +87,7 @@ export async function POST(
       model:
       "meta/llama-2-70b-chat:02e509c789964a7ea8736978a43525956ef40397be9033abf9fd2badfe68c9e3",
       input: {
-        max_new_tokens: 5000,
+        max_new_tokens: 3500,
       },
       apiKey: process.env.REPLICATE_API_TOKEN,
       callbackManager: CallbackManager.fromHandlers(handlers),

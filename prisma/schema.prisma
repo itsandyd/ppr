@@ -211,8 +211,8 @@ model User {
   favorites      Favorite[]
 
   accounts     Account[]
-  listings     Listing[]
-  reservations Reservation[]
+  listings     CoachingListing[]
+  reservations CoachingReservation[]
 }
 
 model Favorite {
@@ -244,7 +244,7 @@ model Account {
   @@index([userId])
 }
 
-model Listing {
+model CoachingListing {
   id            String   @id @default(uuid())
   title         String
   description   String
@@ -258,21 +258,21 @@ model Listing {
   userId        String
   price         Int
 
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reservations Reservation[]
+  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reservations CoachingReservation[]
 
   @@index([userId])
 }
 
-model Reservation {
+model CoachingReservation {
   id         String   @id @default(uuid())
   date       DateTime @default(now())
   guestCount Int
   userId     String
   listingId  String
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing CoachingListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([listingId])

@@ -64,6 +64,7 @@
     "eslint-config-next": "13.4.12",
     "howler": "^2.2.4",
     "langchain": "^0.0.92",
+    "leaflet": "^1.9.4",
     "livekit-client": "^1.13.2",
     "livekit-server-sdk": "^1.2.6",
     "lucide-react": "^0.274.0",
@@ -84,6 +85,7 @@
     "react-hook-form": "^7.46.1",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.11.0",
+    "react-leaflet": "^4.2.1",
     "react-quill": "^2.0.0",
     "react-spinners": "^0.13.8",
     "replicate": "^0.9.3",
@@ -101,12 +103,14 @@
     "uploadthing": "^5.5.3",
     "use-sound": "^4.0.1",
     "uuid": "^9.0.0",
+    "world-countries": "^5.0.0",
     "zod": "^3.22.2",
     "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@types/uniqid": "^5.3.2",
     "@types/uuid": "^9.0.3",
-    "supabase": "^1.75.3"
+    "supabase": "^1.75.3",
+    "@types/leaflet": "^1.9.3"
   }
 }
