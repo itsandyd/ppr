@@ -30,9 +30,9 @@ const UserMenu: React.FC<UserMenuProps> = ({
 
   const [isOpen, setIsOpen] = useState(false);
 
-  // const toggleOpen = useCallback(() => {
-  //   setIsOpen((value) => !value);
-  // }, []);
+  const toggleOpen = useCallback(() => {
+    setIsOpen((value) => !value);
+  }, []);
 
   const onRent = useCallback(() => {
     // if (!currentUser) {
@@ -63,7 +63,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
           Register as a coach
         </div>
         <div 
-        // onClick={toggleOpen}
+        onClick={toggleOpen}
         className="
           p-4
           md:py-1
@@ -102,35 +102,35 @@ const UserMenu: React.FC<UserMenuProps> = ({
           "
         >
           <div className="flex flex-col cursor-pointer">
-            {currentUser ? (
+            {/* {currentUser ? ( */}
               <>
                 <MenuItem 
                   label="My trips" 
-                  onClick={() => router.push('/trips')}
+                  onClick={() => router.push('/coaching/trips')}
                 />
                 <MenuItem 
                   label="My favorites" 
-                  onClick={() => router.push('/favorites')}
+                  onClick={() => router.push('/coaching/favorites')}
                 />
                 <MenuItem 
                   label="My reservations" 
-                  onClick={() => router.push('/reservations')}
+                  onClick={() => router.push('/coaching/reservations')}
                 />
                 <MenuItem 
                   label="My properties" 
-                  onClick={() => router.push('/properties')}
+                  onClick={() => router.push('/coaching/properties')}
                 />
-                {/* <MenuItem 
-                  label="Airbnb your home" 
+                <MenuItem 
+                  label="Register as a coach" 
                   onClick={rentModal.onOpen}
                 />
                 <hr />
-                <MenuItem 
+                { /* <MenuItem 
                   label="Logout" 
                   onClick={() => signOut()}
                 /> */}
               </>
-            ) : (
+            {/* ) : ( */}
               <>
                 {/* <MenuItem 
                   label="Login" 
@@ -141,7 +141,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
                   onClick={registerModal.onOpen}
                 /> */}
               </>
-            )}
+            {/* ) */}
+            {/* } */}
           </div>
         </div>
       )}
