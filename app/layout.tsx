@@ -8,6 +8,9 @@ import { ModalProvider } from "../providers/modal-provider";
 import { SocketProvider } from "../providers/socket-provider";
 import { QueryProvider } from "../providers/query-provider";
 import { ToasterProvider } from "@/providers/toast-provider";
+import Navbar from "@/components/coaching/navbar/Navbar";
+import { LandingNavbar } from "@/components/landing/landing-navbar";
+import { LandingMobileSidebar } from "@/components/landing/landing-mobile-navbar";
 
 const font = Open_Sans({ subsets: ["latin"] });
 
@@ -42,3 +45,4 @@ export default function RootLayout({
     </ClerkProvider>
   );
 }
+

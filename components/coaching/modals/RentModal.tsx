@@ -10,13 +10,18 @@ import { categories } from '../navbar/Categories';
 import CountrySelect from '../inputs/CountrySelect';
 import dynamic from 'next/dynamic';
 import Counter from '../inputs/Counter';
-// import ImageUpload from '../inputs/ImageUpload';
-// import Input from '../inputs/Input';
+
+import Input from '../inputs/Input';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import useRentModal from '@/hooks/useRentModal';
-import Input from '../inputs/Input';
+import ImageUpload from '@/components/ui/image-upload';
+import { FileUpload } from '../file-upload';
+import Image from 'next/image';
+import { ImageIcon, Pencil, PlusCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+// import Input from '../inputs/Input';
 
 enum STEPS {
     CATEGORY = 0,
@@ -60,6 +65,8 @@ const RentModal = () => {
     const roomCount = watch('roomCount');
     const bathroomCount = watch('bathroomCount');
     const imageSrc = watch('imageSrc');
+    const [isEditing, setIsEditing] = useState(false);
+    const toggleEdit = () => setIsEditing((current) => !current);
 
     const Map = useMemo(() => dynamic(() => import('../Map'), {
         ssr: false,
@@ -187,17 +194,66 @@ const RentModal = () => {
 
     if (step === STEPS.IMAGES) {
         bodyContent = (
-            <div className="flex flex-col gap-8">
-                <Heading
-                    title="Add some photos of your place"
-                    subtitle="Showcase your space"
-                />
-                {/* <ImageUpload 
-                    value={imageSrc}
-                    onChange={(value) => setCustomValue('imageSrc', value)}
-                /> */}
+            <div className="flex flex-col">
+            <Heading
+                title="Add your profile picture"
+                subtitle="This will be your main image"
+            />
+            <div className="font-medium flex items-center justify-between">
+              {/* Profile Picture */}
+              <Button onClick={toggleEdit} variant="ghost">
+                {isEditing && (
+                  <>Cancel</>
+                )}
+                {!isEditing && !imageSrc && (
+                  <>
+                    <PlusCircle className="h-4 w-4 mr-2" />
+                    Add an image
+                  </>
+                )}
+                {isEditing && (
+                  <>
+                    <Pencil className="h-4 w-4 mr-2" />
+                    Edit an image
+                  </>
+                )}
+              </Button>
             </div>
-        )};
+            {!isEditing && (
+              !imageSrc ? (
+              <div>
+                <ImageIcon className="h-10 w-10 text-slate-500 mr-2" />
+              </div>
+            ) : (
+              <div className="relative aspect-video mt-2">
+                <Image 
+                  alt="upload"
+                  fill
+                  className="object-cover rounded-md"
+                  src={imageSrc}
+                />
+              </div>
+            )
+          )}
+            {isEditing && (
+             <div>
+                <FileUpload 
+                  endpoint="coachingImages"
+                  onChange={(url) =>{
+                    if (url) {
+                      setCustomValue('imageSrc', url);
+                      toggleEdit();
+                    }
+                  }}
+                />
+                <div className="text-xs text-muted-foreground mt-4"> 
+                  16:9 aspect ratio recommended
+                </div>
+             </div>
+            )}
+          </div>
+        );
+      }
 
     if (step === STEPS.DESCRIPTION) {
         bodyContent = (
@@ -208,7 +264,7 @@ const RentModal = () => {
                     />
                     <Input 
                         id="title"
-                        label="Title"
+                        label="Name"
                         disabled={isLoading}
                         register={register}
                         errors={errors}

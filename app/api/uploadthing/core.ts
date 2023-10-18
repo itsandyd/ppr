@@ -32,7 +32,10 @@ export const ourFileRouter = {
         .onUploadComplete(() => {}),
     songMusicFile: f({ audio: { maxFileSize: "128MB", maxFileCount: 1 }})
         .middleware(() => handleAuth())
-        .onUploadComplete(() => {})
+        .onUploadComplete(() => {}),
+    coachingImages: f({ image: { maxFileSize: "4MB", maxFileCount: 1 }})
+        .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
 } satisfies FileRouter;
  
 export type OurFileRouter = typeof ourFileRouter;
