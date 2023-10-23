@@ -47,6 +47,13 @@ const tools = [
         bgColor: "text-blue-500/10",
         color: "text-blue-500",
     },
+    {
+        label: "Stem Seperation",
+        icon: Music,
+        href: "/ai/stemseparation",
+        bgColor: "text-blue-500/10",
+        color: "text-blue-500",
+    },
     // {
     //     label: "Code Generation",
     //     icon: Code,

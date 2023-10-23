@@ -8,6 +8,7 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../community/mode-toggle";
+import { LandingMobileSidebar } from "./landing-mobile-navbar";
 
 const font = Montserrat({ weight: '600', subsets: ['latin'] });
 
@@ -15,7 +16,9 @@ export const LandingNavbar = () => {
   const { isSignedIn } = useAuth();
 
   return (
+    <>
     <nav className="p-4 bg-transparent flex items-center justify-between">
+    <LandingMobileSidebar />
       <Link href="/" className="flex items-center">
         {/* <div className="relative h-8 w-8 mr-4">
           <Image fill alt="Logo" src="/ppr.svg" />
@@ -72,5 +75,6 @@ export const LandingNavbar = () => {
         <UserButton />
       </div>
     </nav>
+    </>
   )
 }

@@ -50,6 +50,12 @@ const routes = [
         href: "/ai/music",
         color: "text-blue-500",
     },
+    {
+        label: "Stem Seperation",
+        icon: Music,
+        href: "/ai/stemseparation",
+        color: "text-blue-500",
+    },
     // {
     //     label: "Code Generation",
     //     icon: Code,
