@@ -13,7 +13,7 @@ import {
   GiSoundWaves,
   GiWindmill
 } from 'react-icons/gi';
-import { FaBook, FaBriefcase, FaGuitar, FaHeadphones, FaLaptop, FaMicrophone, FaMusic, FaPencilAlt, FaRecordVinyl, FaSkiing } from 'react-icons/fa';
+import { FaBook, FaBrain, FaBriefcase, FaGuitar, FaHeadphones, FaLaptop, FaMicrophone, FaMusic, FaPencilAlt, FaRecordVinyl, FaSkiing } from 'react-icons/fa';
 import { BsSnow } from 'react-icons/bs';
 import { IoDiamond } from 'react-icons/io5';
 import { MdOutlineVilla } from 'react-icons/md';
@@ -73,18 +73,23 @@ export const categories = [
     label: 'Music Business',
     icon: FaBriefcase,
     description: 'This mentor specializes in the music business!'
+  },
+  {
+    label: 'Creativity',
+    icon: FaBrain,
+    description: 'This mentor specializes in creativity!'
   }
 ]
 
 const Categories = () => {
   const params = useSearchParams();
-  const category = params?.get('category');
+  const category = params?.get('/coaching/category');
   const pathname = usePathname();
-  const isMainPage = pathname === '/';
+  const isMainPage = pathname === '/coaching/';
 
-  if (!isMainPage) {
-    return null;
-  }
+  // if (!isMainPage) {
+  //   return null;
+  // }
 
   return (
     <Container>

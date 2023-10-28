@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 
-
 export interface IListingsParams {
   userId?: string;
   guestCount?: number;
@@ -37,23 +36,23 @@ export default async function getListings(
       query.category = category;
     }
 
-    if (roomCount) {
-      query.roomCount = {
-        gte: +roomCount
-      }
-    }
+    // if (roomCount) {
+    //   query.roomCount = {
+    //     gte: +roomCount
+    //   }
+    // }
 
-    if (guestCount) {
-      query.guestCount = {
-        gte: +guestCount
-      }
-    }
+    // if (guestCount) {
+    //   query.guestCount = {
+    //     gte: +guestCount
+    //   }
+    // }
 
-    if (bathroomCount) {
-      query.bathroomCount = {
-        gte: +bathroomCount
-      }
-    }
+    // if (bathroomCount) {
+    //   query.bathroomCount = {
+    //     gte: +bathroomCount
+    //   }
+    // }
 
     if (locationValue) {
       query.locationValue = locationValue;

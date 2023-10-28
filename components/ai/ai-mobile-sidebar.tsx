@@ -2,7 +2,6 @@ import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import AiSidebar from "./ai-sidebar";
 
-
 export const AIMobileSidebar = () => {
     return ( 
         <Sheet>

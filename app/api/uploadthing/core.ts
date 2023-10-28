@@ -36,6 +36,9 @@ export const ourFileRouter = {
     coachingImages: f({ image: { maxFileSize: "4MB", maxFileCount: 1 }})
         .middleware(() => handleAuth())
         .onUploadComplete(() => {}),
+    aiMusicFile: f({ audio: { maxFileSize: "128MB", maxFileCount: 1 }})
+        .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
 } satisfies FileRouter;
  
 export type OurFileRouter = typeof ourFileRouter;

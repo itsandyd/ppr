@@ -20,10 +20,12 @@ import { formSchema } from "./constants";
 import { AiHeading } from "@/components/ai/ai-heading";
 import { AiLoader } from "@/components/ai/ai-loader";
 import AiEmpty from "@/components/ai/ai-empty";
+import { FileUpload } from "@/components/ai/file-upload";
 
 const MusicPage = () => {
   const router = useRouter();
   const [music, setMusic] = useState<string>();
+  const [audioFileUrl, setAudioFileUrl] = useState<string>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,21 +48,20 @@ const MusicPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      console.log(values); // Log form values
       setMusic(undefined);
-      const requestBody = {
-        audioFile: values.audioFile,
-        stem: values.stem,
-        model_name: values.model_name,
-        overlap: values.overlap,
-        shifts: values.shifts,
-        output_format: values.output_format,
-        mp3_bitrate: values.mp3_bitrate,
-        float32: values.float32,
-      };
-      const response = await axios.post("/api/ai/stemseparation", requestBody);
+      const formData = new FormData();
+      Object.keys(values).forEach((key: string) => {
+        formData.append(key, (values as { [key: string]: any })[key]);
+      });
+      if (audioFileUrl) {
+        formData.append('audioFile', audioFileUrl);
+      }
+      const response = await axios.post("/api/ai/stemseparation", formData);
       setMusic(response.data);
     } catch (error: any) {
-      // handle error
+      console.error(error); // Log error
+      toast.error('An error occurred during submission'); // Show error notification
     } finally {
       router.refresh();
     }
@@ -72,8 +73,8 @@ const MusicPage = () => {
         title="Stem Separation"
         description="Separate stems from each other using AI"
         Icon={Music}
-        iconColor="text-emerald-500"
-        bgColor="bg-emerald-500/10"
+        iconColor="text-blue-500"
+        bgColor="bg-blue-500/10"
       />
       <div className="px-4 lg:px-8">
         <Form {...form}>
@@ -99,11 +100,14 @@ const MusicPage = () => {
                 <FormItem className="col-span-12 lg:col-span-12">
                   <div className="text-l font-bold">Upload Audio File</div>
                   <FormControl className="m-0 p-0">
-                    <Input
-                      type="file"
-                      accept="audio/*"
-                      {...field}
-                    />
+                  <FileUpload 
+  endpoint="aiMusicFile"
+  onChange={(url) => {
+    if (url) {
+      setAudioFileUrl(url);
+    }
+  }}
+/>
                   </FormControl>
                   <FormDescription className="w-full whitespace-nowrap">
                     Select an audio file to upload.

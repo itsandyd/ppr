@@ -15,6 +15,7 @@ import { auth, useUser } from '@clerk/nextjs';
 import Navbar from '@/components/coaching/navbar/Navbar';
 import SearchModal from '@/components/coaching/modals/SearchModal';
 import RentModal from '@/components/coaching/modals/RentModal';
+import ClientOnly from '@/components/coaching/ClientOnly';
 
 export const metadata = {
   title: 'PausePlayRepeat Coaching',
@@ -35,13 +36,13 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        {/* <ClientOnly> */}
+        <ClientOnly>
           {/* <LoginModal /> */}
           {/* <RegisterModal /> */}
           <SearchModal />
           <RentModal />
           <Navbar />
-        {/* </ClientOnly> */}
+        </ClientOnly>
         <div className="pb-20 pt-28">
           {children}
         </div>

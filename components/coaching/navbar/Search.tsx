@@ -16,6 +16,7 @@ const Search = () => {
   const  startDate = params?.get('startDate');
   const  endDate = params?.get('endDate');
   const  guestCount = params?.get('guestCount');
+  const category = params?.get('category');
 
   const locationLabel = useMemo(() => {
     if (locationValue) {
@@ -49,6 +50,14 @@ const Search = () => {
     return 'Add Guests';
   }, [guestCount]);
 
+  const categoryLabel = useMemo(() => {
+    if (category) {
+      return category;
+    }
+
+    return 'All Categories';
+  }, [category]);
+
   return ( 
     <div
       onClick={searchModal.onOpen}
@@ -79,7 +88,7 @@ const Search = () => {
             px-6
           "
         >
-          {locationLabel}
+          {categoryLabel}
         </div>
         <div 
           className="
@@ -107,7 +116,7 @@ const Search = () => {
             gap-3
           "
         >
-          <div className="hidden sm:block">{guestLabel}</div>
+          <div className="hidden sm:block">{locationLabel}</div>
           <div 
             className="
               p-2 

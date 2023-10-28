@@ -2,7 +2,7 @@
 
 import Container from "@/components/coaching/Container";
 import ListingCard from "@/components/coaching/listings/ListingCard";
-// import ClientOnly from "@/components/coaching/ClientOnly";
+import ClientOnly from "@/components/coaching/ClientOnly";
 import EmptyState from "@/components/coaching/EmptyState";
 import getListings, { IListingsParams } from "@/actions/getListings";
 
@@ -16,14 +16,14 @@ const Home = async ({ searchParams }: HomeProps) => {
 
   if (listings.length === 0) {
     return (
-      // <ClientOnly>
+      <ClientOnly>
         <EmptyState showReset />
-      // </ClientOnly>
+      </ClientOnly>
     );
   }
 
   return (
-    // <ClientOnly>
+    <ClientOnly>
       <Container>
         <div 
           className="
@@ -47,7 +47,7 @@ const Home = async ({ searchParams }: HomeProps) => {
           ))}
         </div>
       </Container>
-    // </ClientOnly>
+    </ClientOnly>
   )
 }
 
