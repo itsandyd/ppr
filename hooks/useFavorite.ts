@@ -8,19 +8,19 @@ import { SafeUser } from "@/types";
 
 interface IUseFavorite {
   listingId: string;
-  currentUser?: SafeUser | null
+  userId?: string;
 }
 
-const useFavorite = ({ listingId, currentUser }: IUseFavorite) => {
+const useFavorite = ({ listingId, userId }: IUseFavorite) => {
   const router = useRouter();
 
   // const loginModal = useLoginModal();
 
   const hasFavorited = useMemo(() => {
-    const list = currentUser?.favoriteIds || [];
+    const list = userId?.favoriteIds || [];
 
     return list.includes(listingId);
-  }, [currentUser, listingId]);
+  }, [userId, listingId]);
 
   const toggleFavorite = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();

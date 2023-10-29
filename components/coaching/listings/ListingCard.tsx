@@ -11,10 +11,11 @@ import {
   SafeUser 
 } from "@/types";
 
-// import HeartButton from "../HeartButton";
+
 import Button from "../Button";
-// import ClientOnly from "../ClientOnly";
+import ClientOnly from "../ClientOnly";
 import useCountries from "@/hooks/useCountries";
+import HeartButton from "../HeartButton";
 
 interface ListingCardProps {
   data: SafeListing;
@@ -23,7 +24,7 @@ interface ListingCardProps {
   disabled?: boolean;
   actionLabel?: string;
   actionId?: string;
-  currentUser?: SafeUser | null
+  userId?: string;
 };
 
 const ListingCard: React.FC<ListingCardProps> = ({
@@ -33,7 +34,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
   disabled,
   actionLabel,
   actionId = '',
-  currentUser,
+  userId,
 }) => {
   const router = useRouter();
   const { getByValue } = useCountries();
@@ -102,14 +103,15 @@ const ListingCard: React.FC<ListingCardProps> = ({
             top-3
             right-3
           ">
-            {/* <HeartButton 
+            <HeartButton
               listingId={data.id} 
-              currentUser={currentUser}
-            /> */}
+              userId={userId}
+            />
           </div>
         </div>
         <div className="font-semibold text-lg">
-          {location?.region}, {location?.label}
+         {location?.label}
+         {/* {location?.region}, */}
         </div>
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
@@ -119,7 +121,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
             $ {price}
           </div>
           {!reservation && (
-            <div className="font-light">night</div>
+            <div className="font-light">/ hour</div>
           )}
         </div>
         {onAction && actionLabel && (

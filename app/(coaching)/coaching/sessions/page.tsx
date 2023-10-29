@@ -1,31 +1,28 @@
 import ClientOnly from "@/components/coaching/ClientOnly";
 import EmptyState from "@/components/coaching/EmptyState";
 import TripsClient from "./components/SessionsClient";
-
-
-
-
-
-
+import { auth } from "@clerk/nextjs";
+import getReservations from "@/actions/getReservations";
 
 
 const TripsPage = async () => {
-//   const currentUser = await getCurrentUser();
 
-//   if (!currentUser) {
-//     return (
-//       <ClientOnly>
-//         <EmptyState
-//           title="Unauthorized"
-//           subtitle="Please login"
-//         />
-//       </ClientOnly>
-//     );
-//   }
+  const { userId } = auth();
 
-//   const reservations = await getReservations({ userId: currentUser.id });
+  if (!userId) {
+    return (
+      <ClientOnly>
+        <EmptyState
+          title="Unauthorized"
+          subtitle="Please login"
+        />
+      </ClientOnly>
+    );
+  }
 
-//   if (reservations.length === 0) {
+  const reservations = await getReservations({ userId: userId });
+
+  if (reservations.length === 0) {
     return (
       <ClientOnly>
         <EmptyState
@@ -36,14 +33,14 @@ const TripsPage = async () => {
     );
   }
 
-//   return (
-//     <ClientOnly>
-//       <TripsClient
-//         reservations={reservations}
-//         currentUser={currentUser}
-//       />
-//     </ClientOnly>
-//   );
-// }
+  return (
+    <ClientOnly>
+      <TripsClient
+        reservations={reservations}
+        userId={userId}
+      />
+    </ClientOnly>
+  );
+}
  
 export default TripsPage;
