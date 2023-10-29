@@ -9,12 +9,9 @@ import Container from "@/components/coaching/Container";
 import Heading from "@/components/coaching/Heading";
 import ListingCard from "@/components/coaching/listings/ListingCard";
 
-// import { SafeListing, SafeUser } from "@/app/types";
-
-
 interface PropertiesClientProps {
   listings: SafeListing[],
-  userId?: SafeUser | null,
+  userId?: string,
 }
 
 const PropertiesClient: React.FC<PropertiesClientProps> = ({
