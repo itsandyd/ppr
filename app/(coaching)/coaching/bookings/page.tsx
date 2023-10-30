@@ -6,7 +6,7 @@ import { auth } from "@clerk/nextjs";
 
 const PropertiesPage = async () => {
 
-    const { userId } = auth();
+  const { userId } = auth();
 
   if (!userId) {
     return <EmptyState

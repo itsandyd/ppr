@@ -1,33 +1,35 @@
+import { SafeUser } from "@/types";
 import axios from "axios";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { toast } from "react-hot-toast";
 
-// import useLoginModal from "./useLoginModal";
-import { SafeUser } from "@/types";
+
+
+
 
 interface IUseFavorite {
   listingId: string;
-  userId?: string;
+  currentUser?: SafeUser | null
 }
 
-const useFavorite = ({ listingId, userId }: IUseFavorite) => {
+const useFavorite = ({ listingId, currentUser }: IUseFavorite) => {
   const router = useRouter();
 
   // const loginModal = useLoginModal();
 
   const hasFavorited = useMemo(() => {
-    const list = userId?.favoriteIds || [];
+    const list = currentUser?.favoriteIds || [];
 
     return list.includes(listingId);
-  }, [userId, listingId]);
+  }, [currentUser, listingId]);
 
   const toggleFavorite = useCallback(async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
-    if (!currentUser) {
-      return redirect('/sign-in');
-    }
+    // if (!currentUser) {
+    //   return loginModal.onOpen();
+    // }
 
     try {
       let request;
@@ -46,7 +48,7 @@ const useFavorite = ({ listingId, userId }: IUseFavorite) => {
     }
   }, 
   [
-    currentUser, 
+    // currentUser, 
     hasFavorited, 
     listingId, 
     // loginModal,

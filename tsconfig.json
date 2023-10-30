@@ -35,7 +35,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/(community)/(main)/(routes)/servers/[se" ],
+    "app/(community)/(main)/(routes)/servers/[se", "actions/getCurrentUser.tss" ],
   "exclude": [
     "node_modules"
   ]

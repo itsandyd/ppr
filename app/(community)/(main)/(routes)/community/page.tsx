@@ -9,7 +9,7 @@ const LandingPage = async () => {
 
   return ( 
     <div className="h-full ">
-      {/* <LandingNavbar /> */}
+      <LandingNavbar />
       <LandingHero />
       <CommunityLandingContent />
     </div>

@@ -12,11 +12,11 @@ export default async function getFavoriteListings() {
     // }
 
     const favorites = await db.coachingListing.findMany({
-      where: {
-        id: {
-        //   in: [...(currentUser.favoriteIds || [])]
-        }
-      }
+      // where: {
+      //   id: {
+      //   //   in: [...(currentUser.favoriteIds || [])]
+      //   }
+      // }
     });
 
     const safeFavorites = favorites.map((favorite) => ({
