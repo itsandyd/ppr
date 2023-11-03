@@ -10,7 +10,7 @@ const Logo = () => {
   const router = useRouter();
 
   return ( 
-    <Link href="/coaching">
+    <Link href="/">
      <h1 className={cn("text-2xl font-bold p-2")}>
           Coaching
         </h1>

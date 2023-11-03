@@ -6,12 +6,15 @@ import { toast } from "react-hot-toast";
 import { Range } from "react-date-range";
 import { useRouter } from "next/navigation";
 import { differenceInDays, eachDayOfInterval } from 'date-fns';
-
-// import useLoginModal from "@/app/hooks/useLoginModal";
-// import { SafeListing, SafeReservation, SafeUser } from "@/app/types";
-
 import { SafeListing, SafeReservation, SafeUser } from "@/types";
+import useLoginModal from "@/hooks/useLoginModal";
 import Container from "@/components/coaching/Container";
+import ListingHead from "@/components/coaching/listings/ListingHead";
+import ListingInfo from "@/components/coaching/listings/ListingInfo";
+import ListingReservation from "@/components/coaching/listings/ListingReservation";
+import { categories } from "@/components/coaching/navbar/Categories"
+
+
 
 const initialDateRange = {
   startDate: new Date(),
@@ -24,15 +27,17 @@ interface ListingClientProps {
   listing: SafeListing & {
     user: SafeUser;
   };
-  currentUser?: SafeUser | null;
+  currentUser?: SafeUser;
+  // categories: { label: string; value: string }[]; // Add this line if categories is a prop
 }
 
 const ListingClient: React.FC<ListingClientProps> = ({
   listing,
   reservations = [],
-  currentUser
+  currentUser,
+  // categories,
 }) => {
-//   const loginModal = useLoginModal();
+  const loginModal = useLoginModal();
   const router = useRouter();
 
   const disabledDates = useMemo(() => {
@@ -51,19 +56,19 @@ const ListingClient: React.FC<ListingClientProps> = ({
   }, [reservations]);
 
   const category = useMemo(() => {
-     return categories.find((items) => 
-      items.label === listing.category);
-  }, [listing.category]);
+    return categories.find((items) => 
+     items.label === listing.category);
+ }, [listing.category]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(listing.price);
   const [dateRange, setDateRange] = useState<Range>(initialDateRange);
 
   const onCreateReservation = useCallback(() => {
-    //   if (!currentUser) {
-    //     return loginModal.onOpen();
-    //   }
-    //   setIsLoading(true);
+      if (!currentUser) {
+        return loginModal.onOpen();
+      }
+      setIsLoading(true);
 
       axios.post('/api/reservations', {
         totalPrice,
@@ -116,12 +121,12 @@ const ListingClient: React.FC<ListingClientProps> = ({
         "
       >
         <div className="flex flex-col gap-6">
-          <ListingH
+          <ListingHead
             title={listing.title}
             imageSrc={listing.imageSrc}
             locationValue={listing.locationValue}
             id={listing.id}
-            currentUser={currentUser}
+            // currentUser={currentUser}
           />
           <div 
             className="

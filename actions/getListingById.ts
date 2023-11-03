@@ -17,8 +17,12 @@ export default async function getListingById(
         id: listingId,
       },
       include: {
-        user: true
-      }
+        user: {
+          include: {
+            favorites: true, // Include favoriteIds if it's a relation in your Prisma schema
+          },
+        },
+      },
     });
 
     if (!listing) {

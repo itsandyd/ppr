@@ -11,6 +11,7 @@ const nextConfig = {
       "oaidalleapiprodscus.blob.core.windows.net",
       "googleusercontent.com",
       "mqxcvzhanbisvevjcnwu.supabase.co",
+      "example.com",
     ],
   },
 };
