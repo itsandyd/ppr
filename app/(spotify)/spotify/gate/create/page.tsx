@@ -139,7 +139,7 @@ export default function CampaignForm() {
             <FormItem>
               <FormLabel>Upload</FormLabel>
               <FormControl>
-                <UploadDropzone {...form}/>
+                {/* <UploadDropzone {...form}/> */}
               </FormControl>
               <FormDescription>Upload the audio file you would like to share with fans (mp3, wav, aiff, zip)</FormDescription>
             </FormItem>
