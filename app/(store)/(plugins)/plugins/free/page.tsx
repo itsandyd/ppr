@@ -71,11 +71,19 @@ const plugins = [
     },
     {
       id: 1,
-      name: "Youlean Loudness Meter",
+      name: "Loudness Meter",
       author: "Youlean",
       description: "Youlean Loudness Meter helps you find the true perceived loudness of your audio and prepares it for TV or streaming services release.",
       image: "/youleanloudnessmeter.png",
       href: "https://youlean.co/youlean-loudness-meter/"
+    },
+    {
+      id: 1,
+      name: "Vinyl",
+      author: "iZotope",
+      description: "iZotope's Vinyl plug-in is the ultimate LoFi effect for vintage audio vibes.",
+      image: "/vinyl.png",
+      href: "https://www.izotope.com/en/products/vinyl.html"
     },
 ]
 
