@@ -97,13 +97,22 @@ export default function Component() {
         </Link>
       </nav>
      <div className="flex-grow">
-  <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 mb-8">
+  {/* <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 mb-8">
     <h2 className="text-2xl font-bold mb-2">Try XFer Serum</h2>
     <p className="text-gray-600 dark:text-gray-400 mb-4">
       Experience the best audio plugins for your music production.
     </p>
     <Link href="/plugins">
         <Button variant="default">Try Now</Button>
+    </Link>
+  </div> */}
+   <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 mb-8">
+    <h2 className="text-2xl font-bold mb-2">Free Plugins</h2>
+    <p className="text-gray-600 dark:text-gray-400 mb-4">
+      Browse our directory of the best free audio plugins for your music production, or add your own.
+    </p>
+    <Link href="/plugins/add">
+        <Button variant="default">Add Your Own</Button>
     </Link>
   </div>
   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
