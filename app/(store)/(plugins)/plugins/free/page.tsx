@@ -47,27 +47,35 @@ const plugins = [
     },
     {
       id: 1,
-      name: "UREQ",
-      author: "Analog Obsession",
-      description: "U-Style Stripped Down Classic Equalizer!",
-      image: "/UREQ.png",
-      href: "https://www.patreon.com/posts/88488633"
+      name: "Echorus",
+      author: "Tritik",
+      description: "Echorus is built around 4 original chorus algorithms, an Echo section, and a couple of analog-modeled high-pass and low-pass filters. The 4 chorus modes (retro, multi, detune, random) provide a wide range of chorusing effects. They make Echorus versatile and suitable for any type of sound sources, and whether you want a subtle, thick, dark, cheesy, or more experimental chorus sound, Echorus has got you covered. Echorus also has an echo section including delay time and feedback gain controls. This allows you to re-inject the output signal within the chorus, expanding further more the possibilities. You can use this feedback loop with some short delay times to strengthen the chorus effect, get some flanging tones or create pitched resonances. Longer delay lines bring more classical delay effects, but with the particularity that your sound will pass through the chorus processor at each echo. Set up a sensible echo delay time and increase the feedback gain… and you will end up with big washy ambiences. Adjust it to more moderate settings, and you have the perfect tool for enhancing and enriching pads, keys and guitars.",
+      image: "/echorus.png",
+      href: "https://www.tritik.com/product/echorus/"
     },
     {
       id: 1,
-      name: "UREQ",
-      author: "Analog Obsession",
-      description: "U-Style Stripped Down Classic Equalizer!",
-      image: "/UREQ.png",
-      href: "https://www.patreon.com/posts/88488633"
+      name: "Vital",
+      author: "Matt Tytel",
+      description: "Vital is a free spectral warping wavetable synth created by Matt Tytel that has quickly established itself as a serious rival to Serum. Featuring both free and pro versions, this VST provides producers and sound designers all the tools needed to make powerful, modern sounds right inside of the synth.",
+      image: "/vital.png",
+      href: "https://vital.audio/"
     },
     {
       id: 1,
-      name: "UREQ",
-      author: "Analog Obsession",
-      description: "U-Style Stripped Down Classic Equalizer!",
-      image: "/UREQ.png",
-      href: "https://www.patreon.com/posts/88488633"
+      name: "SnareBuzz",
+      author: "Wavesfactory",
+      description: "SnareBuzz is a a free audio plugin that simulates the sympathetic resonances produced by the wires of a snare drum when another sound source is playing near. Use it as a psycho-acoustic effect to bring realism and life to your tracks.",
+      image: "/snarebuzz.png",
+      href: "https://www.wavesfactory.com/free-audio-plugins/snarebuzz/"
+    },
+    {
+      id: 1,
+      name: "Youlean Loudness Meter",
+      author: "Youlean",
+      description: "Youlean Loudness Meter helps you find the true perceived loudness of your audio and prepares it for TV or streaming services release.",
+      image: "/youleanloudnessmeter.png",
+      href: "https://youlean.co/youlean-loudness-meter/"
     },
 ]
 
