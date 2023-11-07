@@ -213,6 +213,7 @@ model User {
   accounts     Account[]
   listings     CoachingListing[]
   reservations CoachingReservation[]
+  Plugin       Plugin[]
 }
 
 model Favorite {
@@ -454,4 +455,18 @@ model CompanionMessage {
   companion Companion @relation(fields: [companionId], references: [id], onDelete: Cascade)
 
   @@index([companionId])
+}
+
+model Plugin {
+  id          String   @id @default(uuid())
+  name        String
+  author      String
+  description String   @db.Text
+  image       String   @db.Text
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
