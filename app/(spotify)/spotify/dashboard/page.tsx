@@ -6,11 +6,14 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MdSnooze } from 'react-icons/md';
 import Link from 'next/link';
+import { MusicNavbar } from '@/components/music/MusicNavbar';
 
 const Dashboard = () => {
   const [tabIndex, setTabIndex] = useState(0);
 
   return (
+    <>
+    <MusicNavbar />
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-4">Music Dashboard</h1>
 
@@ -103,6 +106,7 @@ const Dashboard = () => {
   </TabsContent>
 </Tabs>
     </div>
+    </>
   );
 };
 

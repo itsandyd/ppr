@@ -1,3 +1,4 @@
+import { MusicNavbar } from "@/components/music/MusicNavbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Youtube } from "lucide-react";
@@ -43,6 +44,8 @@ const CampaignGoal = () => {
   ];
 
   return (
+    <>
+    <MusicNavbar />
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-4">Select your campaign goal</h1>
 
@@ -74,6 +77,7 @@ const CampaignGoal = () => {
         </Button>
       </div>
     </div>
+    </>
   );
 };
 

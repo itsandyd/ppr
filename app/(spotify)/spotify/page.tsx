@@ -32,6 +32,7 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
+import { MusicNavbar } from "@/components/music/MusicNavbar";
 
 const formSchema = z.object({
   searchInput: z.string(),
@@ -115,7 +116,7 @@ const Spotify = () => {
 
   return (
     <div>
-        <LandingNavbar />
+        <MusicNavbar />
       <div className="max-w-[2520px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 mb-12" >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
