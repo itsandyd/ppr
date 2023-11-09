@@ -36,6 +36,11 @@ export const MusicNavbar = () => {
                 Dashboard
             </Button>
         </Link>
+        <Link href="https://music.pauseplayrepeat.com/">
+            <Button variant="ghost" className="rounded-full">
+                Music Directory
+            </Button>
+        </Link>
       </div>
       <div className="flex items-center gap-x-2">
         <ModeToggle />
