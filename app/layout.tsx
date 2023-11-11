@@ -26,12 +26,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
 
-  useEffect(() => {
-    if(navigator.userAgent.includes("Instagram")){
-      window.location.href = "https://app.pauseplayrepeat.com";
-    }
-  }, []);
-
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
