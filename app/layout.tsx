@@ -11,6 +11,7 @@ import { ToasterProvider } from "@/providers/toast-provider";
 import Navbar from "@/components/coaching/navbar/Navbar";
 import { LandingNavbar } from "@/components/landing/landing-navbar";
 import { LandingMobileSidebar } from "@/components/landing/landing-mobile-navbar";
+import { useEffect } from "react";
 
 const font = Open_Sans({ subsets: ["latin"] });
 
@@ -24,6 +25,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+  useEffect(() => {
+    if(navigator.userAgent.includes("Instagram")){
+      window.location.href = "https://app.pauseplayrepeat.com";
+    }
+  }, []);
+
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
