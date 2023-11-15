@@ -21,7 +21,7 @@ const Home = async ({ searchParams }: HomeProps) => {
     <section key="1" className="w-full py-12">
     <div className="container px-4 md:px-6">
       <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-        <img
+        <Image
           alt="Hero"
           className="mx-auto aspect-video overflow-hidden rounded-xl object-bottom sm:w-full lg:order-last lg:aspect-square"
           height="550"
@@ -79,7 +79,7 @@ const Home = async ({ searchParams }: HomeProps) => {
               View Testimonials
             </Link>
             <Link
-              className="inline-flex h-10 items-center justify-center rounded-md border border-zinc-200 border-zinc-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 dark:border-zinc-800 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus-visible:ring-zinc-300"
+              className="inline-flex h-10 items-center justify-center rounded-md border border-zinc-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 dark:border-zinc-800 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus-visible:ring-zinc-300"
               href="#"
             >
               Join Now
@@ -101,7 +101,7 @@ const Home = async ({ searchParams }: HomeProps) => {
         Deepen Your Skills Through Teaching
       </h2>
       <p className="max-w-[600px] text-zinc-500 md:text-xl dark:text-zinc-400">
-        Teaching is not just about imparting knowledge to others. It's also a powerful way to deepen your own understanding and skills. Experience the joy of learning while you teach.
+        Teaching is not just about imparting knowledge to others. It&apos;s also a powerful way to deepen your own understanding and skills. Experience the joy of learning while you teach.
       </p>
     </div>
     <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -112,7 +112,7 @@ const Home = async ({ searchParams }: HomeProps) => {
         Start Teaching
       </Link>
       <Link
-        className="inline-flex h-10 items-center justify-center rounded-md border border-zinc-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 dark:border-zinc-800 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus-visible:ring-zinc-300"
+        className="inline-flex h-10 items-center justify-center rounded-md border border-zinc-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus-visible:ring-zinc-300"
         href="#"
       >
         Learn More
