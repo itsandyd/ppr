@@ -28,24 +28,24 @@ const ListingHead: React.FC<ListingHeadProps> = ({
 
   return ( 
     <>
-      <Heading
+      {/* <Heading
         title={title}
         subtitle={`${location?.region}, ${location?.label}`}
-      />
+      /> */}
       <div className="
           w-full
-          h-[60vh]
+          h-[50vh]
           overflow-hidden 
           rounded-xl
           relative
         "
       >
-        <Image
+        {/* <Image
           src={imageSrc}
           fill
           className="object-cover w-full"
           alt="Image"
-        />
+        /> */}
         <div
           className="
             absolute

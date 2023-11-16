@@ -23,16 +23,16 @@ const initialDateRange = {
 interface ListingClientProps {
   reservations?: SafeReservation[];
   listing: SafeListing & {
-    user: SafeUser;
+    // user: SafeUser;
   };
-  currentUser?: SafeUser;
+  // currentUser?: SafeUser;
   // categories: { label: string; value: string }[]; // Add this line if categories is a prop
 }
 
 const ListingClient: React.FC<ListingClientProps> = ({
   listing,
   reservations = [],
-  currentUser,
+  // currentUser,
   // categories,
 }) => {
   const loginModal = useLoginModal();
@@ -63,9 +63,9 @@ const ListingClient: React.FC<ListingClientProps> = ({
   const [dateRange, setDateRange] = useState<Range>(initialDateRange);
 
   const onCreateReservation = useCallback(() => {
-      if (!currentUser) {
-        return loginModal.onOpen();
-      }
+      // if (!currentUser) {
+      //   return loginModal.onOpen();
+      // }
       setIsLoading(true);
 
       axios.post('/api/reservations', {
@@ -91,7 +91,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
     dateRange, 
     listing?.id,
     router,
-    currentUser,
+    // currentUser,
     loginModal
   ]);
 
@@ -136,7 +136,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
             "
           >
             <ListingInfo
-  user={listing.user}
+  // user={listing.user}
   category={category}
   description={listing.description}
   roomCount={listing.roomCount}

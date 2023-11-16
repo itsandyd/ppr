@@ -16,6 +16,7 @@ import Button from "../Button";
 import ClientOnly from "../ClientOnly";
 import useCountries from "@/hooks/useCountries";
 import HeartButton from "../HeartButton";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ListingCardProps {
   data: SafeListing;
@@ -40,6 +41,14 @@ const ListingCard: React.FC<ListingCardProps> = ({
   const { getByValue } = useCountries();
 
   const location = getByValue(data.locationValue);
+
+  const handleClick = () => {
+    // Log the path to see if it's correct
+    const path = `/coaching/listings/${data.id}`;
+    console.log(path);
+
+    router.push(path);
+  };
 
   const handleCancel = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -72,47 +81,18 @@ const ListingCard: React.FC<ListingCardProps> = ({
   }, [reservation]);
 
   return (
-    <div 
-      onClick={() => router.push(`/coaching/listings/${data.id}`)} 
-      className="col-span-1 cursor-pointer group"
-    >
-      <div className="flex flex-col gap-2 w-full">
-        <div 
-          className="
-            aspect-square 
-            w-full 
-            relative 
-            overflow-hidden 
-            rounded-xl
-          "
-        >
-          <Image
-            fill
-            className="
-              object-cover 
-              h-full 
-              w-full 
-              group-hover:scale-110 
-              transition
-            "
-            src={data.imageSrc}
-            alt="Listing"
-          />
-          <div className="
-            absolute
-            top-3
-            right-3
-          ">
-            {/* <HeartButton
-              listingId={data.id} 
-              userId={userId}
-            /> */}
-          </div>
-        </div>
-        <div className="font-semibold text-lg">
-         {location?.label}
-         {/* {location?.region}, */}
-        </div>
+    <Card onClick={handleClick}>
+      <CardHeader>
+        <CardTitle>{location?.label}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Image
+          width="200"
+          height="200"
+          className="object-cover h-full w-full group-hover:scale-110 transition"
+          src={data.imageSrc}
+          alt="Listing"
+        />
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
         </div>
@@ -124,17 +104,19 @@ const ListingCard: React.FC<ListingCardProps> = ({
             <div className="font-light">/ hour</div>
           )}
         </div>
-        {onAction && actionLabel && (
+      </CardContent>
+      {onAction && actionLabel && (
+        <CardFooter>
           <Button
             disabled={disabled}
             small
             label={actionLabel} 
             onClick={handleCancel}
           />
-        )}
-      </div>
-    </div>
-   );
+        </CardFooter>
+      )}
+    </Card>
+  );
 }
  
 export default ListingCard;

@@ -14,7 +14,7 @@ const Map = dynamic(() => import('../Map'), {
 });
 
 interface ListingInfoProps {
-  user: SafeUser,
+  // user: SafeUser,
   description: string;
   guestCount: number;
   roomCount: number;
@@ -28,7 +28,7 @@ interface ListingInfoProps {
 }
 
 const ListingInfo: React.FC<ListingInfoProps> = ({
-  user,
+  // user,
   description,
   guestCount,
   roomCount,
@@ -53,8 +53,8 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
             gap-2
           "
         >
-          <div>Hosted by {user?.name}</div>
-          <Avatar src={user?.image} />
+          {/* <div>Hosted by {user?.name}</div>
+          <Avatar src={user?.image} /> */}
         </div>
         <div className="
             flex 
