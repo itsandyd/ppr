@@ -60,7 +60,7 @@ export const ChapterDescriptionForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const embeddings = await generateEmbeddings(values.description)
+      // const embeddings = await generateEmbeddings(values.description)
 
       await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
       toast.success("Chapter updated");
