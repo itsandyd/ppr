@@ -33,13 +33,13 @@ export default async function getListingById(
     return {
       ...listing,
       createdAt: listing.createdAt.toString(),
-      // userId: {
-      //   ...listing.user,
-      //   createdAt: listing.user.createdAt.toString(),
-      //   updatedAt: listing.userId.updatedAt.toString(),
-      //   emailVerified: 
-      //     listing.user.emailVerified?.toString() || null,
-      // }
+      userId: {
+        // ...listing.user,
+        // createdAt: listing.user.createdAt.toString(),
+        // updatedAt: listing.userId.updatedAt.toString(),
+        // emailVerified: 
+          // listing.user.emailVerified?.toString() || null,
+      }
     };
   } catch (error: any) {
     throw new Error(error);

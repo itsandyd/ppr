@@ -24,6 +24,8 @@ import { Course, CourseChapter } from "@prisma/client";
 import { Editor } from "@/components/courses/editor";
 import { Preview } from "@/components/courses/preview";
 
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+
 interface ChapterDescriptionFormProps {
   initialData: CourseChapter;
   courseId: string;
@@ -58,6 +60,8 @@ export const ChapterDescriptionForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      const embeddings = await generateEmbeddings(values.description)
+
       await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
       toast.success("Chapter updated");
       toggleEdit();

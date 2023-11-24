@@ -4,8 +4,6 @@ import { ElementRef, useEffect, useRef, useState } from "react";
 import { Companion } from "@prisma/client";
 import { ChatMessage, ChatMessageProps } from "./chat-message";
 
-
-
 interface ChatMessagesProps {
   messages: ChatMessageProps[];
   isLoading: boolean;

@@ -210,10 +210,12 @@ model User {
   updatedAt      DateTime   @updatedAt
   favorites      Favorite[]
 
-  accounts     Account[]
-  listings     CoachingListing[]
-  reservations CoachingReservation[]
-  Plugin       Plugin[]
+  accounts      Account[]
+  // listings     CoachingListing[]
+  reservations  CoachingReservation[]
+  Plugin        Plugin[]
+  StorageFolder StorageFolder[]
+  StorageFile   StorageFile[]
 }
 
 model Favorite {
@@ -259,7 +261,7 @@ model CoachingListing {
   userId        String
   price         Int
 
-  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   reservations CoachingReservation[]
 
   @@index([userId])
@@ -469,4 +471,33 @@ model Plugin {
   updatedAt   DateTime @updatedAt
 
   @@index([userId])
+}
+
+model StorageFolder {
+  id        String          @id @default(uuid())
+  name      String
+  parentId  String? // This represents the parent folder id
+  parent    StorageFolder?  @relation("FolderToSubfolder", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children  StorageFolder[] @relation("FolderToSubfolder")
+  files     StorageFile[]   @relation("FolderToFile")
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  userId    String
+  user      User            @relation(fields: [userId], references: [id])
+
+  @@index([parentId, userId])
+}
+
+model StorageFile {
+  id        String         @id @default(uuid())
+  name      String
+  path      String
+  folderId  String? // This represents the folder id the file belongs to
+  folder    StorageFolder? @relation("FolderToFile", fields: [folderId], references: [id])
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  userId    String
+  user      User           @relation(fields: [userId], references: [id])
+
+  @@index([folderId, userId])
 }
