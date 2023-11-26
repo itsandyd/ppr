@@ -110,7 +110,9 @@ export default function Component() {
                   <Button size="icon" variant="ghost">
                     <Plus className="w-6 h-6 text-black" />
                   </Button>
+                  <Button size="icon" variant="ghost">
                   <DropdownMenu>
+                    
     <DropdownMenuTrigger>
     <Menu className="w-6 h-6 text-black" />
     </DropdownMenuTrigger>
@@ -123,6 +125,7 @@ export default function Component() {
       <DropdownMenuItem>Copy link</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
+  </Button>
                 </TableCell>
               </TableRow>
             ))}
