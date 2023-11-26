@@ -6,6 +6,8 @@ import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 // import MessageButton from "@/components/community/profile/message-button";
 import { UserAvatar } from "@/components/community/user-avatar";
+import { BsSpotify } from "react-icons/bs";
+import { FaSoundcloud } from "react-icons/fa";
 
 interface ProfileIdPageProps {
   params: {
@@ -37,7 +39,7 @@ const ProfileIdPage = async ({
         overflow-y-auto
       "
     >
-        <div className="mt-20">
+        <div className="m-10">
           <div 
             className="
               flex 
@@ -45,9 +47,10 @@ const ProfileIdPage = async ({
               md:flex-row 
               items-center 
               gap-x-5
+              
             "
           >
-            <div className="relative h-32 w-32 lg:h-44 lg:w-44">
+            <div className="flex items-center space-x-4">
               {/* <div className="w-40 h-40"> */}
                 <UserAvatar
                   src={profile.imageUrl}
@@ -72,9 +75,17 @@ const ProfileIdPage = async ({
             </h1>
               {/* <MessageButton profileId={profile.id}/> */}
             </div>
+            
           </div>
+          <div className="mt-6 flex">
+        <Button variant="link">
+          <BsSpotify />
+        </Button>
+        <Button variant="link">
+          <FaSoundcloud />
+        </Button>
+      </div>
         </div>
-      {/* Add your profile content here */}
     </div>
   );
 }

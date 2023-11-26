@@ -58,7 +58,7 @@ export const NavigationSidebar = async () => {
                 ))}
             </ScrollArea>
             <div className="pb-3 mt-auto flex items-center flex-col gap-y-4">
-                <TooltipProvider>
+                {/* <TooltipProvider>
                     <Tooltip>
                         <TooltipContent>
                             Contribute to the project
@@ -67,7 +67,7 @@ export const NavigationSidebar = async () => {
                                 <GithubIcon className="text-zinc-500 h-6 w-6" />
                             </Link>
                     </Tooltip>
-                </TooltipProvider>
+                </TooltipProvider> */}
                 <ModeToggle />
                 <UserButton 
                     afterSignOutUrl="/"
