@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
 import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/ui/select"
 import { UserButton } from "@clerk/nextjs"
-import { Menu, Play, PlayCircle, Plus, Settings, Settings2 } from "lucide-react"
+import { Menu, MoreVertical, Play, PlayCircle, Plus, Settings, Settings2 } from "lucide-react"
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
@@ -121,7 +121,7 @@ export default function Component() {
                   <DropdownMenu>
                     
     <DropdownMenuTrigger>
-    <Menu className="w-6 h-6 text-black" />
+    <MoreVertical className="w-6 h-6 text-black" />
     </DropdownMenuTrigger>
     <DropdownMenuContent>
       <DropdownMenuLabel>Sound Options</DropdownMenuLabel>
