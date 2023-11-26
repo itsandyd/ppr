@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
 import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/ui/select"
 import { UserButton } from "@clerk/nextjs"
-import { Menu, Plus, Settings, Settings2 } from "lucide-react"
+import { Menu, Play, PlayCircle, Plus, Settings, Settings2 } from "lucide-react"
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
@@ -101,7 +101,14 @@ export default function Component() {
           <TableBody>
             {sounds.map((sound, index) => (
               <TableRow key={index}>
-                <TableCell>{sound.name}</TableCell>
+                <TableCell>
+  <div className="flex items-center space-x-2">
+    <Button size="icon" variant="ghost" className="mr-2">
+      <PlayCircle className="w-6 h-6 text-black" />
+    </Button>
+    {sound.name}
+  </div>
+</TableCell>
                 <TableCell>{sound.details}</TableCell>
                 <TableCell>
                   <Button size="icon" variant="ghost">
