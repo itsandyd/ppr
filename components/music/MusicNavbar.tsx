@@ -36,7 +36,7 @@ export const MusicNavbar = () => {
                 Dashboard
             </Button>
         </Link>
-        <Link href="https://music.pauseplayrepeat.com/">
+        <Link href="/spotify/discovery">
             <Button variant="ghost" className="rounded-full">
                 Music Directory
             </Button>
