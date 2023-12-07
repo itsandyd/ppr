@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../community/mode-toggle";
 import { LandingMobileSidebar } from "./landing-mobile-navbar";
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "../ui/navigation-menu";
 
 const font = Montserrat({ weight: '600', subsets: ['latin'] });
 

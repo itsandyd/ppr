@@ -18,11 +18,11 @@ const SetupPage = async () => {
     });
 
     if (server) {
-        return redirect(`/servers/${server.id}`)
+        return redirect(`/community/servers/${server.id}`)
     }
 
     if (!server) {
-        return redirect('/invite/ppr')
+        return redirect('/community/invite/ppr')
     }
     
     return ( 
