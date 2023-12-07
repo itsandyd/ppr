@@ -59,6 +59,11 @@ export const LandingNavbar = () => {
                 Community
             </Button>
         </Link>
+        <Link href="/dropbox">
+            <Button variant="ghost" className="rounded-full">
+                Storage
+            </Button>
+        </Link>
         <Link href="/spotify">
             <Button variant="ghost" className="rounded-full">
                 Music

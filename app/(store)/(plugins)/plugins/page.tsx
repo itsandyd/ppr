@@ -73,8 +73,8 @@ export default function Component() {
   return (
     <>
     <LandingNavbar />
-    <section className="container mx-auto px-4 md:px-6 py-8 grid grid-cols-[240px_1fr_300px] gap-10">
-      <nav className="flex flex-col gap-4 items-start py-2">
+      <section className="container mx-auto px-4 md:px-6 py-8 grid grid-cols-1 md:grid-cols-[240px_1fr_300px] gap-10">
+        <nav className="flex flex-col gap-4 items-start py-2">
         <Link href="/plugins">
         <h3 className="text-xl font-bold">Plugins</h3>
         </Link>

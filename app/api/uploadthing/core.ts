@@ -42,6 +42,9 @@ export const ourFileRouter = {
     musicFile: f({ audio: { maxFileSize: "128MB", maxFileCount: 1 }})
         .middleware(() => handleAuth())
         .onUploadComplete(() => {}),
+    storageUpload: f(["text", "image", "video", "audio", "pdf"])
+        .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
 } satisfies FileRouter;
  
 export type OurFileRouter = typeof ourFileRouter;
