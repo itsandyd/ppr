@@ -12,6 +12,7 @@ import Navbar from "@/components/coaching/navbar/Navbar";
 import { LandingNavbar } from "@/components/landing/landing-navbar";
 import { LandingMobileSidebar } from "@/components/landing/landing-mobile-navbar";
 import { useEffect } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const font = Open_Sans({ subsets: ["latin"] });
 
@@ -39,6 +40,7 @@ export default function RootLayout({
             <SocketProvider>
               <ToasterProvider />
               <ModalProvider />
+              <SpeedInsights />
               <QueryProvider>{children}</QueryProvider>
             </SocketProvider>
           </ThemeProvider>
