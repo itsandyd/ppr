@@ -48,6 +48,12 @@ const plugins = [
     description: "Diva captures the spirit of various analog synthesizers, bringing the diversity of their sound to a modern digital environment. The oscillators, filters, and envelopes closely model components found in some of the greatest monophonic and polyphonic synthesizers of yesteryear.",
     image: "/placeholder.svg",
   },
+    {
+    id: 8,
+    name: "Emvoice",
+    description: "Emvoice One is a vocal synthesizer plugin (VST/AU) that generates vocal lines from scratch. Simply type lyrics, enter notes for each syllable, and hyper-realistic vocals are generated within your DAW on the spot. Create glissando and vibrato patterns with note editing.",
+    image: "/placeholder.svg",
+  },
 ];
 
 

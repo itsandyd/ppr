@@ -30,8 +30,8 @@ export const ServerMember = ({
     const profile = member.profile;
 
     const onClick = () => {
-        router.push(`/community/servers/${params?.serverId}/conversations/${member.id}`)
-      }
+        router.push(`/community/profile/${profile.id}`);
+    }
 
     return ( 
         <button 

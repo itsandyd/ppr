@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../community/mode-toggle";
 import { LandingMobileSidebar } from "./landing-mobile-navbar";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "../ui/navigation-menu";
 
 const font = Montserrat({ weight: '600', subsets: ['latin'] });
 
@@ -50,7 +49,7 @@ export const LandingNavbar = () => {
                 Academy
             </Button>
         </Link>
-        <Link href="/coaching">
+        <Link href="/coaching/browse">
             <Button variant="ghost" className="rounded-full">
                 Coaching
             </Button>
@@ -60,16 +59,16 @@ export const LandingNavbar = () => {
                 Community
             </Button>
         </Link>
-        <Link href="/dropbox">
+        {/* <Link href="/dropbox">
             <Button variant="ghost" className="rounded-full">
                 Storage
             </Button>
-        </Link>
-        <Link href="/spotify">
+        </Link> */}
+        {/* <Link href="/spotify">
             <Button variant="ghost" className="rounded-full">
                 Music
             </Button>
-        </Link>
+        </Link> */}
         <Link href="/ai/dashboard">
             <Button variant="ghost" className="rounded-full">
                 AI
