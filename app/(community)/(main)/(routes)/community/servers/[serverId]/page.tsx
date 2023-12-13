@@ -23,11 +23,11 @@ const ServerIdPage = async ({
     const server = await db.server.findUnique({
         where: {
             id: params.serverId,
-            // members: {
-            //     some: {
-            //         profileId: profile.id,
-            //     }
-            // }
+            members: {
+                some: {
+                    profileId: profile.id,
+                }
+            }
         },
         include: {
             channels: {

@@ -15,13 +15,13 @@ export const CommunityLandingContent = async () => {
     }
 
     const servers = await db.server.findMany({
-        // where: {
-        //     members: {
-        //         some: {
-        //             profileId: profile.id
-        //         }
-        //     }
-        // },
+        where: {
+            members: {
+                some: {
+                    profileId: profile.id
+                }
+            }
+        },
     });
 
 
