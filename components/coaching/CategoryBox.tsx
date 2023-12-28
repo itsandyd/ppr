@@ -40,7 +40,7 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
         }
 
         const url = qs.stringifyUrl({
-            url: '/coaching/',
+            url: '/coaching/browse/',
             query: updatedQuery,
         }, { skipNull: true })
 

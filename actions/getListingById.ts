@@ -16,13 +16,13 @@ export default async function getListingById(
       where: {
         id: listingId,
       },
-      // include: {
-      //   user: {
-      //     include: {
-      //       favorites: true, // Include favoriteIds if it's a relation in your Prisma schema
-      //     },
-      //   },
-      // },
+      include: {
+        // user: {
+        //   include: {
+        //     favorites: true, // Include favoriteIds if it's a relation in your Prisma schema
+        //   },
+        // },
+      },
     });
 
     if (!listing) {

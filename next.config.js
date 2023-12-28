@@ -12,6 +12,8 @@ const nextConfig = {
       "googleusercontent.com",
       "mqxcvzhanbisvevjcnwu.supabase.co",
       "example.com",
+      "i.scdn.co",
+      "i.scdn.co",
     ],
   },
 };

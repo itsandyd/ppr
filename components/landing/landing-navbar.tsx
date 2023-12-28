@@ -54,7 +54,7 @@ export const LandingNavbar = () => {
                 Coaching
             </Button>
         </Link>
-        <Link href="/community">
+        <Link href="https://discord.gg/pauseplayrepeat">
             <Button variant="ghost" className="rounded-full">
                 Community
             </Button>

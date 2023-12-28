@@ -1,8 +1,9 @@
 "use client"
 
-import { BarChart, Compass, Layout, List } from "lucide-react"
+import { BarChart, Compass, Layout, List, Newspaper } from "lucide-react"
 import { SidebarItem } from "./sidebar-item"
 import { usePathname } from "next/navigation";
+import { TbBuildingCommunity } from "react-icons/tb";
 
 const guestRoutes = [
     {
@@ -14,6 +15,16 @@ const guestRoutes = [
         icon: Compass,
         label: "Browse",
         href: "/academy/search"
+    },
+    {
+        icon: TbBuildingCommunity,
+        label: "Community",
+        href: "/community"
+    },
+    {
+        icon: Newspaper,
+        label: "List Your Own Course",
+        href: "/academy/dashboard/teacher/list"
     }
 ];
 
@@ -27,7 +38,8 @@ const teacherRoutes = [
         icon: BarChart,
         label: "Analytics",
         href: "/academy/dashboard/teacher/analytics"
-    }
+    },
+
 ]
 
 export const SidebarRoutes = () => {

@@ -123,7 +123,7 @@ export default function Component() {
             <Link className="absolute inset-0 z-10" href="#">
               <span className="sr-only">View Plugin</span>
             </Link>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4">
   {plugins.map((plugin) => (
     <Card key={plugin.id}>
       <CardHeader>
@@ -145,7 +145,7 @@ export default function Component() {
 </div>
         </div>
       </main>
-      <aside className="gap-6">
+      {/* <aside className="gap-6">
   <div>
     <h3 className="text-xl font-bold mb-2">Top Plugins This Week</h3>
     <ol className="list-decimal list-inside">
@@ -153,7 +153,7 @@ export default function Component() {
         <li key={plugin.id}>{plugin.name}</li>
       ))}
     </ol>
-  </div>
+  </div> */}
   {/* <div>
     <h3 className="text-xl font-bold mb-2">Top Presets This Week</h3>
     <ol className="list-decimal list-inside">
@@ -162,7 +162,7 @@ export default function Component() {
       ))}
     </ol>
   </div> */}
-</aside>
+{/* </aside> */}
     </section>
     </>
   )

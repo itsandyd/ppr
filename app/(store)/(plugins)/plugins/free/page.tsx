@@ -171,7 +171,7 @@ export default function Component() {
           </SelectContent>
         </Select> */}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
       {plugins.map((plugin) => (
   <Link href={plugin.href} key={plugin.id}>
     <div className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition">
@@ -187,7 +187,6 @@ export default function Component() {
       />
       <div className="p-4 bg-white dark:bg-gray-800">
         <h3 className="font-semibold text-lg mb-2">{plugin.name}</h3>
-        {/* <p className="text-gray-600 dark:text-gray-400 mb-2">{plugin.description}</p> */}
         <p className="text-gray-500 dark:text-gray-300">{plugin.author}</p>
       </div>
     </div>

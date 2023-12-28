@@ -8,8 +8,10 @@ import { Button } from "@/components/ui/button"
 import { CardContent, Card } from "@/components/ui/card"
 import Image from "next/image"
 import { UserButton } from "@clerk/nextjs"
+import { TrackListing } from "@/components/music/TrackListing"
 
 export default function Component() {
+
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-[240px_1fr]">
       <nav className="hidden lg:flex flex-col gap-4 p-4 border-r bg-zinc-100/40 dark:bg-zinc-800/40">
@@ -58,29 +60,7 @@ export default function Component() {
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            <Card>
-              <Image
-                alt="Album cover"
-                className="rounded-lg object-cover"
-                height="300"
-                src="/placeholder.svg"
-                style={{
-                  aspectRatio: "300/300",
-                  objectFit: "cover",
-                }}
-                width="300"
-              />
-              <CardContent className="py-4">
-                <h2 className="font-semibold text-lg">Track Title</h2>
-                <p className="text-zinc-500 dark:text-zinc-400">Artist Name</p>
-                <Button className="mt-2">
-                  <IconPlay className="h-4 w-4" />
-                  <span className="sr-only">Play</span>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+         <TrackListing />
         </main>
       </div>
     </div>

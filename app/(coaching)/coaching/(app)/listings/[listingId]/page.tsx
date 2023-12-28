@@ -14,32 +14,32 @@ interface IParams {
 
 const ListingPage = async ({ params }: { params: IParams }) => {
 
-  // const listingData = await getListingById(); // Fetch the listing data from your API or database
+  const listingData = await getListingById(); // Fetch the listing data from your API or database
 
-// const listing = {
-//   ...listingData,
-//   userId: String(listingData.userId), // Convert the userId to a string
-// };
+const listing = {
+  ...listingData,
+  userId: String(listingData.userId), // Convert the userId to a string
+};
+
   const reservations = await getReservations(params);
   const currentUser = await getCurrentUser();
 
-  // if (!listing) {
-  //   return (
-  //     <ClientOnly>
-  //       <EmptyState />
-  //     </ClientOnly>
-  //   );
-  // }
+  if (!listing) {
+    return (
+      <ClientOnly>
+        <EmptyState />
+      </ClientOnly>
+    );
+  }
 
   return (
-    // <ClientOnly>
-    //   <ListingClient
-    //     listing={listing}
-    //     reservations={reservations}
-    //     // currentUser={currentUser}
-    //   />
-    // </ClientOnly>
-    <div>Hello</div>
+    <ClientOnly>
+      <ListingClient
+        listing={listing}
+        reservations={reservations}
+        // currentUser={currentUser}
+      />
+    </ClientOnly>
   );
 }
  
