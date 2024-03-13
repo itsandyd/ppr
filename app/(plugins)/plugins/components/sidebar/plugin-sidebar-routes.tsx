@@ -1,20 +1,20 @@
 "use client"
 
-import { BarChart, Compass, Layout, List, Newspaper } from "lucide-react"
+import { BarChart, Compass, Layout, List, Newspaper, PlusCircle } from "lucide-react"
 
 import { usePathname } from "next/navigation";
 import { TbBuildingCommunity } from "react-icons/tb";
 import { SidebarItem } from "./plugin-sidebar-item";
 
 const guestRoutes = [
-    {
-        icon: Layout,
-        label: "Dashboard",
-        href: "/plugins/dashboard"
-    },
+    // {
+    //     icon: Layout,
+    //     label: "Dashboard",
+    //     href: "/plugins/dashboard"
+    // },
     {
         icon: Compass,
-        label: "Browse",
+        label: "Search",
         href: "/plugins/search"
     },
     // {
@@ -22,11 +22,11 @@ const guestRoutes = [
     //     label: "Community",
     //     href: "/community"
     // },
-    // {
-    //     icon: Newspaper,
-    //     label: "List Your Own Plugin",
-    //     href: "/academy/dashboard/teacher/list"
-    // }
+    {
+        icon: PlusCircle,
+        label: "List Your Own Plugin",
+        href: "/plugins/dashboard/author/list"
+    }
 ];
 
 const teacherRoutes = [

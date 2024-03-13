@@ -8,7 +8,7 @@ interface PluginCardProps {
     id: string;
     name: string;
     imageUrl: string
-    description: string; // Assuming you want to display the description
+    description?: string | null; // Assuming you want to display the description
     category: string | null; // Assuming you want to display the category name
 }
 

@@ -8,7 +8,7 @@ import { PluginSidebarRoutes } from "./plugin-sidebar-routes"
 export const PluginSidebar = () => {
   return (
     // border-r
-    <div className="h-full flex flex-col overflow-y-auto shadow-sm">
+    <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
       <div className="p-6">
         <Link href="/">
             <p className="text-2xl font-bold flex items-center">Plugins</p>

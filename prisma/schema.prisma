@@ -472,17 +472,17 @@ model PluginCategory {
 }
 
 model Plugin {
-  id          String         @id @default(uuid())
+  id          String          @id @default(uuid())
   name        String
-  author      String
-  description String         @db.Text
-  image       String?        @db.Text
+  author      String?
+  description String?         @db.Text
+  image       String?         @db.Text
   userId      String?
-  user        User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryId  String
-  category    PluginCategory @relation(fields: [categoryId], references: [id])
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  user        User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String?
+  category    PluginCategory? @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   @@index([userId])
   @@index([categoryId])

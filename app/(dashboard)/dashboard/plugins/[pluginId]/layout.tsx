@@ -1,6 +1,6 @@
-import { CourseNavbar } from "@/components/courses/navbar";
-import { PluginNavbar } from "../components/navbar/plugin-navbar";
-import { PluginSidebar } from "../components/sidebar/plugin-sidebar";
+import { PluginNavbar } from "@/app/(plugins)/plugins/components/navbar/plugin-navbar";
+import { PluginSidebar } from "@/app/(plugins)/plugins/components/sidebar/plugin-sidebar";
+
 
 const PluginsLayout = ({
   children
