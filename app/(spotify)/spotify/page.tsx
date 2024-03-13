@@ -26,10 +26,10 @@ const Spotify = () => {
   }, []);
 
   return (
-    <div>
+    <div className="p-8">
       <TrackSearch accessToken={accessToken} />
     </div>
   );
-};
+};3
 
 export default Spotify;

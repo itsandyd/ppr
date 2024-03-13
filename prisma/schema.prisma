@@ -216,9 +216,10 @@ model User {
   Plugin        Plugin[]
   // StorageFolder StorageFolder[]
   // StorageFile   StorageFile[]
-  SharedTrack   SharedTrack[]
+  // SharedTrack   SharedTrack[]
   StorageFolder StorageFolder[]
   StorageFile   StorageFile[]
+  SharedTrack   SharedTrack[]
 }
 
 model Favorite {
@@ -462,18 +463,29 @@ model CompanionMessage {
   @@index([companionId])
 }
 
+model PluginCategory {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  plugins   Plugin[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Plugin {
-  id          String   @id @default(uuid())
+  id          String         @id @default(uuid())
   name        String
   author      String
-  description String   @db.Text
-  image       String   @db.Text
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  description String         @db.Text
+  image       String?        @db.Text
+  userId      String?
+  user        User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    PluginCategory @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
   @@index([userId])
+  @@index([categoryId])
 }
 
 model StorageFolder {
@@ -488,7 +500,8 @@ model StorageFolder {
   userId    String
   user      User            @relation(fields: [userId], references: [id])
 
-  @@index([parentId, userId])
+  @@index([parentId])
+  @@index([userId])
 }
 
 model StorageFile {
@@ -502,7 +515,8 @@ model StorageFile {
   userId    String
   user      User           @relation(fields: [userId], references: [id])
 
-  @@index([folderId, userId])
+  @@index([userId])
+  @@index([folderId])
 }
 
 model SharedTrack {

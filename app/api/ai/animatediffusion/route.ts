@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     // }
 
     const response = await replicate.run(
-      "zsxkib/animate-diff:269a616c8b0c2bbc12fc15fd51bb202b11e94ff0f7786c026aa905305c4ed9fb",
+      "lucataco/animate-diff:beecf59c4aee8d81bf04f0381033dfa10dc16e845b4ae00d281e2fa377e48a9f",
       {
         input: {
           prompt: prompt,

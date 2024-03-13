@@ -58,7 +58,7 @@ const TrackSearch = ({ accessToken }: { accessToken: string }) => {
     return (
         <div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(searchTracks)} className="space-y-8">
+                <form onSubmit={form.handleSubmit(searchTracks)} className="space-y-4 mb-4">
                     <FormItem>
                         <FormLabel>Search</FormLabel>
                         <FormControl>
@@ -85,7 +85,7 @@ const TrackSearch = ({ accessToken }: { accessToken: string }) => {
                             <Image width="300" height="300" src={track.album.images[0].url} alt="Album cover" />
                         </CardContent>
                         <CardFooter>
-                        <Button onClick={() => handleAddTrack(track.external_urls.spotify, track.name, track.artists[0].name, track.album.images[0].url)}><Heart /></Button>
+                            <Button variant="ghost" onClick={() => handleAddTrack(track.external_urls.spotify, track.name, track.artists[0].name, track.album.images[0].url)}><Heart /></Button>
                         </CardFooter>
                     </Card>
                 ))}

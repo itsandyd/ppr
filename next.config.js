@@ -14,6 +14,9 @@ const nextConfig = {
       "example.com",
       "i.scdn.co",
       "i.scdn.co",
+      "static.kvraudio.com",
+      "www.audiority.com",
+      "www.audiority.com",
     ],
   },
 };

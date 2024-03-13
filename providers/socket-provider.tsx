@@ -25,27 +25,27 @@ export const SocketProvider = ({
     const [socket, setSocket] = useState<Socket | null>(null);
     const [isConnected, setIsConnected] = useState(false);
 
-    useEffect(() => {
-        const socketInstance = new (ClientIO as any)(process.env.NEXT_PUBLIC_SITE_URL!, {
-            path: "/api/socket/io",
-            addTrailingSlash: false,
-        })
+    // useEffect(() => {
+    //     const socketInstance = new (ClientIO as any)(process.env.NEXT_PUBLIC_SITE_URL!, {
+    //         path: "/api/socket/io",
+    //         addTrailingSlash: false,
+    //     })
 
-        socketInstance.on("connect", () => {
-            setIsConnected(true);
-        })
+    //     socketInstance.on("connect", () => {
+    //         setIsConnected(true);
+    //     })
 
-        socketInstance.on("disconnect", () => {
-            setIsConnected(false);
-        });
+    //     socketInstance.on("disconnect", () => {
+    //         setIsConnected(false);
+    //     });
 
-        setSocket(socketInstance);
+    //     setSocket(socketInstance);
 
-        return () => {
-            socketInstance.disconnect();
-        }
+    //     return () => {
+    //         socketInstance.disconnect();
+    //     }
 
-    }, [])
+    // }, [])
 
     return (
         <SocketContext.Provider

@@ -26,13 +26,13 @@ const MusicLayout = async ({
 
     return (
         <div className="h-full">
-            <div className="h-[80px] fixed inset-y-0 w-full z-50">
+            {/* <div className="h-[80px] fixed inset-y-0 w-full z-50"> */}
                 {/* <Header /> */}
             <div>
                 {/* Main content here */}
                 {children}
             </div>
-        </div>
+        {/* </div> */}
         </div>
     );
 }

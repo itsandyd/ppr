@@ -5,6 +5,7 @@ import ListingCard from "@/components/coaching/listings/ListingCard";
 import ClientOnly from "@/components/coaching/ClientOnly";
 import EmptyState from "@/components/coaching/EmptyState";
 import getListings, { IListingsParams } from "@/actions/getListings";
+import { auth } from "@clerk/nextjs";
 
 interface HomeProps {
   searchParams: IListingsParams;
@@ -12,6 +13,8 @@ interface HomeProps {
 
 const Home = async ({ searchParams }: HomeProps) => {
   const listings = await getListings(searchParams);
+
+  const user = auth()
 
 
   if (listings.length === 0) {

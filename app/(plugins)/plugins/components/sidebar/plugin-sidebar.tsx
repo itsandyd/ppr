@@ -1,0 +1,22 @@
+import Link from "next/link"
+// import { Button } from "../ui/button"
+// import { Logo } from "./logo"
+
+import { ArrowLeft } from "lucide-react"
+import { PluginSidebarRoutes } from "./plugin-sidebar-routes"
+
+export const PluginSidebar = () => {
+  return (
+    // border-r
+    <div className="h-full flex flex-col overflow-y-auto shadow-sm">
+      <div className="p-6">
+        <Link href="/">
+            <p className="text-2xl font-bold flex items-center">Plugins</p>
+        </Link>
+      </div>
+      <div className="flex flex-col w-full">
+        <PluginSidebarRoutes />
+      </div>
+    </div>
+  )
+}

@@ -15,7 +15,22 @@ export async function POST(request: Request) {
         author,
         description,
         image,
+        categoryId, // Assuming this is passed in the request body
     } = body;
+
+    // Ensure categoryId is provided and valid
+    if (!categoryId) {
+      return new NextResponse("Category ID is required", { status: 400 });
+    }
+
+    // Optionally, validate categoryId exists in the database
+    const categoryExists = await db.pluginCategory.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!categoryExists) {
+      return new NextResponse("Invalid Category ID", { status: 400 });
+    }
 
     const plugin = await db.plugin.create({
         data: {
@@ -23,7 +38,8 @@ export async function POST(request: Request) {
             author,
             description,
             image,
-            userId: userId
+            userId: userId,
+            categoryId: categoryId, // Add categoryId to the data being inserted
         },
     });
 

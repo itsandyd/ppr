@@ -64,11 +64,11 @@ export const LandingNavbar = () => {
                 Storage
             </Button>
         </Link> */}
-        {/* <Link href="/spotify">
+        <Link href="/music">
             <Button variant="ghost" className="rounded-full">
                 Music
             </Button>
-        </Link> */}
+        </Link>
         <Link href="/ai/dashboard">
             <Button variant="ghost" className="rounded-full">
                 AI
