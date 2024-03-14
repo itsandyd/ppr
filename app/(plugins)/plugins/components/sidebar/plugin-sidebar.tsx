@@ -10,7 +10,7 @@ export const PluginSidebar = () => {
     // border-r
     <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
       <div className="p-6">
-        <Link href="/">
+        <Link href="/plugins">
             <p className="text-2xl font-bold flex items-center">Plugins</p>
         </Link>
       </div>
