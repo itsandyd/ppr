@@ -19,7 +19,7 @@ export const LandingNavbar = () => {
     <>
     <nav className="p-4 bg-transparent flex items-center justify-between">
     {/* <LandingMobileSidebar /> */}
-      <Link href="/" className="flex items-center">
+      {/* <Link href="/" className="flex items-center"> */}
         {/* <div className="relative h-8 w-8 mr-4">
           <Image fill alt="Logo" src="/ppr.svg" />
         </div> */}
@@ -29,10 +29,10 @@ export const LandingNavbar = () => {
         width={50} // Desired width
         height={100} // Desired height
       /> */}
-      <h1 className={cn("text-2xl font-bold p-2", font.className)}>
+      {/* <h1 className={cn("text-2xl font-bold p-2", font.className)}>
           PausePlayRepeat.com
         </h1>
-      </Link>
+      </Link> */}
       <div>
         {/* <Link href="/sounds">
             <Button variant="ghost" className="rounded-full">
