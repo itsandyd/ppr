@@ -10,8 +10,9 @@ export async function PATCH(
   ) {
     try {
       const { userId } = auth();
-      const { pluginId } = params;
-      const values = await req.json();
+    //   const { pluginCategoryId } = await req.json();
+      const body = await req.json();
+const { pluginCategoryId } = body; // Extracting pluginCategoryId from the request body
   
       if (!userId) {
         return new NextResponse("Unauthorized", { status: 401 });
@@ -19,17 +20,19 @@ export async function PATCH(
   
       const plugin = await db.plugin.update({
         where: {
-          id: pluginId,
+          id: params.pluginId,
           userId
         },
         data: {
-          ...values,
+        //   ...values,
+        categoryId: pluginCategoryId, // Ensure this matches the schema field name
+
         }
       });
   
       return NextResponse.json(plugin);
     } catch (error) {
-      console.log("[COURSE_ID]", error);
+      console.log("[PLUGIN_ID]", error);
       return new NextResponse("Internal Error", { status: 500 });
     }
   }

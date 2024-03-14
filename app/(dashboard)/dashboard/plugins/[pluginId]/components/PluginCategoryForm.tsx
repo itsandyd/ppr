@@ -55,13 +55,14 @@ export const PluginCategoryForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/plugins/${pluginId}`, values);
-      toast.success("Course updated");
-      toggleEdit();
-      router.refresh();
-    } catch {
-      toast.error("Something went wrong");
-    }
+  console.log(values); 
+  await axios.patch(`/api/plugins/${pluginId}`, values);
+  toast.success("Plugin category updated"); // Updated success message
+  toggleEdit();
+  router.refresh();
+} catch {
+  toast.error("Something went wrong");
+}
   }
 
   const selectedOption = options.find((option => option.value === initialData?.categoryId));
