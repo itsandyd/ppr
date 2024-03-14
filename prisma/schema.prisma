@@ -484,8 +484,19 @@ model Plugin {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
+  // Pricing fields
+  pricingType  PricingType @default(FREE) // Indicates if the plugin is free or paid
+  price        Float? // Price of the plugin, relevant if pricingType is PAID
+  optInFormUrl String? // URL for the opt-in form, relevant if pricingType is FREE
+  purchaseUrl  String? // URL for purchasing or downloading the plugin, relevant for both FREE and PAID
+
   @@index([userId])
   @@index([categoryId])
+}
+
+enum PricingType {
+  FREE
+  PAID
 }
 
 model StorageFolder {

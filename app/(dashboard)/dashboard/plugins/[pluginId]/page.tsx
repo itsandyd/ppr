@@ -8,6 +8,7 @@ import PluginTitleForm from "./components/PluginTitleForm";
 import PluginDescriptionForm from "./components/PluginDescriptionForm";
 import PluginImageForm from "./components/PluginImageForm";
 import PluginCategoryForm from "./components/PluginCategoryForm";
+import PluginPriceForm from "./components/PluginPriceForm";
 
 
 const PluginIdPage = async ({
@@ -109,12 +110,12 @@ const PluginIdPage = async ({
                         }))}
                     />
                 </div>
-                {/* <div className="space-y-6">
+                <div className="space-y-6">
                     <div>
                         <div className="flex items-center gap-x-2">
                             <IconBadge icon={CircleDollarSign} />
                             <h2 className="text-xl font-bold">
-                                Sell your plugin
+                                Price your plugin
                             </h2>
                         </div>
                         <PluginPriceForm 
@@ -123,18 +124,18 @@ const PluginIdPage = async ({
                         />
                     </div>
                     <div>
-                        <div className="flex items-center gap-x-2">
+                        {/* <div className="flex items-center gap-x-2">
                             <IconBadge icon={File} />
                             <h2 className="text-xl font-bold">
                                 Resources & Attachments
                             </h2>
-                        </div>
-                        <AttachmentForm 
+                        </div> */}
+                        {/* <AttachmentForm 
                             initialData={course}
                             courseId={course.id}
-                        />
+                        /> */}
                     </div>
-                </div> */}
+                </div>
             </div>
         </div>
         </>

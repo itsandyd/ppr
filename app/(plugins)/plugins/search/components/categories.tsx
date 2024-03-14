@@ -1,16 +1,16 @@
 "use client";
 
-import { CourseCategory } from "@prisma/client";
+import { CourseCategory, PluginCategory } from "@prisma/client";
 
 import { IconType } from "react-icons"
 import { PLuginCategoryItem } from "./category-item";
 
 
 interface CategoriesProps {
-    items: CourseCategory[];
+    items: PluginCategory[];
 }
 
-const iconMap: Record<CourseCategory["name"], IconType> = {
+const iconMap: Record<PluginCategory["name"], IconType> = {
 
 };
 
