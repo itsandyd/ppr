@@ -18,7 +18,7 @@ export const LandingNavbar = () => {
   return (
     <>
     <nav className="p-4 bg-transparent flex items-center justify-between">
-    <LandingMobileSidebar />
+    {/* <LandingMobileSidebar /> */}
       <Link href="/" className="flex items-center">
         {/* <div className="relative h-8 w-8 mr-4">
           <Image fill alt="Logo" src="/ppr.svg" />
@@ -34,26 +34,26 @@ export const LandingNavbar = () => {
         </h1>
       </Link>
       <div>
-        <Link href="/sounds">
+        {/* <Link href="/sounds">
             <Button variant="ghost" className="rounded-full">
                 Sounds
             </Button>
-        </Link>
+        </Link> */}
         <Link href="/plugins">
             <Button variant="ghost" className="rounded-full">
                 Plugins
             </Button>
         </Link>
-        <Link href="/academy">
+        {/* <Link href="/academy">
             <Button variant="ghost" className="rounded-full">
                 Academy
             </Button>
-        </Link>
-        <Link href="/coaching/browse">
+        </Link> */}
+        {/* <Link href="/coaching/browse">
             <Button variant="ghost" className="rounded-full">
                 Coaching
             </Button>
-        </Link>
+        </Link> */}
         <Link href="https://discord.gg/pauseplayrepeat">
             <Button variant="ghost" className="rounded-full">
                 Community
@@ -64,16 +64,16 @@ export const LandingNavbar = () => {
                 Storage
             </Button>
         </Link> */}
-        <Link href="/music">
+        {/* <Link href="/music">
             <Button variant="ghost" className="rounded-full">
                 Music
             </Button>
-        </Link>
-        <Link href="/ai/dashboard">
+        </Link> */}
+        {/* <Link href="/ai/dashboard">
             <Button variant="ghost" className="rounded-full">
                 AI
             </Button>
-        </Link>
+        </Link> */}
       </div>
       <div className="flex items-center gap-x-2">
         <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
