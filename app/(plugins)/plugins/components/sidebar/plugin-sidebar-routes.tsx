@@ -12,26 +12,26 @@ const guestRoutes = [
     //     label: "Dashboard",
     //     href: "/plugins/dashboard"
     // },
-    {
-        icon: Compass,
-        label: "Search",
-        href: "/plugins/search"
-    },
-    {
-        icon: DotIcon,
-        label: "Amp Simulations",
-        href: "/plugins/amp-simulations"
-    },
-    {
-        icon: DotIcon,
-        label: "Autotune",
-        href: "/plugins/autotune"
-    },
-    {
-        icon: DotIcon,
-        label: "Bitcrushers",
-        href: "/plugins/bitcrushers"
-    },
+    // {
+    //     icon: Compass,
+    //     label: "Search",
+    //     href: "/plugins/search"
+    // },
+    // {
+    //     icon: DotIcon,
+    //     label: "Amp Simulations",
+    //     href: "/plugins/amp-simulations"
+    // },
+    // {
+    //     icon: DotIcon,
+    //     label: "Autotune",
+    //     href: "/plugins/autotune"
+    // },
+    // {
+    //     icon: DotIcon,
+    //     label: "Bitcrushers",
+    //     href: "/plugins/bitcrushers"
+    // },
     // {
     //     icon: TbBuildingCommunity,
     //     label: "Community",

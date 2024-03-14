@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import { CheckCircle, Clock } from "lucide-react";
 
 import { CoursesList } from "@/components/courses/courses-list";
+import { getPlugins } from "@/actions/get-plugins";
+import { db } from "@/lib/db";
+import { PluginList } from "./search/components/PluginList";
 // import { InfoCard } from "./components/InfoCard";
 
 
@@ -18,6 +21,29 @@ export default async function Plugins() {
   //   coursesInProgress
   // } = await getDashboardCourses(userId);
 
+  // const { userId } = auth();
+  
+  //   if (!userId) {
+  //     return redirect("/");
+  //   }
+  
+    const categories = await db.pluginCategory.findMany({
+      orderBy: {
+        name: "desc"
+      }
+    });
+  
+    if (!categories) {
+      return (
+        <div>
+          <h1>No plugins found</h1>
+        </div>
+      );
+    }
+  
+    const plugins = await getPlugins();
+        
+
   return (
     <div className="p-6 space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -32,11 +58,11 @@ export default async function Plugins() {
           // numberOfItems={completedCourses.length}
           variant="success"
        /> */}
-       Welcome to the plugins page
       </div>
       {/* <CoursesList
         items={[...coursesInProgress, ...completedCourses]}
       /> */}
+                      <PluginList items={plugins} />
     </div>
   )
 }
