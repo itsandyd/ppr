@@ -4,7 +4,7 @@ import { CourseCard } from '@/components/courses/course-card';
 import { CourseNavbar } from '@/components/courses/navbar';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import react from 'react';
 
 
@@ -14,17 +14,18 @@ import { getPlugins } from '@/actions/get-plugins';
 import { getPlugin } from '@/actions/get-plugin-by-id';
 import Image from 'next/image';
 import { PluginPurchaseButton } from './components/PluginPurchaseButton';
+import { PluginEditButton } from './components/PluginEditButton';
 
 const ChapterIdPage = async ({
   params
 }: {
   params: { pluginId: string }
 }) => {
-//   const { userId } = auth();
+  const { userId } = auth();
   
-//   if (!userId) {
-//     return redirect("/");
-//   } 
+  if (!userId) {
+    null;
+  } 
 
   const {
     plugin,
@@ -35,7 +36,7 @@ const ChapterIdPage = async ({
 
   if (!plugin) {
     // Example: Redirect to a not found page or display a message
-    return redirect("/not-found");
+    return redirect("/plugins");
   }
 
 //   if (!chapter || !course) {
@@ -89,6 +90,7 @@ const ChapterIdPage = async ({
               optInFormUrl={plugin.optInFormUrl || ''}
               purchaseUrl={plugin.purchaseUrl || ''}
             />
+      {userId === plugin.userId && <PluginEditButton pluginId={params.pluginId} />}
                     </div>
                     <Separator />
                     <div>
