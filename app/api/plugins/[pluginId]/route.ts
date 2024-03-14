@@ -11,8 +11,19 @@ export async function PATCH(
     try {
       const { userId } = auth();
     //   const { pluginCategoryId } = await req.json();
-      const body = await req.json();
-const { pluginCategoryId } = body; // Extracting pluginCategoryId from the request body
+    const body = await req.json();
+    const {
+      pluginCategoryId,
+      name,
+      description,
+      image,
+      pricingType,
+      price,
+      optInFormUrl,
+      purchaseUrl,
+    } = body;
+
+     
   
       if (!userId) {
         return new NextResponse("Unauthorized", { status: 401 });
@@ -24,9 +35,14 @@ const { pluginCategoryId } = body; // Extracting pluginCategoryId from the reque
           userId
         },
         data: {
-        //   ...values,
-        categoryId: pluginCategoryId, // Ensure this matches the schema field name
-
+          categoryId: pluginCategoryId,
+          name,
+          description,
+          image,
+          pricingType,
+          price,
+          optInFormUrl,
+          purchaseUrl,
         }
       });
   
