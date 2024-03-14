@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart, Compass, Layout, List, Newspaper, PlusCircle } from "lucide-react"
+import { BarChart, Compass, DotIcon, Layout, List, Music2Icon, Newspaper, PlusCircle } from "lucide-react"
 
 import { usePathname } from "next/navigation";
 import { TbBuildingCommunity } from "react-icons/tb";
@@ -16,6 +16,21 @@ const guestRoutes = [
         icon: Compass,
         label: "Search",
         href: "/plugins/search"
+    },
+    {
+        icon: DotIcon,
+        label: "Amp Simulations",
+        href: "/plugins/amp-simulations"
+    },
+    {
+        icon: DotIcon,
+        label: "Autotune",
+        href: "/plugins/autotune"
+    },
+    {
+        icon: DotIcon,
+        label: "Bitcrushers",
+        href: "/plugins/bitcrushers"
     },
     // {
     //     icon: TbBuildingCommunity,

@@ -7,10 +7,12 @@ import { redirect } from "next/navigation";
 import { SearchInput } from "@/components/courses/search-input";
 import { getCourses } from "@/actions/get-courses";
 import { CoursesList } from "@/components/courses/courses-list";
-import { PluginCategories } from "./components/categories";
+
 import { PluginSearchInput } from "@/components/plugins/PluginSearchInput";
-import { PluginList } from "./components/PluginList";
+
 import { getPlugins } from "@/actions/get-plugins";
+import { PluginList } from "../search/components/PluginList";
+import { getPluginsByCategory } from "@/actions/getPluginByCategory";
 
 interface SearchPageProps {
     searchParams: {
@@ -19,7 +21,7 @@ interface SearchPageProps {
     }
   };
   
-  const SearchPage = async ({
+  const AutotunePluginPage = async ({
     searchParams
   }: SearchPageProps) => {
     const { userId } = auth();
@@ -29,9 +31,14 @@ interface SearchPageProps {
     }
   
     const categories = await db.pluginCategory.findMany({
+        where: {
+            name: {
+                contains: 'Bitcrusher'
+            },
+          },
       orderBy: {
-        name: "desc"
-      }
+        name: "asc"
+      },
     });
   
     if (!categories) {
@@ -42,7 +49,7 @@ interface SearchPageProps {
       );
     }
   
-    const plugins = await getPlugins();
+    const plugins = await getPluginsByCategory('Bitcrusher');
         
         return (
             <>
@@ -60,4 +67,5 @@ interface SearchPageProps {
         }
          
 
-export default SearchPage;
+export default AutotunePluginPage;
+

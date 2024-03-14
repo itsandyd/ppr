@@ -5,10 +5,16 @@ type PluginWithCategory = Plugin & {
   category: PluginCategory | null; // Extend Plugin with category relation
 };
 
-export const getPlugins = async (): Promise<PluginWithCategory[]> => {
+// Accept a category name as a parameter
+export const getPluginsByCategory = async (categoryName: string): Promise<PluginWithCategory[]> => {
   try {
-    // Fetch all plugins and include their categories
+    // Fetch all plugins that belong to the specified category and include their categories
     const plugins: PluginWithCategory[] = await db.plugin.findMany({
+      where: {
+        category: {
+          name: categoryName, // Use the categoryName parameter to filter plugins
+        },
+      },
       include: {
         category: true, // Include the category relation
       },
