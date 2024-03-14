@@ -13,13 +13,14 @@ import { Preview } from '@/components/courses/preview';
 import { getPlugins } from '@/actions/get-plugins';
 import { getPlugin } from '@/actions/get-plugin-by-id';
 import Image from 'next/image';
+import { PluginPurchaseButton } from './components/PluginPurchaseButton';
 
 const ChapterIdPage = async ({
   params
 }: {
   params: { pluginId: string }
 }) => {
-  const { userId } = auth();
+//   const { userId } = auth();
   
 //   if (!userId) {
 //     return redirect("/");
@@ -31,6 +32,11 @@ const ChapterIdPage = async ({
     // userId,
     pluginId: params.pluginId,
   });
+
+  if (!plugin) {
+    // Example: Redirect to a not found page or display a message
+    return redirect("/not-found");
+  }
 
 //   if (!chapter || !course) {
 //     return redirect("/")
@@ -76,17 +82,13 @@ const ChapterIdPage = async ({
                 <div>
                     <div className="p-4 flex flex-col md:flex-row items-center justify-between">
                         <h2 className="text-2xl font-semibold mb-2">{plugin?.name}</h2>
-                        {/* {purchase ? (
-                            <div>
-                                Course Progression
-                            </div>
-                        ) : (
-                            <CourseEnrollButton 
-                                courseId={params.courseId}
-                                price={course.price!}
-                            />
-
-                        )} */}
+                        <PluginPurchaseButton 
+              pluginId={params.pluginId}
+              price={plugin.price || 0} // Ensure there's a default or conditional rendering based on the existence of price
+              pricingType={plugin.pricingType}
+              optInFormUrl={plugin.optInFormUrl || ''}
+              purchaseUrl={plugin.purchaseUrl || ''}
+            />
                     </div>
                     <Separator />
                     <div>
