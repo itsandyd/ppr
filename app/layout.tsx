@@ -8,10 +8,6 @@ import { ModalProvider } from "../providers/modal-provider";
 import { SocketProvider } from "../providers/socket-provider";
 import { QueryProvider } from "../providers/query-provider";
 import { ToasterProvider } from "@/providers/toast-provider";
-import Navbar from "@/components/coaching/navbar/Navbar";
-import { LandingNavbar } from "@/components/landing/landing-navbar";
-import { LandingMobileSidebar } from "@/components/landing/landing-mobile-navbar";
-import { useEffect } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from '@vercel/analytics/react';
 
