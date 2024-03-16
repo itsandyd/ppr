@@ -69,7 +69,7 @@ export const LandingNavbar = () => {
                 Music
             </Button>
         </Link>
-        <Link href="/ai/dashboard">
+        <Link href="/ai">
             <Button variant="ghost" className="rounded-full">
                 AI
             </Button>
