@@ -10,9 +10,10 @@ export const LandingHero = () => {
   const { isSignedIn } = useAuth();
 
   return (
-    <div className="font-bold py-36 text-center space-y-5">
-      <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl space-y-5 font-extrabold">
-        <h1>PausePlayRepeat</h1>
+    <div className="font-bold py-36 text-center space-y-2">
+      <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl space-y-2 font-extrabold">
+      <h1 className="bg-gradient-to-r from-sky-300 to-pink-400 inline-block text-transparent bg-clip-text pb-6">PausePlayRepeat</h1>
+
         <div className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
           {/* <TypewriterComponent
             options={{

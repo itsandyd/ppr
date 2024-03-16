@@ -1,6 +1,5 @@
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
-import { LandingNavbar } from "./landing-navbar";
 import { LandingMobileSidebar } from "./landing-mobile-sidebar";
 
 
