@@ -8,7 +8,7 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../community/mode-toggle";
-import { LandingMobileSidebar } from "./landing-mobile-navbar";
+import { LandingMobileNavbar } from "./landing-mobile-navbar";
 
 const font = Montserrat({ weight: '600', subsets: ['latin'] });
 
@@ -18,7 +18,7 @@ export const LandingNavbar = () => {
   return (
     <>
     <nav className="p-4 bg-transparent flex items-center justify-between">
-    {/* <LandingMobileSidebar /> */}
+    <LandingMobileNavbar />
       {/* <Link href="/" className="flex items-center"> */}
         {/* <div className="relative h-8 w-8 mr-4">
           <Image fill alt="Logo" src="/ppr.svg" />
@@ -33,22 +33,22 @@ export const LandingNavbar = () => {
           PausePlayRepeat.com
         </h1>
       </Link> */}
-      <div>
-        {/* <Link href="/sounds">
+       <div className="flex items-center gap-x-2">
+        <Link href="https://sounds.pauseplayrepeat.com">
             <Button variant="ghost" className="rounded-full">
                 Sounds
             </Button>
-        </Link> */}
+        </Link>
         <Link href="/plugins">
             <Button variant="ghost" className="rounded-full">
                 Plugins
             </Button>
         </Link>
-        {/* <Link href="/academy">
+        <Link href="https://pauseplayrepeat.com">
             <Button variant="ghost" className="rounded-full">
                 Academy
             </Button>
-        </Link> */}
+        </Link>
         {/* <Link href="/coaching/browse">
             <Button variant="ghost" className="rounded-full">
                 Coaching
@@ -64,16 +64,16 @@ export const LandingNavbar = () => {
                 Storage
             </Button>
         </Link> */}
-        {/* <Link href="/music">
+        <Link href="https://music.pauseplayrepeat.com">
             <Button variant="ghost" className="rounded-full">
                 Music
             </Button>
-        </Link> */}
-        {/* <Link href="/ai/dashboard">
+        </Link>
+        <Link href="/ai/dashboard">
             <Button variant="ghost" className="rounded-full">
                 AI
             </Button>
-        </Link> */}
+        </Link>
       </div>
       <div className="flex items-center gap-x-2">
         <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
