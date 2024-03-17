@@ -33,8 +33,10 @@ export const ChapterActions = ({
             toast.success("Chapter deleted successfully");
             router.refresh();
             router.push(`/courses/teacher/courses/${courseId}/`);
-        } catch {
+        } catch (error) {
+            console.log(error)
             toast.error("Something went wrong.")
+
         } finally { 
             setIsLoading(false);
         }

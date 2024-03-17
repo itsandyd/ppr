@@ -472,23 +472,23 @@ model PluginCategory {
 }
 
 model Plugin {
-  id          String          @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
   author      String?
-  description String?         @db.Text
-  image       String?         @db.Text
+  description String? @db.Text
+  image       String? @db.Text
   userId      String?
-  user        User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryId  String?
-  category    PluginCategory? @relation(fields: [categoryId], references: [id])
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  user        User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Pricing fields
-  pricingType  PricingType @default(FREE) // Indicates if the plugin is free or paid
-  price        Float? // Price of the plugin, relevant if pricingType is PAID
-  optInFormUrl String? // URL for the opt-in form, relevant if pricingType is FREE
-  purchaseUrl  String? // URL for purchasing or downloading the plugin, relevant for both FREE and PAID
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  pricingType  PricingType @default(FREE)
+  price        Float?
+  optInFormUrl String?
+  purchaseUrl  String?
+  categoryId   String?
+
+  category PluginCategory? @relation(fields: [categoryId], references: [id])
 
   @@index([userId])
   @@index([categoryId])
