@@ -11,7 +11,7 @@ interface CategoryItem {
     value?: string;
 }
 
-export const PLuginCategoryItem = ({
+export const PluginCategoryItem = ({
     label,
     icon,
     value

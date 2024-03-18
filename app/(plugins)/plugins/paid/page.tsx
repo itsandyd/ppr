@@ -8,34 +8,53 @@ import { db } from "@/lib/db";
 import { PluginList } from "../search/components/PluginList";
 import { getFreePlugins } from "@/actions/get-free-plugins";
 import { getPaidPlugins } from "@/actions/get-paid-plugins";
+import { PluginCategories } from "../search/components/categories";
 
 // import { InfoCard } from "./components/InfoCard";
 
 
-export default async function Plugins() {
-  
-    const categories = await db.pluginCategory.findMany({
-      orderBy: {
-        name: "desc"
-      },
-    });
-  
-    if (!categories) {
-      return (
-        <div>
-          <h1>No plugins found</h1>
-        </div>
-      );
-    }
-  
-    const plugins = await getPaidPlugins();
+interface SearchPageProps {
+  searchParams: {
+    title: string;
+    categoryId: string;
+  }
+};
+
+const PaidPluginsPage = async ({
+  searchParams
+}: SearchPageProps) => {
+
+
+  const categories = await db.pluginCategory.findMany({
+    orderBy: {
+      name: "asc"
+    },
+  });
+
+  if (!categories) {
+    return (
+      <div>
+        <h1>No plugins found</h1>
+      </div>
+    );
+  }
+
+  const plugins = await getPaidPlugins({
+      ...searchParams,
+  });
         
 
   return (
     <div className="p-6 space-y-4">
+          <PluginCategories
+                  items={categories}
+                />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       </div>
         <PluginList items={plugins} />
     </div>
   )
 }
+
+export default PaidPluginsPage;
+

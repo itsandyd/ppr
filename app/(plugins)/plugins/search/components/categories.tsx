@@ -3,7 +3,7 @@
 import { CourseCategory, PluginCategory } from "@prisma/client";
 
 import { IconType } from "react-icons"
-import { PLuginCategoryItem } from "./category-item";
+import { PluginCategoryItem } from "./category-item";
 
 
 interface CategoriesProps {
@@ -18,9 +18,14 @@ export const PluginCategories = ({
     items,
 }: CategoriesProps) => {
     return (
-        <div className="flex items-center gap-x-2 overflow-x-auto pb-2">
+        <div className="flex flex-wrap items-center gap-y-4 gap-x-2 pb-2">
+            <PluginCategoryItem 
+                key="all"
+                label="All"
+                // No value means this represents all categories
+            />
             {items.map((item) => (
-                <PLuginCategoryItem 
+                <PluginCategoryItem 
                     key={item.id}
                     label={item.name}
                     icon={iconMap[item.name]}

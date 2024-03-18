@@ -62,7 +62,7 @@ export default async function Plugins() {
       {/* <CoursesList
         items={[...coursesInProgress, ...completedCourses]}
       /> */}
-                      <PluginList items={plugins} />
+      <PluginList items={plugins} />
     </div>
   )
 }

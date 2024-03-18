@@ -2,18 +2,22 @@ import { Plugin, PluginCategory } from "@prisma/client";
 import { db } from "@/lib/db";
 
 type PluginWithCategory = Plugin & {
-  category: PluginCategory | null; // Extend Plugin with category relation
+  category: PluginCategory | null;
 };
 
-export const getFreePlugins = async (): Promise<PluginWithCategory[]> => {
+interface GetFreePluginsParams {
+  categoryId?: string; // Optional parameter for filtering by category
+}
+
+export const getFreePlugins = async ({ categoryId }: GetFreePluginsParams = {}): Promise<PluginWithCategory[]> => {
   try {
-    // Fetch all plugins and include their categories
     const plugins: PluginWithCategory[] = await db.plugin.findMany({
       where: {
-        pricingType: "FREE"
+        pricingType: "FREE",
+        ...(categoryId && { categoryId: categoryId }), // Conditionally add categoryId to the query if it exists
       },
       include: {
-        category: true, // Include the category relation
+        category: true,
       },
       orderBy: {
         createdAt: "asc",
@@ -22,7 +26,7 @@ export const getFreePlugins = async (): Promise<PluginWithCategory[]> => {
 
     return plugins;
   } catch (error) {
-    console.log("[GET_PLUGINS]", error);
+    console.log("[GET_FREE_PLUGINS]", error);
     return [];
   }
 }
