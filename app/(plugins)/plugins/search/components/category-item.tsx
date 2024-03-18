@@ -1,5 +1,6 @@
 "use client"
 
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
@@ -40,15 +41,16 @@ export const PluginCategoryItem = ({
     }
 
     return ( 
-        <button 
+        <Button 
             onClick={onClick}
-            className={cn("py-2 px-3 text-sm border border-slate-200 rounded-full flex items-center gap-x-1 hover:border-sky-700 transition", 
+            variant="ghost"
+            className={cn("py-2 px-3 text-sm border border-slate-200 rounded-small flex items-center gap-x-1 hover:border-sky-700 transition", 
         )}
             type="button"
         >
             <div className="truncate">
                 {label}
             </div>
-        </button>
+        </Button>
      );
 }
