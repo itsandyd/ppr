@@ -49,7 +49,7 @@ const ChapterIdPage = async ({
 
 
     return ( 
-        <div>
+        <div className='pt-12'>
             {/* {userProgress?.isCompleted && (
             <Banner 
                 variant="success"
@@ -62,42 +62,35 @@ const ChapterIdPage = async ({
                     label="This chapter is locked."
                 />
             )} */}
-            <div className="flex flex-col max-w-4xl mx-auto pb-20">
-                <div className="p-4">
-                    {/* <VideoPlayer 
-                        chapterId={params.chapterId}
-                        title={chapter.title}
-                        courseId={params.courseId}
-                        nextChapterId={nextChapter?.id}
-                        playbackId={muxData?.playbackId || null}
-                        isLocked={isLocked}
-                        completeOnEnd={completeOnEnd}
-                    /> */}
-                    <Image 
-                        src={plugin?.image || 'placeholder.svg'}
-                        alt={plugin?.name || 'Plugin Name'}
-                        width={500}
-                        height={500}
-                    />
-                </div>
-                <div>
-                    <div className="p-4 flex flex-col md:flex-row items-center justify-between">
-                        <h2 className="text-2xl font-semibold mb-2">{plugin?.name}</h2>
-                        <PluginPurchaseButton 
-              pluginId={params.pluginId}
-              price={plugin.price || 0} // Ensure there's a default or conditional rendering based on the existence of price
-              pricingType={plugin.pricingType}
-              optInFormUrl={plugin.optInFormUrl || ''}
-              purchaseUrl={plugin.purchaseUrl || ''}
+            
+<div className="group pt-12 transition overflow-hidden border rounded-lg p-3 mx-auto max-w-4xl">
+    <div className="flex justify-center items-center p-4">
+        <Image 
+            src={plugin?.image || 'placeholder.svg'}
+            alt={plugin?.name || 'Plugin Name'}
+            width={500}
+            height={500}
+            className="object-cover rounded-md"
+        />
+    </div>
+    <div className="flex flex-col pt-2">
+        <div className="p-4 flex flex-col md:flex-row items-center justify-between">
+          <h2 className="text-lg md:text-base font-bold mb-2">{plugin?.name}</h2>
+            <PluginPurchaseButton 
+                pluginId={params.pluginId}
+                price={plugin.price || 0} // Ensure there's a default or conditional rendering based on the existence of price
+                pricingType={plugin.pricingType}
+                optInFormUrl={plugin.optInFormUrl || ''}
+                purchaseUrl={plugin.purchaseUrl || ''}
             />
-      {userId === plugin.userId && <PluginEditButton pluginId={params.pluginId} />}
-                    </div>
-                    <Separator />
-                    <div>
-                        <Preview value={plugin?.description!}/>
-                    </div>
-                </div>
-            </div>
+            {userId === plugin.userId && <PluginEditButton pluginId={params.pluginId} />}
+        </div>
+        <Separator />
+        <div>
+            <Preview value={plugin?.description!}/>
+        </div>
+    </div>
+</div>
         </div>
      );
 }
