@@ -81,7 +81,7 @@ export const LandingNavbar = () => {
             Get Started
           </Button>
         </Link>
-        <ModeToggle />
+        {/* <ModeToggle /> */}
         <UserButton />
       </div>
     </nav>

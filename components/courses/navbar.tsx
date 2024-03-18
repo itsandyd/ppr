@@ -3,7 +3,7 @@ import { CourseNavbarRoutes } from "./navbar-routes";
 
 export const CourseNavbar = () => {
     return ( 
-        <div className="p-4 border-b h-full flex items-center shadow-sm">
+        <div className="p-4 border-b h-full flex items-center shadow-sm bg-white">
             <CourseMobileSidebar />
             <CourseNavbarRoutes />
         </div>

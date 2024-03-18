@@ -16,11 +16,11 @@ const guestRoutes = [
         label: "Browse",
         href: "/academy/search"
     },
-    {
-        icon: TbBuildingCommunity,
-        label: "Community",
-        href: "/community"
-    },
+    // {
+    //     icon: TbBuildingCommunity,
+    //     label: "Community",
+    //     href: "/community"
+    // },
     {
         icon: Newspaper,
         label: "List Your Own Course",
