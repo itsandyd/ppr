@@ -21,7 +21,7 @@ export const PluginCard = ({
 }: PluginCardProps) => {
     return ( 
         <Link href={`/plugins/${id}`}>
-            <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
+            <div className="group hover:shadow-lg transition overflow-hidden border rounded-lg p-3 h-full">
                 <div className="relative w-full aspect-video rounded-md overflow-hidden">
                     <Image fill className="object-cover" src={imageUrl} alt={name}/>
                 </div>
