@@ -1,42 +1,22 @@
 "use client"
 
-import { BarChart, Compass, DotIcon, Layout, List, Music2Icon, Newspaper, PlusCircle } from "lucide-react"
+import { BarChart, BellDotIcon, Compass, DotIcon, Layout, List, Music2Icon, Newspaper, PlusCircle } from "lucide-react"
 
 import { usePathname } from "next/navigation";
 import { TbBuildingCommunity } from "react-icons/tb";
 import { SidebarItem } from "./plugin-sidebar-item";
 
 const guestRoutes = [
-    // {
-    //     icon: Layout,
-    //     label: "Dashboard",
-    //     href: "/plugins/dashboard"
-    // },
-    // {
-    //     icon: Compass,
-    //     label: "Search",
-    //     href: "/plugins/search"
-    // },
-    // {
-    //     icon: DotIcon,
-    //     label: "Amp Simulations",
-    //     href: "/plugins/amp-simulations"
-    // },
-    // {
-    //     icon: DotIcon,
-    //     label: "Autotune",
-    //     href: "/plugins/autotune"
-    // },
-    // {
-    //     icon: DotIcon,
-    //     label: "Bitcrushers",
-    //     href: "/plugins/bitcrushers"
-    // },
-    // {
-    //     icon: TbBuildingCommunity,
-    //     label: "Community",
-    //     href: "/community"
-    // },
+    {
+        icon: Music2Icon,
+        label: "Free Plugins",
+        href: "/plugins/free"
+    },
+    {
+        icon: BellDotIcon,
+        label: "Paid Plugins",
+        href: "/plugins/paid"
+    },
     {
         icon: PlusCircle,
         label: "List Your Own Plugin",
