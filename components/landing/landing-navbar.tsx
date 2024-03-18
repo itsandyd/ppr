@@ -44,7 +44,7 @@ export const LandingNavbar = () => {
                 Plugins
             </Button>
         </Link>
-        <Link href="https://pauseplayrepeat.com">
+        <Link href="/academy">
             <Button variant="ghost" className="rounded-full">
                 Academy
             </Button>
@@ -54,24 +54,24 @@ export const LandingNavbar = () => {
                 Coaching
             </Button>
         </Link> */}
-        <Link href="https://discord.gg/pauseplayrepeat">
-            <Button variant="ghost" className="rounded-full">
-                Community
-            </Button>
-        </Link>
         {/* <Link href="/dropbox">
             <Button variant="ghost" className="rounded-full">
                 Storage
             </Button>
         </Link> */}
+        <Link href="/ai">
+            <Button variant="ghost" className="rounded-full">
+                AI
+            </Button>
+        </Link>
         <Link href="https://music.pauseplayrepeat.com">
             <Button variant="ghost" className="rounded-full">
                 Music
             </Button>
         </Link>
-        <Link href="/ai">
+        <Link href="https://discord.gg/pauseplayrepeat">
             <Button variant="ghost" className="rounded-full">
-                AI
+                Community
             </Button>
         </Link>
       </div>
