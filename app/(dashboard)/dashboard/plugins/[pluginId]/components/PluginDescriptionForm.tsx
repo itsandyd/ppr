@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Course, Plugin } from "@prisma/client";
+import { Editor } from "@/components/editor";
 
 interface DescriptionFormProps {
   initialData: Plugin;
@@ -96,11 +97,11 @@ export const PluginDescriptionForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
-                      disabled={isSubmitting}
-                      placeholder="Description"
-                      {...field}
-                      />
+                  <Editor
+                  // disabled={isSubmitting}
+          value={field.value}
+          onChange={(value) => field.onChange(value)}
+        />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

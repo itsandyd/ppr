@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Course, CourseChapter } from "@prisma/client";
-import { Editor } from "@/components/courses/editor";
+import { Editor } from "@/components/editor";
 import { Preview } from "@/components/courses/preview";
 
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
