@@ -18,7 +18,8 @@ export const PluginPurchaseButton = ({
     optInFormUrl,
     purchaseUrl,
 }: PluginPurchaseButtonProps) => {
-    const buttonContent = pricingType === 'PAID' && price !== undefined ? `Purchase for ${formatPrice(price)}` : pricingType === 'PAID' ? 'Purchase' : 'Access for Free';
+    // for ${formatPrice(price)}
+    const buttonContent = pricingType === 'PAID' && price !== undefined ? `Purchase` : pricingType === 'PAID' ? 'Purchase' : 'Access for Free';
     
     const handleClick = () => {
         const url = pricingType === 'PAID' ? purchaseUrl : optInFormUrl;
