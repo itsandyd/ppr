@@ -7,6 +7,7 @@ import { BookIcon, Code, ComputerIcon, ImageIcon, LayoutDashboard, MessageSquare
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import { BsSoundwave } from "react-icons/bs";
 
 const poppins = Montserrat ({ weight: '600', subsets: ['latin'] });
 
@@ -18,7 +19,7 @@ const routes = [
     },
     {
       label: 'Plugins',
-      icon: Plugin, // Example icon
+      icon: BsSoundwave, // Example icon
       href: '/plugins',
     },
     {

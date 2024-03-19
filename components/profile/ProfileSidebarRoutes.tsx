@@ -1,27 +1,26 @@
 "use client"
 
-import { BarChart, BellDotIcon, Compass, DotIcon, HeartHandshake, Landmark, Layout, List, Music2Icon, Newspaper, PlusCircle } from "lucide-react"
+import { BarChart, BellDotIcon, Compass, DotIcon, Home, Layout, List, Music2Icon, Newspaper, PlusCircle } from "lucide-react"
 
 import { usePathname } from "next/navigation";
-import { TbBuildingCommunity } from "react-icons/tb";
-import { SidebarItem } from "./plugin-sidebar-item";
+import { ProfileSidebarItem } from "./ProfileSidebarItem";
 
 const guestRoutes = [
     {
-        icon: HeartHandshake,
-        label: "Free Plugins",
-        href: "/plugins/free"
+        icon: Home,
+        label: "Home",
+        href: "/profile"
     },
-    {
-        icon: Landmark,
-        label: "Paid Plugins",
-        href: "/plugins/paid"
-    },
-    {
-        icon: PlusCircle,
-        label: "List Your Own Plugin",
-        href: "/plugins/dashboard/author/list"
-    }
+    // {
+    //     icon: BellDotIcon,
+    //     label: "Paid Plugins",
+    //     href: "/plugins/paid"
+    // },
+    // {
+    //     icon: PlusCircle,
+    //     label: "List Your Own Plugin",
+    //     href: "/plugins/dashboard/author/list"
+    // }
 ];
 
 const teacherRoutes = [
@@ -38,7 +37,7 @@ const teacherRoutes = [
 
 ]
 
-export const PluginSidebarRoutes = () => {
+export const ProfileSidebarRoutes = () => {
     const pathname = usePathname();
 
     const isTeacherPage = pathname?.includes("/courses/teacher");
@@ -48,9 +47,9 @@ export const PluginSidebarRoutes = () => {
     return (
         <div className="flex flex-col w-full">
             {routes.map((route) => (
-                <SidebarItem 
-                    key={route.href}
+                <ProfileSidebarItem 
                     icon={route.icon}
+                    key={route.href}
                     label={route.label}
                     href={route.href}
                 />
