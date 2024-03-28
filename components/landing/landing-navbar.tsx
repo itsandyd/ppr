@@ -57,12 +57,17 @@ export const LandingNavbar = () => {
                 Coaching
             </Button>
         </Link>
+        <Link href="/ai">
+            <Button variant="ghost" className="rounded-full">
+                ai
+            </Button>
+        </Link>
         {/* <Link href="/dropbox">
             <Button variant="ghost" className="rounded-full">
                 Storage
             </Button>
         </Link> */}
-        <NavigationMenu>
+        {/* <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
@@ -76,7 +81,7 @@ export const LandingNavbar = () => {
               </NavigationMenuContent>
             </NavigationMenuItem>
           </NavigationMenuList>
-        </NavigationMenu>
+        </NavigationMenu> */}
         <Link href="https://music.pauseplayrepeat.com">
             <Button variant="ghost" className="rounded-full">
                 Music
