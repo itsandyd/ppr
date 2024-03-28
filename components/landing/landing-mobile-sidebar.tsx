@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { BsSoundwave } from "react-icons/bs";
+import { GiTeacher } from "react-icons/gi";
 
 const poppins = Montserrat ({ weight: '600', subsets: ['latin'] });
 
@@ -25,7 +26,11 @@ const routes = [
     {
       label: 'Academy',
       icon: BookIcon, // Example icon
-      href: 'https://pauseplayrepeat.com',
+      href: '/academy',
+    },    {
+      label: 'Coaching',
+      icon: GiTeacher, // Example icon
+      href: '/coaching/browse',
     },
     {
       label: 'Community',

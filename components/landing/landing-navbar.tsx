@@ -9,6 +9,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../community/mode-toggle";
 import { LandingMobileNavbar } from "./landing-mobile-navbar";
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "../ui/navigation-menu";
+import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
+
 
 const font = Montserrat({ weight: '600', subsets: ['latin'] });
 
@@ -17,7 +20,7 @@ export const LandingNavbar = () => {
 
   return (
     <>
-    <nav className="p-4 bg-transparent flex items-center justify-between">
+    <nav className="p-4 bg-transparent flex items-center justify-between z-10">
     <LandingMobileNavbar />
       {/* <Link href="/" className="flex items-center"> */}
         {/* <div className="relative h-8 w-8 mr-4">
@@ -49,21 +52,31 @@ export const LandingNavbar = () => {
                 Academy
             </Button>
         </Link>
-        {/* <Link href="/coaching/browse">
+        <Link href="/coaching/browse">
             <Button variant="ghost" className="rounded-full">
                 Coaching
             </Button>
-        </Link> */}
+        </Link>
         {/* <Link href="/dropbox">
             <Button variant="ghost" className="rounded-full">
                 Storage
             </Button>
         </Link> */}
-        <Link href="/ai">
-            <Button variant="ghost" className="rounded-full">
-                AI
-            </Button>
-        </Link>
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
+              <NavigationMenuContent>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()} href="/ai">
+                ai
+    </NavigationMenuLink>
+    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <Link href="/tools/whiteboard/dashboard">whiteboard</Link>
+    </NavigationMenuLink>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
         <Link href="https://music.pauseplayrepeat.com">
             <Button variant="ghost" className="rounded-full">
                 Music
@@ -73,7 +86,7 @@ export const LandingNavbar = () => {
             <Button variant="ghost" className="rounded-full">
                 Community
             </Button>
-        </Link>
+      </Link>
       </div>
       <div className="flex items-center gap-x-2">
         <Link href={isSignedIn ? "/profile" : "/sign-up"}>
