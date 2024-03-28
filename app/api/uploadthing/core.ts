@@ -45,6 +45,18 @@ export const ourFileRouter = {
     storageUpload: f(["text", "image", "video", "audio", "pdf"])
         .middleware(() => handleAuth())
         .onUploadComplete(() => {}),
+        subaccountLogo: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
+        .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
+    avatar: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
+    .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
+    agencyLogo: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
+    .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
+    media: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
+    .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
 } satisfies FileRouter;
  
 export type OurFileRouter = typeof ourFileRouter;

@@ -1,9 +1,12 @@
 import Stripe from "stripe"
 
-export const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
-  apiVersion: "2023-08-16",
-  typescript: true,
-});
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
+  apiVersion: '2023-08-16',
+  appInfo: {
+    name: 'Plura App',
+    version: '0.1.0',
+  },
+})
 
 export async function createExpressAccount(email: string) {
   return await stripe.accounts.create({

@@ -52,14 +52,19 @@ export const LandingNavbar = () => {
                 Academy
             </Button>
         </Link>
-        <Link href="/coaching/browse">
+        {/* <Link href="/coaching/browse">
             <Button variant="ghost" className="rounded-full">
                 Coaching
             </Button>
-        </Link>
+        </Link> */}
         <Link href="/ai">
             <Button variant="ghost" className="rounded-full">
                 ai
+            </Button>
+        </Link>
+        <Link href="/agency">
+            <Button variant="ghost" className="rounded-full">
+                Agency
             </Button>
         </Link>
         {/* <Link href="/dropbox">
