@@ -37,7 +37,7 @@ export const LandingNavbar = () => {
         </h1>
       </Link> */}
        <div className="flex items-center gap-x-2">
-        <Link href="https://sounds.pauseplayrepeat.com">
+        <Link href="/sounds">
             <Button variant="ghost" className="rounded-full">
                 Sounds
             </Button>

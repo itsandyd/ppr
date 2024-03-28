@@ -227,6 +227,7 @@ model User {
   Permissions   Permissions[]
   Ticket        Ticket[]
   Notification  Notification[]
+  Sound         Sounds[]
 
   @@index([agencyId])
 }
@@ -506,6 +507,37 @@ model Plugin {
 enum PricingType {
   FREE
   PAID
+}
+
+model SoundsCategory {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Sounds    Sounds[]
+}
+
+model Sounds {
+  id          String  @id @default(uuid())
+  name        String
+  author      String?
+  description String? @db.Text
+  image       String? @db.Text
+  userId      String?
+  user        User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  pricingType  PricingType @default(FREE)
+  price        Float?
+  optInFormUrl String?
+  purchaseUrl  String?
+  categoryId   String?
+
+  category SoundsCategory? @relation(fields: [categoryId], references: [id])
+
+  @@index([userId])
+  @@index([categoryId])
 }
 
 model StorageFolder {
