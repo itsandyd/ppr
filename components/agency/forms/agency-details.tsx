@@ -16,9 +16,11 @@ import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import FileUpload from "../AgencyFileUpload";
 import { v4 } from "uuid";
-import { deleteAgency, initUser, upsertAgency } from "@/lib/agency/queries";
+import { deleteAgency, initUser, saveActivityLogsNotification, updateAgencyDetails, upsertAgency } from "@/lib/agency/queries";
 import { LoaderIcon } from "lucide-react";
 import toast from "react-hot-toast";
+import { Switch } from "@/components/ui/switch";
+import { NumberInput } from '@tremor/react';
 
 type Props = {
     data?: Partial<Agency>
@@ -256,10 +258,10 @@ const AgencyDetails = ({ data }: Props) => {
                           </div>
     
                           <FormControl>
-                            {/* <Switch
+                            <Switch
                               checked={field.value}
                               onCheckedChange={field.onChange}
-                            /> */}
+                            />
                           </FormControl>
                         </FormItem>
                       )
@@ -359,7 +361,7 @@ const AgencyDetails = ({ data }: Props) => {
                         ✨ Create a goal for your agency. As your business grows
                         your goals grow too so dont forget to set the bar higher!
                       </FormDescription>
-                      {/* <NumberInput
+                      <NumberInput
                         defaultValue={data?.goal}
                         onValueChange={async (val) => {
                           if (!data?.id) return
@@ -374,7 +376,7 @@ const AgencyDetails = ({ data }: Props) => {
                         min={1}
                         className="bg-background !border !border-input"
                         placeholder="Sub Account Goal"
-                      /> */}
+                      />
                     </div>
                   )}
                   <Button

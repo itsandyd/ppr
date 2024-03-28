@@ -1,3 +1,5 @@
+
+
 // import CircleProgress from '@/components/global/circle-progress'
 import {
   Card,
@@ -12,7 +14,7 @@ import { Separator } from '@/components/ui/separator'
 import { db } from '@/lib/db'
 import { stripe } from '@/lib/stripe'
 
-// import { AreaChart } from '@tremor/react'
+import { AreaChart } from '@tremor/react';
 import {
   ClipboardIcon,
   Contact2,
