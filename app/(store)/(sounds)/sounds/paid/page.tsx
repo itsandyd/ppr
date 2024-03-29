@@ -11,6 +11,7 @@ import { PluginSearchInput } from "@/components/plugins/PluginSearchInput";
 import { SoundsList } from "@/components/sounds/SoundsList";
 import { getFreeSounds } from "@/actions/get-free-sounds";
 import { getPaidPlugins } from "@/actions/get-paid-plugins";
+import { getPaidSounds } from "@/actions/get-paid-sounds";
 
 
 // import { InfoCard } from "./components/InfoCard";
@@ -41,7 +42,7 @@ const PaidSoundsPage = async ({
       );
     }
   
-    const plugins = await getPaidPlugins({
+    const sounds = await getPaidSounds({
         ...searchParams,
     });
         
@@ -54,7 +55,7 @@ const PaidSoundsPage = async ({
                 /> */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       </div>
-        <SoundsList items={plugins} />
+        <SoundsList items={sounds} />
     </div>
   )
 }
