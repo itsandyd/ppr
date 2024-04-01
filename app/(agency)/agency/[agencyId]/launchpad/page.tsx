@@ -8,11 +8,14 @@ import {
 } from '@/components/ui/card'
 import { db } from '@/lib/db'
 // import { getStripeOAuthLink } from '@/lib/utils'
-import { CheckCircleIcon } from 'lucide-react'
+import { Banknote, CheckCircleIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { stripe } from '@/lib/stripe'
+import { TbNumber1 } from 'react-icons/tb'
+import { FaInternetExplorer } from 'react-icons/fa'
+import { getStripeOAuthLink } from '@/lib/agency/utils'
 
 type Props = {
   params: {
@@ -40,10 +43,10 @@ const LaunchPadPage = async ({ params, searchParams }: Props) => {
     agencyDetails.state &&
     agencyDetails.zipCode
 
-//   const stripeOAuthLink = getStripeOAuthLink(
-//     'agency',
-//     `launchpad___${agencyDetails.id}`
-//   )
+  const stripeOAuthLink = getStripeOAuthLink(
+    'agency',
+    `launchpad___${agencyDetails.id}`
+  )
 
   let connectedStripeAccount = false
 
@@ -78,26 +81,14 @@ const LaunchPadPage = async ({ params, searchParams }: Props) => {
           <CardContent className="flex flex-col gap-4">
             <div className="flex justify-between items-center w-full border p-4 rounded-lg gap-2">
               <div className="flex md:items-center gap-4 flex-col md:!flex-row">
-                <Image
-                  src="/appstore.png"
-                  alt="app logo"
-                  height={80}
-                  width={80}
-                  className="rounded-md object-contain"
-                />
+                <FaInternetExplorer />
                 <p> Save the website as a shortcut on your mobile device</p>
               </div>
               <Button>Start</Button>
             </div>
             <div className="flex justify-between items-center w-full border p-4 rounded-lg gap-2">
               <div className="flex md:items-center gap-4 flex-col md:!flex-row">
-                <Image
-                  src="/stripelogo.png"
-                  alt="app logo"
-                  height={80}
-                  width={80}
-                  className="rounded-md object-contain"
-                />
+                <Banknote />
                 <p>
                   Connect your stripe account to accept payments and see your
                   dashboard.
@@ -110,9 +101,8 @@ const LaunchPadPage = async ({ params, searchParams }: Props) => {
                 />
               ) : (
                 <Link
-                  className="bg-primary py-2 px-4 rounded-md text-white"
-                  href='/'
-                //   {stripeOAuthLink}
+                  className="bg-primary py-2 px-4 rounded-md"
+                  href={stripeOAuthLink}
                 >
                   Start
                 </Link>
@@ -136,7 +126,7 @@ const LaunchPadPage = async ({ params, searchParams }: Props) => {
                 />
               ) : (
                 <Link
-                  className="bg-primary py-2 px-4 rounded-md text-white"
+                  className="bg-primary py-2 px-4 rounded-md"
                   href={`/agency/${params.agencyId}/settings`}
                 >
                   Start

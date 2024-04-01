@@ -1,4 +1,5 @@
 
+import InfoBar from '@/components/agency/infobar'
 import Sidebar from '@/components/agency/sidebar'
 import { getNotificationAndUser, verifyAndAcceptInvitation } from '@/lib/agency/queries'
 import { currentUser } from '@clerk/nextjs'
@@ -22,11 +23,12 @@ const layout = async ({ children, params }: Props) => {
     return redirect('/agency')
   }
 
-//   if (
-//     user.privateMetadata.role !== 'AGENCY_OWNER' &&
-//     user.privateMetadata.role !== 'AGENCY_ADMIN'
-//   )
-//     return <Unauthorized />
+  if (
+    user.privateMetadata.role !== 'AGENCY_OWNER' &&
+    user.privateMetadata.role !== 'AGENCY_ADMIN'
+  )
+    return null
+    // <Unauthorized />
 
   let allNoti: any = []
   const notifications = await getNotificationAndUser(agencyId)
@@ -39,10 +41,10 @@ const layout = async ({ children, params }: Props) => {
         type="agency"
       />
       <div className="md:pl-[300px]">
-        {/* <InfoBar
+        <InfoBar
           notifications={allNoti}
           role={allNoti.User?.role}
-        /> */}
+        />
         <div className="relative">
           {/* <BlurPage> */}
             {children}

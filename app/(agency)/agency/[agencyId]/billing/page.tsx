@@ -66,7 +66,7 @@ const page = async ({ params }: Props) => {
   ]
 
   return (
-    <>
+    <div className="p-24">
       <SubscriptionHelper
         prices={prices.data}
         customerId={agencySubscription?.customerId || ''}
@@ -172,7 +172,7 @@ const page = async ({ params }: Props) => {
           ))}
         </TableBody>
       </Table>
-    </>
+    </div>
   )
 }
 

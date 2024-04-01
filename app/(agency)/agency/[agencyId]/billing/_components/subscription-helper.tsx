@@ -39,7 +39,7 @@ const SubscriptionHelper = ({ customerId, planExists, prices }: Props) => {
       )
   }, [plan, setOpen, prices, customerId, planExists])
 
-  return <div>SubscriptionHelper</div>
+  return <div></div>
 }
 
 export default SubscriptionHelper
