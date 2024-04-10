@@ -35,7 +35,7 @@ const layout = async ({ children, params }: Props) => {
   if (notifications) allNoti = notifications
 
   return (
-    <div className="h-screen">
+    <div className="h-screen p-20">
       <Sidebar
         id={params.agencyId}
         type="agency"
@@ -43,7 +43,7 @@ const layout = async ({ children, params }: Props) => {
       <div className="md:pl-[300px]">
         <InfoBar
           notifications={allNoti}
-          role={allNoti.User?.role}
+          agencyRole={allNoti.User?.role}
         />
         <div className="relative">
           {/* <BlurPage> */}

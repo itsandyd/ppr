@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // Please edit this to allow other routes to be public as needed.
 // See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
 export default authMiddleware({
-  publicRoutes: ["/api/uploadthing", "/api/:path*", "/", "/sounds", "/plugins", "/academy", "/coaching", "/community", "/music", "/spotify", "/ai/"],
+  publicRoutes: ["/api/uploadthing", "/api/:path*", "/", "/sounds", "/plugins", "/academy", "/coaching", "/community", "/music", "/spotify", "/ai/", "/lib/agency/queries", "/site"],
   async beforeAuth(auth, req) {},
   async afterAuth(auth, req) {
     //rewrite for domains
@@ -18,7 +18,7 @@ export default authMiddleware({
       searchParams.length > 0 ? `?${searchParams}` : ''
     }`
 
-    //if subdomain exists
+    // if subdomain exists
     // const customSubDomain = hostname
     //   .get('host')
     //   ?.split(`${process.env.NEXT_PUBLIC_DOMAIN}`)
@@ -49,8 +49,7 @@ export default authMiddleware({
     // }
   },
 });
- 
-export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
-};
 
+export const config = {
+  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+}

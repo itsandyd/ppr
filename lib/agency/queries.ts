@@ -8,7 +8,6 @@ import {
   Lane,
   Plan,
   Prisma,
-  Role,
   SubAccount,
   Tag,
   Ticket,
@@ -166,9 +165,11 @@ export const verifyAndAcceptInvitation = async () => {
       updatedAt: new Date(),
       emailVerified: null, // Assuming null is acceptable
       image: null, // Assuming null is acceptable
-      hashedPassword: null, 
-      
+      hashedPassword: null,
+      userRoleId: null, // Add this line
+      userTypeId: null, // Add this line
     })
+    
     await saveActivityLogsNotification({
       agencyId: invitationExists?.agencyId,
       description: `Joined`,
@@ -477,7 +478,7 @@ export const getUser = async (id: string) => {
 }
 
 export const sendInvitation = async (
-  role: Role,
+  role: AgencyRole,
   email: string,
   agencyId: string
 ) => {

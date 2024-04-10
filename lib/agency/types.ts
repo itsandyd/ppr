@@ -3,10 +3,10 @@ import {
     Lane,
     Notification,
     Prisma,
-    Role,
     Tag,
     Ticket,
     User,
+    UserTypeRole,
   } from '@prisma/client'
   import {
     _getTicketsWithAllRelations,
@@ -32,7 +32,7 @@ import { db } from '../db'
           email: string
           createdAt: Date
           updatedAt: Date
-          role: Role
+          role: UserTypeRole
           agencyId: string | null
         }
       } & Notification)[]

@@ -20,6 +20,7 @@ const nextConfig = {
       "static.kvraudio.com",
       "www.audiority.com",
       "www.audiority.com",
+      "img.clerk.com",
     ],
   },
 };

@@ -12,7 +12,7 @@ import {
   SheetTrigger,
 } from '../ui/sheet'
 import { Bell } from 'lucide-react'
-import { Role } from '@prisma/client'
+import { AgencyRole } from '@prisma/client'
 import { Card } from '../ui/card'
 import { Switch } from '../ui/switch'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
@@ -22,12 +22,12 @@ import { ModeToggle } from '../community/mode-toggle'
 
 type Props = {
   notifications: NotificationWithUser | []
-  role?: Role
+  agencyRole?: AgencyRole
   className?: string
   subAccountId?: string
 }
 
-const InfoBar = ({ notifications, subAccountId, className, role }: Props) => {
+const InfoBar = ({ notifications, subAccountId, className, agencyRole }: Props) => {
   const [allNotifications, setAllNotifications] = useState(notifications)
   const [showAll, setShowAll] = useState(true)
 
@@ -65,12 +65,12 @@ const InfoBar = ({ notifications, subAccountId, className, role }: Props) => {
               <SheetHeader className="text-left">
                 <SheetTitle>Notifications</SheetTitle>
                 <SheetDescription>
-                  {/* {(role === 'AGENCY_ADMIN' || role === 'AGENCY_OWNER') && (
+                  {(agencyRole === 'AGENCY_ADMIN' || agencyRole === 'AGENCY_OWNER') && (
                     <Card className="flex items-center justify-between p-4">
                       Current Subaccount
                       <Switch onCheckedChange={handleClick} />
                     </Card>
-                  )} */}
+                  )}
                 </SheetDescription>
               </SheetHeader>
               {allNotifications?.map((notification) => (

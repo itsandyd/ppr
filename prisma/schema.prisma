@@ -109,7 +109,7 @@ model Message {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   companionId String?
-  role        Role?
+  role        AiRole?
   userId      String?
 
   @@index([channelId])
@@ -176,7 +176,7 @@ model Companion {
   @@fulltext([name])
 }
 
-enum Role {
+enum AiRole {
   user
   system
 }
@@ -214,7 +214,7 @@ model User {
   accounts      Account[]
   // listings     CoachingListing[]
   reservations  CoachingReservation[]
-  Plugin        Plugin[]
+  // Plugin        Plugin[]
   // StorageFolder StorageFolder[]
   // StorageFile   StorageFile[]
   // SharedTrack   SharedTrack[]
@@ -229,7 +229,23 @@ model User {
   Notification  Notification[]
   Sound         Sounds[]
 
+  userRoleId String?
+  userTypeId String?
+
   @@index([agencyId])
+}
+
+model UserType {
+  id     String       @id @default(uuid())
+  type   UserTypeRole
+  userId String?
+
+  @@unique([id, type])
+}
+
+enum UserTypeRole {
+  BUYER
+  SELLER
 }
 
 model Favorite {
@@ -460,7 +476,7 @@ model Song {
 
 model CompanionMessage {
   id        String   @id @default(uuid())
-  role      Role
+  role      AiRole
   content   String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -488,7 +504,7 @@ model Plugin {
   description String? @db.Text
   image       String? @db.Text
   userId      String?
-  user        User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // user        User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt

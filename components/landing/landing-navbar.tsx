@@ -106,7 +106,7 @@ export const LandingNavbar = () => {
         </Link>
         {/* <ModeToggle /> */}
         <UserButton />
-      </div>
+        </div>
     </nav>
     </>
   )
