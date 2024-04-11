@@ -1,8 +1,13 @@
-import { Plugin, PluginCategory, SoundsCategory } from "@prisma/client";
+import { Sounds, SoundsCategory } from "@prisma/client";
 import { db } from "@/lib/db";
 
-type SoundsWithCategory = Plugin & {
-  category: SoundsCategory | null;
+type SoundsWithCategory = Sounds & {
+  category: {
+    id: string;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+  } | null;
 };
 
 interface GetPaidSoundsParams {
@@ -13,11 +18,11 @@ export const getPaidSounds = async ({ categoryId }: GetPaidSoundsParams = {}): P
   try {
     const sounds: SoundsWithCategory[] = await db.sounds.findMany({
       where: {
-        pricingType: "PAID",
+        pricingType: "PAID", // Assuming that the Sounds model has a pricingType field
         ...(categoryId && { categoryId: categoryId }), // Conditionally add categoryId to the query if it exists
       },
       include: {
-        category: true,
+        category: true, // Include the category relation
       },
       orderBy: {
         createdAt: "asc",

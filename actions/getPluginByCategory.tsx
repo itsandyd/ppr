@@ -2,21 +2,18 @@ import { Plugin, PluginCategory } from "@prisma/client";
 import { db } from "@/lib/db";
 
 type PluginWithCategory = Plugin & {
-  category: PluginCategory | null; // Extend Plugin with category relation
+
 };
 
 // Accept a category name as a parameter
-export const getPluginsByCategory = async (categoryName: string): Promise<PluginWithCategory[]> => {
+export const getPluginsByCategory = async (categoryId: string): Promise<PluginWithCategory[]> => {
   try {
-    // Fetch all plugins that belong to the specified category and include their categories
     const plugins: PluginWithCategory[] = await db.plugin.findMany({
       where: {
-        category: {
-          name: categoryName, // Use the categoryName parameter to filter plugins
-        },
+        categoryId: categoryId, // Use the categoryId parameter to filter plugins
       },
       include: {
-        category: true, // Include the category relation
+        pluginType: true, // Include the pluginType relation
       },
       orderBy: {
         createdAt: "asc",

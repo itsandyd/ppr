@@ -89,7 +89,7 @@ const SoundsIdPage = async ({
                             Customize your plugin
                         </h2>
                     </div>
-                    <SoundsTitleForm 
+                    {/* <SoundsTitleForm 
                         initialData={sounds}
                         soundsId={sounds.id}
                     />
@@ -108,7 +108,7 @@ const SoundsIdPage = async ({
                             label: category.name,
                             value: category.id,
                         }))}
-                    />
+                    /> */}
                 </div>
                 <div className="space-y-6">
                     <div>
@@ -118,10 +118,10 @@ const SoundsIdPage = async ({
                                 Price your plugin
                             </h2>
                         </div>
-                        <SoundsPriceForm 
+                        {/* <SoundsPriceForm 
                             initialData={sounds}
                             soundsId={sounds.id}
-                        />
+                        /> */}
                     </div>
                     <div>
                         {/* <div className="flex items-center gap-x-2">
