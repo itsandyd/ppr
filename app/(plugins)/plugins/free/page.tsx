@@ -9,6 +9,7 @@ import { PluginList } from "../search/components/PluginList";
 import { getFreePlugins } from "@/actions/get-free-plugins";
 import { PluginSearchInput } from "@/components/plugins/PluginSearchInput";
 import { PluginCategories } from "../search/components/categories";
+import { PluginTypes } from "../search/components/types";
 
 // import { InfoCard } from "./components/InfoCard";
 
@@ -16,6 +17,7 @@ interface SearchPageProps {
     searchParams: {
       title: string;
       categoryId: string;
+      typeId: string;
     }
   };
 
@@ -25,6 +27,12 @@ const FreePluginsPage = async ({
 
   
     const categories = await db.pluginCategory.findMany({
+      orderBy: {
+        name: "asc"
+      },
+    });
+
+    const types = await db.pluginType.findMany({
       orderBy: {
         name: "asc"
       },
@@ -46,9 +54,9 @@ const FreePluginsPage = async ({
   return (
     <div className="p-6 space-y-4">
     {/* <PluginSearchInput /> */}
-    <PluginCategories
-                  items={categories}
-                />
+    <PluginTypes
+      items={types}
+      />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       </div>
         <PluginList items={plugins} />

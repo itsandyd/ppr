@@ -1,12 +1,12 @@
-import { Plugin, PluginCategory } from "@prisma/client";
+import { Plugin, PluginCategory, PluginType } from "@prisma/client";
 import { PluginCard } from "./PluginCard";
 
-interface PluginWithCategory extends Plugin {
-  category: PluginCategory | null; // Extend Plugin with category relation
+interface PluginWithType extends Plugin {
+  pluginType: PluginType | null; // Extend Plugin with type relation
 }
 
 interface PluginsListProps {
-  items: PluginWithCategory[]; // Use the extended interface
+  items: PluginWithType[]; // Use the extended interface
 }
 
 export const PluginList = ({
@@ -22,7 +22,7 @@ export const PluginList = ({
             name={item.name} 
             imageUrl={item.image || 'placeholder.svg' as string} // Assuming 'image' is the correct field for the plugin's image URL
             description={item.description}
-            category={item.category?.name || 'No Category'} // Handle possibly undefined category
+            type={item.pluginType?.name || 'No Type'} // Handle possibly undefined category
           />
         ))}
       </div>

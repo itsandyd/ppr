@@ -8,16 +8,15 @@ interface PluginCardProps {
     id: string;
     name: string;
     imageUrl: string
-    description?: string | null; // Assuming you want to display the description
-    category: string | null; // Assuming you want to display the category name
+    description: string | null;
+    type: string | null;
 }
 
 export const PluginCard = ({
     id,
     name,
     imageUrl,
-    description,
-    category,
+    type
 }: PluginCardProps) => {
     return ( 
         <Link href={`/plugins/${id}`}>
@@ -30,7 +29,7 @@ export const PluginCard = ({
                         {name}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                        {category}
+                        {type}
                     </p>
                     {/* <p className="text-sm text-muted-foreground mt-2">
                         {description}

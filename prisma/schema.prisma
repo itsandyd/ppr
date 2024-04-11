@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
 }
 
 datasource db {
@@ -10,88 +10,62 @@ datasource db {
 }
 
 model Profile {
-  id       String @id @default(uuid())
-  userId   String @unique
-  name     String
-  imageUrl String @db.Text
-  email    String @db.Text
-
-  servers  Server[]
-  members  Member[]
-  channels Channel[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  name      String
+  imageUrl  String    @db.Text
+  email     String    @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  servers   Server[]
+  members   Member[]
+  channels  Channel[]
 }
 
 model Server {
-  id         String @id @default(uuid())
+  id         String    @id @default(uuid())
   name       String
-  imageUrl   String @db.Text
-  inviteCode String @unique
-
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  members  Member[]
-  channels Channel[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  imageUrl   String    @db.Text
+  inviteCode String    @unique
+  profileId  String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  members    Member[]
+  channels   Channel[]
 
   @@index([profileId])
 }
 
-enum MemberRole {
-  ADMIN
-  MODERATOR
-  GUEST
-}
-
 model Member {
-  id   String     @id @default(uuid())
-  role MemberRole @default(GUEST)
-
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  serverId String
-  server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
-
-  messages       Message[]
-  directMessages DirectMessage[]
-
-  conversationsInitiated Conversation[] @relation("MemberOne")
-  conversationsReceived  Conversation[] @relation("MemberTwo")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                     String          @id @default(uuid())
+  role                   MemberRole      @default(GUEST)
+  profileId              String
+  serverId               String
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  profile                Profile         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  server                 Server          @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  messages               Message[]
+  directMessages         DirectMessage[]
+  conversationsInitiated Conversation[]  @relation("MemberOne")
+  conversationsReceived  Conversation[]  @relation("MemberTwo")
 
   @@index([profileId])
   @@index([serverId])
 }
 
-enum ChannelType {
-  TEXT
-  AUDIO
-  VIDEO
-}
-
 model Channel {
-  id   String      @id @default(uuid())
-  name String
-  type ChannelType @default(TEXT)
-
+  id        String      @id @default(uuid())
+  name      String
+  type      ChannelType @default(TEXT)
   profileId String
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  serverId String
-  server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
-
-  messages Message[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  serverId  String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  server    Server      @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  messages  Message[]
 
   @@index([profileId])
   @@index([serverId])
@@ -102,15 +76,15 @@ model Message {
   content     String   @db.Text
   fileUrl     String?  @db.Text
   memberId    String
-  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
   channelId   String
-  channel     Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
   deleted     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   companionId String?
   role        AiRole?
   userId      String?
+  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  channel     Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
 
   @@index([channelId])
   @@index([memberId])
@@ -118,14 +92,11 @@ model Message {
 }
 
 model Conversation {
-  id String @id @default(uuid())
-
-  memberOneId String
-  memberOne   Member @relation("MemberOne", fields: [memberOneId], references: [id], onDelete: Cascade)
-
-  memberTwoId String
-  memberTwo   Member @relation("MemberTwo", fields: [memberTwoId], references: [id], onDelete: Cascade)
-
+  id             String          @id @default(uuid())
+  memberOneId    String
+  memberTwoId    String
+  memberOne      Member          @relation("MemberOne", fields: [memberOneId], references: [id], onDelete: Cascade)
+  memberTwo      Member          @relation("MemberTwo", fields: [memberTwoId], references: [id], onDelete: Cascade)
   directMessages DirectMessage[]
 
   @@unique([memberOneId, memberTwoId])
@@ -137,12 +108,12 @@ model DirectMessage {
   content        String       @db.Text
   fileUrl        String?      @db.Text
   memberId       String
-  member         Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
   conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   deleted        Boolean      @default(false)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  member         Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([memberId])
   @@index([conversationId])
@@ -155,39 +126,31 @@ model Category {
 }
 
 model Companion {
-  id           String @id @default(uuid())
+  id           String             @id @default(uuid())
   userId       String
   userName     String
   src          String
-  name         String @db.Text
+  name         String             @db.Text
   description  String
-  instructions String @db.Text
-  seed         String @db.Text
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String
-
-  messages CompanionMessage[]
+  instructions String             @db.Text
+  seed         String             @db.Text
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  categoryId   String
+  category     Category           @relation(fields: [categoryId], references: [id])
+  messages     CompanionMessage[]
 
   @@index([categoryId])
   @@fulltext([name])
 }
 
-enum AiRole {
-  user
-  system
-}
-
 model UserSubscription {
   id                     String    @id @default(uuid())
   userId                 String    @unique
-  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
-  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
-  stripePriceId          String?   @unique @map(name: "stripe_price_id")
-  stripeCurrentPeriodEnd DateTime? @unique @map(name: "stripe_current_period_end")
+  stripeCustomerId       String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
+  stripePriceId          String?   @unique @map("stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @unique @map("stripe_current_period_end")
 }
 
 model Prompt {
@@ -200,37 +163,30 @@ model Prompt {
 }
 
 model User {
-  id             String     @id @default(uuid())
+  id             String                @id @default(uuid())
   name           String?
-  email          String?    @unique
+  email          String?               @unique
   emailVerified  DateTime?
-  avatarUrl      String?    @db.Text
   image          String?
   hashedPassword String?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  agencyId       String?
+  role           AgencyRole?           @default(SUBACCOUNT_USER)
+  avatarUrl      String?               @db.Text
+  userRoleId     String?
+  userTypeId     String?
   favorites      Favorite[]
-
-  accounts      Account[]
-  // listings     CoachingListing[]
-  reservations  CoachingReservation[]
-  // Plugin        Plugin[]
-  // StorageFolder StorageFolder[]
-  // StorageFile   StorageFile[]
-  // SharedTrack   SharedTrack[]
-  StorageFolder StorageFolder[]
-  StorageFile   StorageFile[]
-  SharedTrack   SharedTrack[]
-  role          AgencyRole?           @default(SUBACCOUNT_USER)
-  agencyId      String?
-  Agency        Agency?               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  Permissions   Permissions[]
-  Ticket        Ticket[]
-  Notification  Notification[]
-  Sound         Sounds[]
-
-  userRoleId String?
-  userTypeId String?
+  accounts       Account[]
+  reservations   CoachingReservation[]
+  StorageFolder  StorageFolder[]
+  StorageFile    StorageFile[]
+  SharedTrack    SharedTrack[]
+  Agency         Agency?               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  Permissions    Permissions[]
+  Ticket         Ticket[]
+  Notification   Notification[]
+  Sound          Sounds[]
 
   @@index([agencyId])
 }
@@ -241,11 +197,6 @@ model UserType {
   userId String?
 
   @@unique([id, type])
-}
-
-enum UserTypeRole {
-  BUYER
-  SELLER
 }
 
 model Favorite {
@@ -270,19 +221,18 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])
 }
 
 model CoachingListing {
-  id            String   @id @default(uuid())
+  id            String                @id @default(uuid())
   title         String
   description   String
   imageSrc      String
-  createdAt     DateTime @default(now())
+  createdAt     DateTime              @default(now())
   category      String
   roomCount     Int
   bathroomCount Int
@@ -290,26 +240,23 @@ model CoachingListing {
   locationValue String
   userId        String
   price         Int
-
-  // user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reservations CoachingReservation[]
+  reservations  CoachingReservation[]
 
   @@index([userId])
 }
 
 model CoachingReservation {
-  id         String   @id @default(uuid())
-  date       DateTime @default(now())
+  id         String          @id @default(uuid())
+  date       DateTime        @default(now())
   guestCount Int
   userId     String
   listingId  String
-  startDate  DateTime @default(now())
-  endDate    DateTime @default(now())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  listing CoachingListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  createdAt  DateTime        @default(now())
+  endDate    DateTime        @default(now())
+  startDate  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing    CoachingListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([listingId])
@@ -319,21 +266,21 @@ model Store {
   id         String          @id @default(uuid())
   name       String
   userId     String
-  billboards Billboard[]     @relation("StoreToBillboard")
-  categories StoreCategory[] @relation("StoreToCategory")
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
+  billboards Billboard[]     @relation("StoreToBillboard")
+  categories StoreCategory[] @relation("StoreToCategory")
 }
 
 model Billboard {
   id         String          @id @default(uuid())
   storeId    String
-  store      Store           @relation("StoreToBillboard", fields: [storeId], references: [id])
   label      String
   imageUrl   String
-  categories StoreCategory[]
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @default(now())
+  store      Store           @relation("StoreToBillboard", fields: [storeId], references: [id])
+  categories StoreCategory[]
 
   @@index([storeId])
 }
@@ -341,32 +288,30 @@ model Billboard {
 model StoreCategory {
   id          String    @id @default(uuid())
   storeId     String
-  store       Store     @relation("StoreToCategory", fields: [storeId], references: [id])
   billboardId String
-  billboard   Billboard @relation(fields: [billboardId], references: [id])
   name        String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
+  store       Store     @relation("StoreToCategory", fields: [storeId], references: [id])
+  billboard   Billboard @relation(fields: [billboardId], references: [id])
 
   @@index([storeId])
   @@index([billboardId])
 }
 
 model Course {
-  id          String  @id @default(uuid())
-  userId      String
-  title       String  @db.Text
-  description String? @db.Text
-  imageUrl    String? @db.Text
-  price       Float?
-  isPublished Boolean @default(false)
-
-  attachments Attachment[]
-
+  id               String           @id @default(uuid())
+  userId           String
+  title            String           @db.Text
+  description      String?          @db.Text
+  imageUrl         String?          @db.Text
+  price            Float?
+  isPublished      Boolean          @default(false)
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-  courseCategory   CourseCategory?  @relation(fields: [courseCategoryId], references: [id])
   courseCategoryId String?
+  attachments      Attachment[]
+  courseCategory   CourseCategory?  @relation(fields: [courseCategoryId], references: [id])
   courseChapter    CourseChapter[]
   purchaseCourse   PurchaseCourse[]
 
@@ -375,15 +320,13 @@ model Course {
 }
 
 model Attachment {
-  id   String @id @default(uuid())
-  name String
-  url  String @db.Text
-
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
+  id        String   @id @default(uuid())
+  name      String
+  url       String   @db.Text
+  courseId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@index([courseId])
 }
@@ -395,74 +338,62 @@ model CourseCategory {
 }
 
 model CourseChapter {
-  id          String  @id @default(uuid())
-  title       String
-  description String? @db.Text
-  videoUrl    String? @db.Text
-  position    Int
-  isPublished Boolean @default(false)
-  isFree      Boolean @default(false)
-
-  muxData MuxData?
-
-  courseId String
-
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
+  id           String         @id @default(uuid())
+  title        String
+  description  String?        @db.Text
+  videoUrl     String?        @db.Text
+  position     Int
+  isPublished  Boolean        @default(false)
+  isFree       Boolean        @default(false)
+  courseId     String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  muxData      MuxData?
+  course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
   userProgress UserProgress[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   @@index([courseId])
 }
 
 model MuxData {
-  id         String  @id @default(uuid())
+  id         String        @id @default(uuid())
+  chapterId  String        @unique
   assetId    String
   playbackId String?
-
-  chapterId String        @unique
-  chapter   CourseChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapter    CourseChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 }
 
 model UserProgress {
-  id     String @id @default(uuid())
-  userId String
-
-  chapterId String
-  chapter   CourseChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-
-  isCompleted Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String        @id @default(uuid())
+  userId      String
+  chapterId   String
+  isCompleted Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  chapter     CourseChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   @@unique([userId, chapterId])
   @@index([chapterId])
 }
 
 model PurchaseCourse {
-  id     String @id @default(uuid())
-  userId String
-
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
+  id        String   @id @default(uuid())
+  userId    String
+  courseId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId])
   @@index([courseId])
 }
 
 model StripeCustomer {
-  id               String @id @default(uuid())
-  userId           String @unique
-  stripeCustomerId String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  stripeCustomerId String   @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model Song {
@@ -475,54 +406,77 @@ model Song {
 }
 
 model CompanionMessage {
-  id        String   @id @default(uuid())
-  role      AiRole
-  content   String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id          String    @id @default(uuid())
+  role        AiRole
+  content     String    @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   companionId String
   userId      String
-
-  companion Companion @relation(fields: [companionId], references: [id], onDelete: Cascade)
+  companion   Companion @relation(fields: [companionId], references: [id], onDelete: Cascade)
 
   @@index([companionId])
 }
 
+model PluginType {
+  id                   String                     @id @default(uuid())
+  name                 String                     @unique
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
+  plugins              Plugin[]
+  effectCategories     PluginEffectCategory[]
+  instrumentCategories PluginInstrumentCategory[]
+}
+
+model PluginEffectCategory {
+  id           String      @id @default(uuid())
+  name         String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime
+  PluginType   PluginType? @relation(fields: [pluginTypeId], references: [id])
+  pluginTypeId String?
+
+  @@index([pluginTypeId])
+}
+
+model PluginInstrumentCategory {
+  id           String      @id @default(uuid())
+  name         String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime
+  PluginType   PluginType? @relation(fields: [pluginTypeId], references: [id])
+  pluginTypeId String?
+
+  @@index([pluginTypeId])
+}
+
 model PluginCategory {
   id        String   @id @default(uuid())
-  name      String   @unique
-  plugins   Plugin[]
+  name      String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime
 }
 
 model Plugin {
-  id          String  @id @default(uuid())
-  name        String
-  author      String?
-  description String? @db.Text
-  image       String? @db.Text
-  userId      String?
-  // user        User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id           String      @id @default(uuid())
+  name         String
+  author       String?
+  description  String?     @db.Text
+  image        String?     @db.Text
+  userId       String?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
-  pricingType  PricingType @default(FREE)
-  price        Float?
-  optInFormUrl String?
-  purchaseUrl  String?
   categoryId   String?
-
-  category PluginCategory? @relation(fields: [categoryId], references: [id])
+  optInFormUrl String?
+  price        Float?
+  pricingType  PricingType @default(FREE)
+  purchaseUrl  String?
+  pluginTypeId String?
+  pluginType   PluginType? @relation(fields: [pluginTypeId], references: [id])
 
   @@index([userId])
   @@index([categoryId])
-}
-
-enum PricingType {
-  FREE
-  PAID
+  @@index([pluginTypeId])
 }
 
 model SoundsCategory {
@@ -534,23 +488,21 @@ model SoundsCategory {
 }
 
 model Sounds {
-  id          String  @id @default(uuid())
-  name        String
-  author      String?
-  description String? @db.Text
-  image       String? @db.Text
-  userId      String?
-  user        User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  pricingType  PricingType @default(FREE)
+  id           String          @id @default(uuid())
+  name         String
+  author       String?
+  description  String?         @db.Text
+  image        String?         @db.Text
+  userId       String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  pricingType  PricingType     @default(FREE)
   price        Float?
   optInFormUrl String?
   purchaseUrl  String?
   categoryId   String?
-
-  category SoundsCategory? @relation(fields: [categoryId], references: [id])
+  user         User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category     SoundsCategory? @relation(fields: [categoryId], references: [id])
 
   @@index([userId])
   @@index([categoryId])
@@ -559,13 +511,13 @@ model Sounds {
 model StorageFolder {
   id        String          @id @default(uuid())
   name      String
-  parentId  String? // This represents the parent folder id
-  parent    StorageFolder?  @relation("FolderToSubfolder", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children  StorageFolder[] @relation("FolderToSubfolder")
-  files     StorageFile[]   @relation("FolderToFile")
+  parentId  String?
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
   userId    String
+  parent    StorageFolder?  @relation("FolderToSubfolder", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children  StorageFolder[] @relation("FolderToSubfolder")
+  files     StorageFile[]   @relation("FolderToFile")
   user      User            @relation(fields: [userId], references: [id])
 
   @@index([parentId])
@@ -576,11 +528,11 @@ model StorageFile {
   id        String         @id @default(uuid())
   name      String
   path      String
-  folderId  String? // This represents the folder id the file belongs to
-  folder    StorageFolder? @relation("FolderToFile", fields: [folderId], references: [id])
+  folderId  String?
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
   userId    String
+  folder    StorageFolder? @relation("FolderToFile", fields: [folderId], references: [id])
   user      User           @relation(fields: [userId], references: [id])
 
   @@index([userId])
@@ -593,12 +545,388 @@ model SharedTrack {
   trackName  String
   artistName String
   albumImage String
-  user       User?    @relation(fields: [userId], references: [id])
   userId     String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  user       User?    @relation(fields: [userId], references: [id])
 
   @@index([userId])
+}
+
+model Permissions {
+  id           String     @id @default(uuid())
+  email        String
+  subAccountId String
+  access       Boolean
+  User         User       @relation(fields: [email], references: [email], onDelete: Cascade)
+  SubAccount   SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+
+  @@index([subAccountId])
+  @@index([email])
+}
+
+model Agency {
+  id               String                @id @default(uuid())
+  connectAccountId String?               @default("")
+  customerId       String                @default("")
+  name             String
+  agencyLogo       String                @db.Text
+  companyEmail     String                @db.Text
+  companyPhone     String
+  whiteLabel       Boolean               @default(true)
+  address          String
+  city             String
+  zipCode          String
+  state            String
+  country          String
+  goal             Int                   @default(5)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  users            User[]
+  SubAccount       SubAccount[]
+  SidebarOption    AgencySidebarOption[]
+  Invitation       Invitation[]
+  Notification     Notification[]
+  Subscription     Subscription?
+  AddOns           AddOns[]
+}
+
+model SubAccount {
+  id               String                    @id @default(uuid())
+  connectAccountId String?                   @default("")
+  name             String
+  subAccountLogo   String                    @db.Text
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+  companyEmail     String                    @db.Text
+  companyPhone     String
+  goal             Int                       @default(5)
+  address          String
+  city             String
+  zipCode          String
+  state            String
+  country          String
+  agencyId         String
+  Agency           Agency                    @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  SidebarOption    SubAccountSidebarOption[]
+  Permissions      Permissions[]
+  Funnels          Funnel[]
+  Media            Media[]
+  Contact          Contact[]
+  Trigger          Trigger[]
+  Automation       Automation[]
+  Pipeline         Pipeline[]
+  Tags             Tag[]
+  Notification     Notification[]
+
+  @@index([agencyId])
+}
+
+model Tag {
+  id           String     @id @default(uuid())
+  name         String
+  color        String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  subAccountId String
+  SubAccount   SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+  Ticket       Ticket[]
+
+  @@index([subAccountId])
+}
+
+model Pipeline {
+  id           String     @id @default(uuid())
+  name         String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  subAccountId String
+  Lane         Lane[]
+  SubAccount   SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+
+  @@index([subAccountId])
+}
+
+model Lane {
+  id         String   @id @default(uuid())
+  name       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  pipelineId String
+  order      Int      @default(0)
+  Pipeline   Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  Tickets    Ticket[]
+
+  @@index([pipelineId])
+}
+
+model Ticket {
+  id             String   @id @default(uuid())
+  name           String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  laneId         String
+  order          Int      @default(0)
+  value          Decimal?
+  description    String?
+  customerId     String?
+  assignedUserId String?
+  Lane           Lane     @relation(fields: [laneId], references: [id], onDelete: Cascade)
+  Tags           Tag[]
+  Customer       Contact? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  Assigned       User?    @relation(fields: [assignedUserId], references: [id], onDelete: SetNull)
+
+  @@index([laneId])
+  @@index([customerId])
+  @@index([assignedUserId])
+}
+
+model Trigger {
+  id           String       @id @default(uuid())
+  name         String
+  type         TriggerTypes
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  subAccountId String
+  Subaccount   SubAccount   @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+  Automations  Automation[]
+
+  @@index([subAccountId])
+}
+
+model Automation {
+  id                 String               @id @default(uuid())
+  name               String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  triggerId          String?
+  published          Boolean              @default(false)
+  subAccountId       String
+  Trigger            Trigger?             @relation(fields: [triggerId], references: [id], onDelete: Cascade)
+  Subaccount         SubAccount           @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+  Action             Action[]
+  AutomationInstance AutomationInstance[]
+
+  @@index([triggerId])
+  @@index([subAccountId])
+}
+
+model AutomationInstance {
+  id           String     @id @default(uuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  automationId String
+  active       Boolean    @default(false)
+  Automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  @@index([automationId])
+}
+
+model Action {
+  id           String     @id @default(uuid())
+  name         String
+  type         ActionType
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  automationId String
+  order        Int
+  laneId       String     @default("0")
+  Automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  @@index([automationId])
+}
+
+model Contact {
+  id           String     @id @default(uuid())
+  name         String
+  email        String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  subAccountId String
+  Subaccount   SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+  Ticket       Ticket[]
+
+  @@index([subAccountId])
+}
+
+model Media {
+  id           String     @id @default(uuid())
+  type         String?
+  name         String
+  link         String     @unique
+  subAccountId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  Subaccount   SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+
+  @@index([subAccountId])
+}
+
+model Funnel {
+  id            String       @id @default(uuid())
+  name          String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  description   String?
+  published     Boolean      @default(false)
+  subDomainName String?      @unique
+  favicon       String?      @db.Text
+  subAccountId  String
+  liveProducts  String?      @default("[]")
+  SubAccount    SubAccount   @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+  FunnelPages   FunnelPage[]
+  ClassName     ClassName[]
+
+  @@index([subAccountId])
+}
+
+model ClassName {
+  id         String   @id @default(uuid())
+  name       String
+  color      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  funnelId   String
+  customData String?  @db.LongText
+  Funnel     Funnel   @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+
+  @@index([funnelId])
+}
+
+model FunnelPage {
+  id           String   @id @default(uuid())
+  name         String
+  pathName     String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  visits       Int      @default(0)
+  content      String?  @db.LongText
+  order        Int
+  previewImage String?  @db.Text
+  funnelId     String
+  Funnel       Funnel   @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+
+  @@index([funnelId])
+}
+
+model AgencySidebarOption {
+  id        String   @id @default(uuid())
+  name      String   @default("Menu")
+  link      String   @default("#")
+  icon      Icon     @default(info)
+  agencyId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Agency    Agency?  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@index([agencyId])
+}
+
+model SubAccountSidebarOption {
+  id           String      @id @default(uuid())
+  name         String      @default("Menu")
+  link         String      @default("#")
+  icon         Icon        @default(info)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  subAccountId String?
+  SubAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+
+  @@index([subAccountId])
+}
+
+model Invitation {
+  id       String           @id @default(uuid())
+  email    String           @unique
+  agencyId String
+  status   InvitationStatus @default(PENDING)
+  role     AgencyRole       @default(SUBACCOUNT_USER)
+  Agency   Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@index([agencyId])
+}
+
+model Notification {
+  id           String      @id @default(uuid())
+  notification String
+  agencyId     String
+  subAccountId String?
+  userId       String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  User         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Agency       Agency      @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  SubAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+
+  @@index([agencyId])
+  @@index([subAccountId])
+  @@index([userId])
+}
+
+model Subscription {
+  id                   String   @id @default(uuid())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  plan                 Plan?
+  price                String?
+  active               Boolean  @default(false)
+  priceId              String
+  customerId           String
+  currentPeriodEndDate DateTime
+  subscritiptionId     String   @unique
+  agencyId             String?  @unique
+  Agency               Agency?  @relation(fields: [agencyId], references: [id])
+
+  @@index([customerId])
+}
+
+model AddOns {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  active    Boolean  @default(false)
+  priceId   String   @unique
+  agencyId  String?
+  Agency    Agency?  @relation(fields: [agencyId], references: [id])
+
+  @@index([agencyId])
+}
+
+model TagToTicket {
+  A String
+  B String
+
+  @@unique([A, B], map: "_TagToTicket_AB_unique")
+  @@index([B], map: "_TagToTicket_B_index")
+  @@map("_TagToTicket")
+}
+
+enum MemberRole {
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+enum ChannelType {
+  TEXT
+  AUDIO
+  VIDEO
+}
+
+enum AiRole {
+  user
+  system
+}
+
+enum UserTypeRole {
+  BUYER
+  SELLER
+}
+
+enum PricingType {
+  FREE
+  PAID
 }
 
 enum AgencyRole {
@@ -641,298 +969,12 @@ enum Icon {
   clipboardIcon
 }
 
-model Permissions {
-  id           String     @id @default(uuid())
-  email        String
-  User         User       @relation(fields: [email], references: [email], onDelete: Cascade)
-  subAccountId String
-  SubAccount   SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-  access       Boolean
-
-  @@index([subAccountId])
-  @@index([email])
-}
-
-model Agency {
-  id               String                @id @default(uuid())
-  connectAccountId String?               @default("")
-  customerId       String                @default("")
-  name             String
-  agencyLogo       String                @db.Text
-  companyEmail     String                @db.Text
-  companyPhone     String
-  whiteLabel       Boolean               @default(true)
-  address          String
-  city             String
-  zipCode          String
-  state            String
-  country          String
-  goal             Int                   @default(5)
-  users            User[]
-  createdAt        DateTime              @default(now())
-  updatedAt        DateTime              @updatedAt
-  SubAccount       SubAccount[]
-  SidebarOption    AgencySidebarOption[]
-  Invitation       Invitation[]
-  Notification     Notification[]
-  Subscription     Subscription?
-  AddOns           AddOns[]
-}
-
-model SubAccount {
-  id               String                    @id @default(uuid())
-  connectAccountId String?                   @default("")
-  name             String
-  subAccountLogo   String                    @db.Text
-  createdAt        DateTime                  @default(now())
-  updatedAt        DateTime                  @updatedAt
-  companyEmail     String                    @db.Text
-  companyPhone     String
-  goal             Int                       @default(5)
-  address          String
-  city             String
-  zipCode          String
-  state            String
-  country          String
-  agencyId         String
-  Agency           Agency                    @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  SidebarOption    SubAccountSidebarOption[]
-  Permissions      Permissions[]
-  Funnels          Funnel[]
-  Media            Media[]
-  Contact          Contact[]
-  Trigger          Trigger[]
-  Automation       Automation[]
-  Pipeline         Pipeline[]
-  Tags             Tag[]
-  Notification     Notification[]
-
-  @@index([agencyId])
-}
-
-model Tag {
-  id           String   @id @default(uuid())
-  name         String
-  color        String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  subAccountId String
-
-  SubAccount SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-  Ticket     Ticket[]
-
-  @@index([subAccountId])
-}
-
-model Pipeline {
-  id           String     @id @default(uuid())
-  name         String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  Lane         Lane[]
-  SubAccount   SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-  subAccountId String
-
-  @@index([subAccountId])
-}
-
-model Lane {
-  id         String   @id @default(uuid())
-  name       String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  Pipeline   Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
-  pipelineId String
-  Tickets    Ticket[]
-  order      Int      @default(0)
-
-  @@index([pipelineId])
-}
-
-model Ticket {
-  id          String   @id @default(uuid())
-  name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  laneId      String
-  order       Int      @default(0)
-  Lane        Lane     @relation(fields: [laneId], references: [id], onDelete: Cascade)
-  value       Decimal?
-  description String?
-  Tags        Tag[]
-
-  customerId String?
-  Customer   Contact? @relation(fields: [customerId], references: [id], onDelete: SetNull)
-
-  assignedUserId String?
-  Assigned       User?   @relation(fields: [assignedUserId], references: [id], onDelete: SetNull)
-
-  @@index([laneId])
-  @@index([customerId])
-  @@index([assignedUserId])
-}
-
 enum TriggerTypes {
   CONTACT_FORM
 }
 
-model Trigger {
-  id           String       @id @default(uuid())
-  name         String
-  type         TriggerTypes
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  subAccountId String
-  Subaccount   SubAccount   @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-  Automations  Automation[]
-
-  @@index([subAccountId])
-}
-
-model Automation {
-  id                 String               @id @default(uuid())
-  name               String
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  triggerId          String?
-  published          Boolean              @default(false)
-  Trigger            Trigger?             @relation(fields: [triggerId], references: [id], onDelete: Cascade)
-  subAccountId       String
-  Subaccount         SubAccount           @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-  Action             Action[]
-  AutomationInstance AutomationInstance[]
-
-  @@index([triggerId])
-  @@index([subAccountId])
-}
-
-model AutomationInstance {
-  id           String     @id @default(uuid())
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  automationId String
-  Automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  active       Boolean    @default(false)
-
-  @@index([automationId])
-}
-
 enum ActionType {
   CREATE_CONTACT
-}
-
-model Action {
-  id           String     @id @default(uuid())
-  name         String
-  type         ActionType
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  automationId String
-  order        Int
-  Automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  laneId       String     @default("0")
-
-  @@index([automationId])
-}
-
-model Contact {
-  id           String   @id @default(uuid())
-  name         String
-  email        String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  subAccountId String
-
-  Subaccount SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-  Ticket     Ticket[]
-
-  @@index([subAccountId])
-}
-
-model Media {
-  id           String     @id @default(uuid())
-  type         String?
-  name         String
-  link         String     @unique
-  subAccountId String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  Subaccount   SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-
-  @@index([subAccountId])
-}
-
-model Funnel {
-  id            String       @id @default(uuid())
-  name          String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  description   String?
-  published     Boolean      @default(false)
-  subDomainName String?      @unique
-  favicon       String?      @db.Text
-  subAccountId  String
-  SubAccount    SubAccount   @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-  FunnelPages   FunnelPage[]
-  liveProducts  String?      @default("[]")
-  ClassName     ClassName[]
-
-  @@index([subAccountId])
-}
-
-model ClassName {
-  id         String   @id @default(uuid())
-  name       String
-  color      String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  funnelId   String
-  customData String?  @db.LongText
-  Funnel     Funnel   @relation(fields: [funnelId], references: [id], onDelete: Cascade)
-
-  @@index([funnelId])
-}
-
-model FunnelPage {
-  id           String   @id @default(uuid())
-  name         String
-  pathName     String   @default("")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  visits       Int      @default(0)
-  content      String?  @db.LongText
-  order        Int
-  previewImage String?  @db.Text
-  funnelId     String
-  Funnel       Funnel   @relation(fields: [funnelId], references: [id], onDelete: Cascade)
-
-  @@index([funnelId])
-}
-
-model AgencySidebarOption {
-  id        String   @id @default(uuid())
-  name      String   @default("Menu")
-  link      String   @default("#")
-  icon      Icon     @default(info)
-  agencyId  String
-  Agency    Agency?  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([agencyId])
-}
-
-model SubAccountSidebarOption {
-  id           String      @id @default(uuid())
-  name         String      @default("Menu")
-  link         String      @default("#")
-  icon         Icon        @default(info)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  SubAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-  subAccountId String?
-
-  @@index([subAccountId])
 }
 
 enum InvitationStatus {
@@ -941,69 +983,7 @@ enum InvitationStatus {
   PENDING
 }
 
-model Invitation {
-  id       String           @id @default(uuid())
-  email    String           @unique
-  agencyId String
-  Agency   Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  status   InvitationStatus @default(PENDING)
-  role     AgencyRole       @default(SUBACCOUNT_USER)
-
-  @@index([agencyId])
-}
-
-model Notification {
-  id           String  @id @default(uuid())
-  notification String
-  agencyId     String
-  subAccountId String?
-  userId       String
-
-  User       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Agency     Agency      @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  SubAccount SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([agencyId])
-  @@index([subAccountId])
-  @@index([userId])
-}
-
 enum Plan {
   price_1OYxkqFj9oKEERu1NbKUxXxN
   price_1OYxkqFj9oKEERu1KfJGWxgN
-}
-
-model Subscription {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  plan      Plan?
-  price     String?
-  active    Boolean  @default(false)
-
-  priceId              String
-  customerId           String
-  currentPeriodEndDate DateTime
-  subscritiptionId     String   @unique
-
-  agencyId String? @unique
-  Agency   Agency? @relation(fields: [agencyId], references: [id])
-
-  @@index([customerId])
-}
-
-model AddOns {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String
-  active    Boolean  @default(false)
-  priceId   String   @unique
-  agencyId  String?
-  Agency    Agency?  @relation(fields: [agencyId], references: [id])
-
-  @@index([agencyId])
 }

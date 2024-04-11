@@ -1,16 +1,16 @@
-import { Plugin, PluginCategory } from "@prisma/client";
+import { Plugin, PluginEffectCategory, PluginInstrumentCategory, PluginType } from "@prisma/client";
 import { db } from "@/lib/db";
 
-type PluginWithCategory = Plugin & {
-  category: PluginCategory | null; // Extend Plugin with category relation
+type PluginWithType = Plugin & {
+  pluginType: PluginType | null; // Extend Plugin with type relation
 };
 
-export const getPlugins = async (): Promise<PluginWithCategory[]> => {
+export const getPlugins = async (): Promise<PluginWithType[]> => {
   try {
-    // Fetch all plugins and include their categories
-    const plugins: PluginWithCategory[] = await db.plugin.findMany({
+    // Fetch all plugins and include their types
+    const plugins: PluginWithType[] = await db.plugin.findMany({
       include: {
-        category: true, // Include the category relation
+        pluginType: true,
       },
       orderBy: {
         createdAt: "asc",

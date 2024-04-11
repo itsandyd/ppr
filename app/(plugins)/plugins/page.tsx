@@ -27,19 +27,19 @@ export default async function Plugins() {
   //     return redirect("/");
   //   }
   
-    const categories = await db.pluginCategory.findMany({
-      orderBy: {
-        name: "desc"
-      }
-    });
+    // const type = await db.pluginType.findMany({
+    //   orderBy: {
+    //     name: "desc"
+    //   }
+    // });
   
-    if (!categories) {
-      return (
-        <div>
-          <h1>No plugins found</h1>
-        </div>
-      );
-    }
+    // if (!type) {
+    //   return (
+    //     <div>
+    //       <h1>No plugins found</h1>
+    //     </div>
+    //   );
+    // }
   
     const plugins = await getPlugins();
         
