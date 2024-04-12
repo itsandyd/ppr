@@ -84,10 +84,10 @@ export const ChaptersForm = ({
     router.push(`/academy/dashboard/teacher/courses/${courseId}/chapters/${id}`);
   }
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="mt-6 border rounded-md p-4">
       {isUpdating && (
         <div className="">
-          <Loader2 className="animate-spin w-6 h-6 text-sky-700"/>
+          <Loader2 className="animate-spin w-6 h-6"/>
         </div>
       )}
       <div className="font-medium flex items-center justify-between ">

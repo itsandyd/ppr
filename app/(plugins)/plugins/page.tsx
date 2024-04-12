@@ -8,10 +8,22 @@ import { db } from "@/lib/db";
 import { PluginList } from "./search/components/PluginList";
 import { PluginTypes } from "./search/components/types";
 import { PluginCategories } from "./search/components/categories";
+import { getFreePlugins } from "@/actions/get-free-plugins";
+import { PluginHero } from "./components/PluginHero";
 // import { InfoCard } from "./components/InfoCard";
 
+interface SearchPageProps {
+  searchParams: {
+    title: string;
+    categoryId: string;
+    typeId: string;
+  }
+};
 
-export default async function Plugins() {
+
+const PluginsPage = async ({
+  searchParams
+}: SearchPageProps) => {
 //   const { userId } = auth();
 
 //   if (!userId) {
@@ -42,30 +54,43 @@ export default async function Plugins() {
     //     </div>
     //   );
     // }
+    
   
-    const plugins = await getPlugins();
+    const plugins = await getPlugins({
+      ...searchParams,
+    });
+
+
+    const effects = await db.pluginEffectCategory.findMany({
+      orderBy: {
+        name: "asc"
+      },
+    });
 
     const types = await db.pluginType.findMany({
       orderBy: {
         name: "asc"
       },
     });
+  
+    if (!effects) {
+      return (
+        <div>
+          <h1>No plugins found</h1>
+        </div>
+      );
+    }
 
-    const effectCategories = await db.pluginEffectCategory.findMany({
+    const instruments = await db.pluginInstrumentCategory.findMany({
       orderBy: {
         name: "asc"
-      }
-    });
-
-    const instrumentCategories = await db.pluginInstrumentCategory.findMany({
-      orderBy: {
-        name: "asc"
-      }
+      },
     });
         
 
   return (
     <div className="p-6 space-y-4">
+        <PluginHero />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
        {/* <InfoCard
           icon={Clock}
@@ -82,8 +107,8 @@ export default async function Plugins() {
       <PluginTypes
       items={types}
       />
-      <PluginCategories items={effectCategories}/>
-      <PluginCategories items={instrumentCategories}/>
+      <PluginCategories items={effects}/>
+      <PluginCategories items={instruments}/>
       {/* <CoursesList
         items={[...coursesInProgress, ...completedCourses]}
       /> */}
@@ -91,3 +116,6 @@ export default async function Plugins() {
     </div>
   )
 }
+
+export default PluginsPage;
+

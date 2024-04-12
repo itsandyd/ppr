@@ -67,7 +67,7 @@ export const CategoryForm = ({
   const selectedOption = options.find((option => option.value === initialData?.courseCategoryId));
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="mt-6 border  rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
         Course category
         <Button onClick={toggleEdit} variant="ghost">
@@ -82,7 +82,7 @@ export const CategoryForm = ({
         </Button>
       </div>
       {!isEditing && (
-        <p className={cn("text-sm mt-2", !initialData.courseCategoryId && "text-slate-500 italic"
+        <p className={cn("text-sm mt-2", !initialData.courseCategoryId && "italic"
         )}>
           {selectedOption?.label || "No category"}
         </p>
