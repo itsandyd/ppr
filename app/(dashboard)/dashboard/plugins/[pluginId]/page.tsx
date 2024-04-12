@@ -9,6 +9,7 @@ import PluginDescriptionForm from "./components/PluginDescriptionForm";
 import PluginImageForm from "./components/PluginImageForm";
 import PluginCategoryForm from "./components/PluginCategoryForm";
 import PluginPriceForm from "./components/PluginPriceForm";
+import PluginTypeForm from "./components/PluginTypeForm";
 
 
 const PluginIdPage = async ({
@@ -36,11 +37,22 @@ const PluginIdPage = async ({
         return redirect("/");
     }
 
-    const categories = await db.pluginCategory.findMany({
+    const effectCategories = (await db.pluginEffectCategory.findMany({
         orderBy: {
             name: "asc",
         }
-    });
+    })).map(category => ({ label: category.name, value: category.id }));
+    
+    const instrumentCategories = (await db.pluginInstrumentCategory.findMany({
+        orderBy: {
+        }
+    })).map(category => ({ label: category.name, value: category.id }));
+    
+    const types = (await db.pluginType.findMany({
+        orderBy: {
+            name: "asc",
+        }
+    })).map(type => ({ label: type.name, value: type.id }));
 
     const requiredFields = [
         plugin.name,
@@ -71,7 +83,7 @@ const PluginIdPage = async ({
                     <h1 className="text-2xl font-medium">
                         Plugin Setup
                     </h1>
-                <span className="text-sm text-slate-700">
+                <span className="text-sm">
                         Complete all the fields {completionText}
                     </span>
                 </div>
@@ -101,14 +113,13 @@ const PluginIdPage = async ({
                         initialData={plugin}
                         pluginId={plugin.id}
                     />
-                    <PluginCategoryForm 
+                   <PluginCategoryForm
                         initialData={plugin}
-                        pluginId={plugin.id}
-                        options={categories.map((category) => ({
-                            label: category.name,
-                            value: category.id,
-                        }))}
-                    />
+                        pluginId={params.pluginId}
+                        effectCategories={effectCategories}
+                        instrumentCategories={instrumentCategories}
+                        types={types}
+/>
                 </div>
                 <div className="space-y-6">
                     <div>

@@ -11,25 +11,19 @@ import { PluginSearchInput } from "@/components/plugins/PluginSearchInput";
 import { PluginCategories } from "../search/components/categories";
 import { PluginTypes } from "../search/components/types";
 
-// import { InfoCard } from "./components/InfoCard";
-
 interface SearchPageProps {
     searchParams: {
       title: string;
       categoryId: string;
       typeId: string;
     }
-  };
+};
 
 const FreePluginsPage = async ({
     searchParams
 }: SearchPageProps) => {
-
-  
-    const categories = await db.pluginCategory.findMany({
-      orderBy: {
-        name: "asc"
-      },
+    const plugins = await getFreePlugins({
+        ...searchParams,
     });
 
     const types = await db.pluginType.findMany({
@@ -37,32 +31,27 @@ const FreePluginsPage = async ({
         name: "asc"
       },
     });
-  
-    if (!categories) {
-      return (
-        <div>
-          <h1>No plugins found</h1>
-        </div>
-      );
-    }
-  
-    const plugins = await getFreePlugins({
-        ...searchParams,
-    });
-        
 
-  return (
-    <div className="p-6 space-y-4">
-    {/* <PluginSearchInput /> */}
-    <PluginTypes
-      items={types}
-      />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      </div>
-        <PluginList items={plugins} />
-    </div>
-  )
+    const effectCategories = await db.pluginEffectCategory.findMany({
+      orderBy: {
+        name: "asc"
+      }
+    });
+
+    const instrumentCategories = await db.pluginInstrumentCategory.findMany({
+      orderBy: {
+        name: "asc"
+      }
+    });
+
+    return (
+        <div className="p-6 space-y-4">
+            <PluginTypes items={types} />
+            <PluginCategories items={effectCategories}/>
+            <PluginCategories items={instrumentCategories}/>
+            <PluginList items={plugins} />
+        </div>
+    )
 }
 
 export default FreePluginsPage;
-

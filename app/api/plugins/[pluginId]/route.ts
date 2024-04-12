@@ -21,6 +21,7 @@ export async function PATCH(
       price,
       optInFormUrl,
       purchaseUrl,
+      pluginTypeId
     } = body;
 
      
@@ -43,6 +44,7 @@ export async function PATCH(
           price,
           optInFormUrl,
           purchaseUrl,
+          pluginTypeId: pluginTypeId
         }
       });
   

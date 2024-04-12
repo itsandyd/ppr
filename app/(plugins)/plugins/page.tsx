@@ -6,6 +6,8 @@ import { CoursesList } from "@/components/courses/courses-list";
 import { getPlugins } from "@/actions/get-plugins";
 import { db } from "@/lib/db";
 import { PluginList } from "./search/components/PluginList";
+import { PluginTypes } from "./search/components/types";
+import { PluginCategories } from "./search/components/categories";
 // import { InfoCard } from "./components/InfoCard";
 
 
@@ -42,6 +44,24 @@ export default async function Plugins() {
     // }
   
     const plugins = await getPlugins();
+
+    const types = await db.pluginType.findMany({
+      orderBy: {
+        name: "asc"
+      },
+    });
+
+    const effectCategories = await db.pluginEffectCategory.findMany({
+      orderBy: {
+        name: "asc"
+      }
+    });
+
+    const instrumentCategories = await db.pluginInstrumentCategory.findMany({
+      orderBy: {
+        name: "asc"
+      }
+    });
         
 
   return (
@@ -59,6 +79,11 @@ export default async function Plugins() {
           variant="success"
        /> */}
       </div>
+      <PluginTypes
+      items={types}
+      />
+      <PluginCategories items={effectCategories}/>
+      <PluginCategories items={instrumentCategories}/>
       {/* <CoursesList
         items={[...coursesInProgress, ...completedCourses]}
       /> */}

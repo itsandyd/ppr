@@ -72,7 +72,7 @@ export const PluginPriceForm = ({
   }
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="mt-6 border  rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
         Plugin price
         <Button onClick={toggleEdit} variant="ghost">
@@ -88,7 +88,7 @@ export const PluginPriceForm = ({
       </div>
       {!isEditing && (
   <div>
-    <p className={cn("text-sm mt-2", !initialData.price && "text-slate-500 italic")}>
+    <p className={cn("text-sm mt-2", !initialData.price && " italic")}>
       {initialData.pricingType === "PAID" && initialData.price
         ? `${formatPrice(initialData.price)} (Paid)`
         : initialData.pricingType === "PAID"
@@ -97,7 +97,7 @@ export const PluginPriceForm = ({
     </p>
     {initialData.pricingType === "FREE" && initialData.optInFormUrl && (
       <p className="text-sm mt-2">
-        Opt-In URL: <a href={initialData.optInFormUrl} className="text-blue-500 hover:underline">{initialData.optInFormUrl}</a>
+        Opt-In URL: <a href={initialData.optInFormUrl} className=" hover:underline">{initialData.optInFormUrl}</a>
       </p>
     )}
   </div>

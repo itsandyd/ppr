@@ -49,7 +49,7 @@ export const PluginImageForm = ({
   }
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="mt-6 border rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
         Plugin image
         <Button onClick={toggleEdit} variant="ghost">
@@ -73,7 +73,7 @@ export const PluginImageForm = ({
       {!isEditing && (
         !initialData?.image ? (
         <div>
-          <ImageIcon className="h-10 w-10 text-slate-500 mr-2" />
+          <ImageIcon className="h-10 w-10  mr-2" />
         </div>
       ) : (
         <div className="relative aspect-video mt-2">

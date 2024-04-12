@@ -5,6 +5,7 @@ import { CourseCategory, PluginCategory, PluginType } from "@prisma/client";
 import { IconType } from "react-icons"
 import { PluginCategoryItem } from "./category-item";
 import { PluginTypeItem } from "./type-item";
+import { PluginCategories } from "./categories";
 
 
 interface TypesProps {

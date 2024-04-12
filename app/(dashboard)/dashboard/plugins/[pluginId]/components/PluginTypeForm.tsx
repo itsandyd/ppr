@@ -18,24 +18,26 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import { Course, Plugin } from "@prisma/client";
+import { Combobox } from "@/components/ui/combobox";
 
-interface TitleFormProps {
-  initialData: {
-    name: string;
-  };
+interface TypeForProps { 
+  initialData: Plugin;
   pluginId: string;
+  options: { label: string; value: string;  }[];
 };
 
 const formSchema = z.object({
-  name: z.string().min(1, {
-    message: "Title is required",
-  }),
+  pluginCategoryId: z.string().min(1),
 });
 
-export const PluginTitleForm = ({
+export const PluginTypeForm = ({
   initialData,
-  pluginId
-}: TitleFormProps) => {
+  pluginId,
+  options,
+}: TypeForProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -44,40 +46,46 @@ export const PluginTitleForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      pluginCategoryId: initialData?.categoryId || "",
+    },
   });
 
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/plugins/${pluginId}`, values);
-      toast.success("Plugin updated");
-      toggleEdit();
-      router.refresh();
-    } catch {
-      toast.error("Something went wrong");
-    }
+  console.log(values); 
+  await axios.patch(`/api/plugins/${pluginId}`, values);
+  toast.success("Plugin category updated"); // Updated success message
+  toggleEdit();
+  router.refresh();
+} catch {
+  toast.error("Something went wrong");
+}
   }
 
+  const selectedOption = options.find((option => option.value === initialData?.categoryId));
+
   return (
-    <div className="mt-6 border rounded-md p-4">
+    <div className="mt-6 border-rounded p-4">
       <div className="font-medium flex items-center justify-between">
-        Plugin name
+        Plugin category
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Edit name
+              Edit category
             </>
           )}
         </Button>
       </div>
       {!isEditing && (
-        <p className="text-sm mt-2">
-          {initialData.name}
+        <p className={cn("text-sm mt-2", !initialData.categoryId && " italic"
+        )}>
+          {selectedOption?.label || "No category"}
         </p>
       )}
       {isEditing && (
@@ -88,14 +96,13 @@ export const PluginTitleForm = ({
           >
             <FormField
               control={form.control}
-              name="name"
+              name="pluginCategoryId"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      disabled={isSubmitting}
-                      placeholder="e.g. 'My Plugin'"
-                      {...field}
+                    <Combobox
+                      options={options}
+                      {...field} 
                     />
                   </FormControl>
                   <FormMessage />
@@ -117,4 +124,4 @@ export const PluginTitleForm = ({
   )
 }
 
-export default PluginTitleForm;
+export default PluginTypeForm;

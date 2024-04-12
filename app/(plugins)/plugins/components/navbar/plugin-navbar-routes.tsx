@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/community/mode-toggle";
 // import { SearchInput } from "./search-input";
 
 export const PluginNavbarRoutes = () => {
@@ -24,7 +25,7 @@ export const PluginNavbarRoutes = () => {
             </div>
         )}
         <div className="flex gap-x-2 ml-auto">
-            {/* <ModeToggle /> */}
+            <ModeToggle />
             {/* {isTeacherPage || isCoursePage ? ( */}
             {/* <Link href="//"> 
                 <Button size="sm" variant="ghost">
