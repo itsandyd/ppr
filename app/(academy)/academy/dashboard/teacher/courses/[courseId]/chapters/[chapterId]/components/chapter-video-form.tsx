@@ -49,7 +49,7 @@ export const ChapterVideoForm = ({
   }
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="mt-6 border  rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
          Chapter video
         <Button onClick={toggleEdit} variant="ghost">
@@ -73,7 +73,7 @@ export const ChapterVideoForm = ({
       {!isEditing && (
         !initialData?.videoUrl ? (
         <div>
-          <Video className="h-10 w-10 text-slate-500 mr-2" />
+          <Video className="h-10 w-10  mr-2" />
         </div>
       ) : (
         <div className="relative aspect-video mt-2">
