@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // Please edit this to allow other routes to be public as needed.
 // See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
 export default authMiddleware({
-  publicRoutes: ["/api/uploadthing", "/api/:path*", "/", "/sounds", "/plugins", "/academy", "/coaching", "/community", "/music", "/spotify", "/ai/", "/lib/agency/queries", "/site"],
+  publicRoutes: ["/api/uploadthing", "/api/:path*", "/", "/sounds", "/plugins/:path*", "/academy", "/coaching", "/community", "/music", "/spotify", "/ai/", "/lib/agency/queries", "/site"],
   async beforeAuth(auth, req) {},
   async afterAuth(auth, req) {
     //rewrite for domains

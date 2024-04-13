@@ -17,11 +17,11 @@ const guestRoutes = [
         label: "Paid Plugins",
         href: "/plugins/paid"
     },
-    {
-        icon: PlusCircle,
-        label: "List Your Own Plugin",
-        href: "/plugins/dashboard/author/list"
-    }
+    // {
+    //     icon: PlusCircle,
+    //     label: "List Your Own Plugin",
+    //     href: "/plugins/dashboard/author/list"
+    // }
 ];
 
 const teacherRoutes = [
