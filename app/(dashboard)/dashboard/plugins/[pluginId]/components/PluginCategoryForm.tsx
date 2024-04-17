@@ -28,6 +28,7 @@ interface CategoryFormProps {
   pluginId: string;
   effectCategories: { label: string; value: string;  }[];
   instrumentCategories: { label: string; value: string;  }[];
+  studioToolCategories: { label: string; value: string;  }[];
   types: { label: string; value: string;  }[];
 };
 
@@ -42,9 +43,10 @@ export const PluginCategoryForm = ({
   effectCategories,
   instrumentCategories,
   types,
+  studioToolCategories
 }: CategoryFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedType, setSelectedType] = useState<string | null | undefined>(null);
+  const [selectedType, setSelectedType] = useState<string | null | undefined>();
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -81,7 +83,12 @@ export const PluginCategoryForm = ({
   }
 
   const selectedOption = types.find((option) => option.value === selectedType);
-  const categoryOptions = selectedType === 'effect' ? effectCategories : instrumentCategories;
+  console.log(selectedOption)
+  const categoryOptions = selectedOption?.label === 'Effects' ? effectCategories : 
+  selectedOption?.label === 'Studio Tools' ? studioToolCategories : 
+  selectedOption?.label === 'Instruments' ? instrumentCategories : [];
+
+  // const categoryOptions = selectedOption?.label === 'Effects' ? effectCategories : instrumentCategories;
 
   return (
     <div className="mt-6 border rounded-md p-4">
@@ -131,10 +138,10 @@ export const PluginCategoryForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Combobox
-                      options={categoryOptions}
-                      {...field} 
-                    />
+                  <Combobox
+  options={categoryOptions}
+  {...field} 
+/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

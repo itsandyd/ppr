@@ -426,6 +426,7 @@ model PluginType {
   plugins              Plugin[]
   effectCategories     PluginEffectCategory[]
   instrumentCategories PluginInstrumentCategory[]
+  studioToolCategories PluginStudioToolCategory[]
 }
 
 model PluginEffectCategory {
@@ -433,8 +434,19 @@ model PluginEffectCategory {
   name         String
   createdAt    DateTime    @default(now())
   updatedAt    DateTime
-  PluginType   PluginType? @relation(fields: [pluginTypeId], references: [id])
   pluginTypeId String?
+  pluginType   PluginType? @relation(fields: [pluginTypeId], references: [id])
+
+  @@index([pluginTypeId])
+}
+
+model PluginStudioToolCategory {
+  id           String      @id @default(uuid())
+  name         String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime
+  pluginTypeId String?
+  pluginType   PluginType? @relation(fields: [pluginTypeId], references: [id])
 
   @@index([pluginTypeId])
 }
@@ -444,8 +456,8 @@ model PluginInstrumentCategory {
   name         String
   createdAt    DateTime    @default(now())
   updatedAt    DateTime
-  PluginType   PluginType? @relation(fields: [pluginTypeId], references: [id])
   pluginTypeId String?
+  pluginType   PluginType? @relation(fields: [pluginTypeId], references: [id])
 
   @@index([pluginTypeId])
 }

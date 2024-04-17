@@ -8,7 +8,7 @@ interface GetChapterProps {
 
 export const getPlugin = async ({
 //   userId,
-  pluginId
+  pluginId,
 }: GetChapterProps) => {
   try {
     // const purchase = await db.purchaseCourse.findUnique({

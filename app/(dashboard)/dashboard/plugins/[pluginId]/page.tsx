@@ -47,6 +47,15 @@ const PluginIdPage = async ({
         orderBy: {
         }
     })).map(category => ({ label: category.name, value: category.id }));
+
+    const studioToolCategories = (await db.pluginStudioToolCategory.findMany({
+        orderBy: {
+        }
+    })).map(category => ({ label: category.name, value: category.id }));
+
+    console.log(effectCategories)
+    console.log(instrumentCategories)
+    console.log(studioToolCategories)
     
     const types = (await db.pluginType.findMany({
         orderBy: {
@@ -119,6 +128,7 @@ const PluginIdPage = async ({
                         effectCategories={effectCategories}
                         instrumentCategories={instrumentCategories}
                         types={types}
+                        studioToolCategories={studioToolCategories}
 />
                 </div>
                 <div className="space-y-6">
