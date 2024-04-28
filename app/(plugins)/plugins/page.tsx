@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs"
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { CheckCircle, Clock } from "lucide-react";
 
 import { CoursesList } from "@/components/courses/courses-list";
@@ -104,11 +104,14 @@ const PluginsPage = async ({
           variant="success"
        /> */}
       </div>
-      <PluginTypes
+      {/* <PluginTypes
       items={types}
-      />
-      <PluginCategories items={effects}/>
-      <PluginCategories items={instruments}/>
+      /> */}
+      {/* {searchParams.typeId === "4d3c10bb-a7a0-43d8-9ac2-79e855e4708a" && <PluginCategories items={effects}/>} */}
+      {/* {searchParams.typeId === "" && <PluginCategories items={effects}/>} */}
+      {/* {searchParams.typeId === "instruments" && <PluginCategories items={instruments}/>} */}
+      {/* <PluginCategories items={effects}/>
+      <PluginCategories items={instruments}/> */}
       {/* <CoursesList
         items={[...coursesInProgress, ...completedCourses]}
       /> */}

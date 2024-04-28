@@ -29,6 +29,11 @@ const FreePluginsPage = async ({
       orderBy: {
         name: "asc"
       },
+      where: {
+        pluginTypeId: {
+          equals: searchParams.typeId
+        }
+      }
     });
 
     const types = await db.pluginType.findMany({

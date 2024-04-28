@@ -11,6 +11,7 @@ import { PluginCategories } from "./components/categories";
 import { PluginSearchInput } from "@/components/plugins/PluginSearchInput";
 import { PluginList } from "./components/PluginList";
 import { getPlugins } from "@/actions/get-plugins";
+import { useState } from "react";
 
 interface SearchPageProps {
     searchParams: {
