@@ -1,15 +1,23 @@
 import dotenv from "dotenv";
-import { StreamingTextResponse, LangChainStream } from "ai";
+import { StreamingTextResponse, LangChainStream, OpenAIStream } from "ai";
 import { auth, currentUser } from "@clerk/nextjs";
-import { Replicate } from "langchain/llms/replicate";
-import { CallbackManager } from "langchain/callbacks";
+import { Replicate } from "@langchain/community/llms/replicate";
+import { CallbackManager } from "@langchain/core/callbacks/manager";
 import { NextResponse } from "next/server";
 
-import { MemoryManager } from "@/lib/memory";
 import { rateLimit } from "@/lib/rate-limit";
 import { db } from "@/lib/db";
+import { Chat } from "@livekit/components-react";
+import { HumanMessage } from "@langchain/core/messages";
+
+import OpenAI from "openai";
+import { Readable } from "stream";
 
 dotenv.config({ path: `.env` });
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
+});
 
 export async function POST(
   request: Request,
@@ -49,101 +57,22 @@ export async function POST(
       return new NextResponse("Companion not found", { status: 404 });
     }
 
-    const name = companion.id;
-    const companion_file_name = name + ".txt";
 
-    const companionKey = {
-      companionName: name!,
-      userId: user.id,
-      modelName: "llama2-13b",
-    };
-    const memoryManager = await MemoryManager.getInstance();
+    const finalPrompt = `ONLY generate plain sentences without prefix of who is speaking. DO NOT use ${companion.name}: prefix. ${companion.instructions} ${prompt} `
 
-    const records = await memoryManager.readLatestHistory(companionKey);
-    if (records.length === 0) {
-      await memoryManager.seedChatHistory(companion.seed, "\n\n", companionKey);
-    }
-    await memoryManager.writeToHistory("User: " + prompt + "\n", companionKey);
-
-    // Query Pinecone
-
-    const recentChatHistory = await memoryManager.readLatestHistory(companionKey);
-
-    // Right now the preamble is included in the similarity search, but that
-    // shouldn't be an issue
-
-    const similarDocs = await memoryManager.vectorSearch(
-      recentChatHistory,
-      companion_file_name
-    );
-
-    let relevantHistory = "";
-    if (!!similarDocs && similarDocs.length !== 0) {
-      relevantHistory = similarDocs.map((doc) => doc.pageContent).join("\n");
-    }
-    const { handlers } = LangChainStream();
-    // Call Replicate for inference
-    const model = new Replicate({
-      model:
-      "meta/llama-2-70b-chat:02e509c789964a7ea8736978a43525956ef40397be9033abf9fd2badfe68c9e3",
-      input: {
-        max_new_tokens: 3500,
-      },
-      apiKey: process.env.REPLICATE_API_TOKEN,
-      callbackManager: CallbackManager.fromHandlers(handlers),
+    const resp = await openai.chat.completions.create({
+      model: 'gpt-4-turbo',
+      stream: true,
+      messages: [{
+        role: 'system',
+        content: finalPrompt,
+      }],
     });
+    const stream = OpenAIStream(resp)
 
-    // Turn verbose on for debugging
-    model.verbose = false;
-
-    const resp = String(
-      await model
-        .call(
-          `ONLY generate plain sentences without prefix of who is speaking. DO NOT use ${companion.name}: prefix. 
-
-        ${companion.instructions}
-
-        Below are relevant details about ${companion.name}'s past and the conversation you are in.
-        ${relevantHistory}
-
-        ${recentChatHistory}n${companion.name}:`
-        )
-        .catch(console.error)
-    );
-
-    const cleaned = resp.replaceAll(",", "");
-    const chunks = cleaned.split("\n");
-    const response = chunks.join("\n");
-
-
-    await memoryManager.writeToHistory("" + response.trim(), companionKey);
-    var Readable = require("stream").Readable;
-
-    let s = new Readable();
-    s.push(response);
-    s.push(null);
-    if (response !== undefined && response.length > 1) {
-      memoryManager.writeToHistory("" + response.trim(), companionKey);
-
-      await db.companion.update({
-        where: {
-          id: params.chatId
-        },
-        data: {
-          messages: {
-            create: {
-              content: response.trim(),
-              role: "system",
-              userId: user.id,
-            },
-          },
-        }
-      });
-    }
-
-    return new StreamingTextResponse(s);
+return new StreamingTextResponse(stream);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 };

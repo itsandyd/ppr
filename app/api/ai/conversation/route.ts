@@ -1,12 +1,12 @@
-import { Configuration, OpenAIApi } from "openai"
+import { OpenAI } from 'openai';
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs"
+import { OpenAIStream, StreamingTextResponse } from 'ai';
 
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-})
 
-const openai = new OpenAIApi(configuration);
+const config = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY!,
+  });
 
 export async function POST(
     req: Request
@@ -20,7 +20,7 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!configuration.apiKey) {
+        if (!config.apiKey) {
             return new NextResponse("OpenAI API Key not configured", { status: 500 });
         }
 
@@ -28,12 +28,17 @@ export async function POST(
             return new NextResponse("Messages are required", { status: 400 });
         }
 
-        const response = await openai.createChatCompletion({
-            model: "gpt-4-1106-preview",
-            messages
-        });
-
-        return NextResponse.json(response.data.choices[0].message);
+        const resp = await config.chat.completions.create({
+            model: 'gpt-4-turbo',
+            stream: true,
+            messages: [{
+              role: 'system',
+              content: messages,
+            }],
+          });
+          const stream = OpenAIStream(resp)
+      
+      return new StreamingTextResponse(stream);
 
     } catch (error) {
         console.log("[CONVERSATION_ERROR]", error);

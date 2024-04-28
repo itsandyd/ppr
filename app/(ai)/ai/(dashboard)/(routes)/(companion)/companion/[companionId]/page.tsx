@@ -18,7 +18,7 @@ const CompanionIdPage = async ({
   const { userId } = auth();
 
   if (!userId) {
-    return redirectToSignIn();
+    return redirect("/sign-in");
   }
 
   // const validSubscription = await checkSubscription();
