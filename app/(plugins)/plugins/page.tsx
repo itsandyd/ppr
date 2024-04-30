@@ -104,11 +104,11 @@ const PluginsPage = async ({
           variant="success"
        /> */}
       </div>
-      {/* <PluginTypes
+      <PluginTypes
       items={types}
-      /> */}
-      {/* {searchParams.typeId === "4d3c10bb-a7a0-43d8-9ac2-79e855e4708a" && <PluginCategories items={effects}/>} */}
-      {/* {searchParams.typeId === "" && <PluginCategories items={effects}/>} */}
+      />
+      {searchParams.typeId === "4d3c10bb-a7a0-43d8-9ac2-79e855e4708a" && <PluginCategories items={effects}/>}
+      {searchParams.typeId === "4d3c10bb-a7a0-43d8-9ac2-79e855e4708a" && <PluginCategories items={effects}/>}
       {/* {searchParams.typeId === "instruments" && <PluginCategories items={instruments}/>} */}
       {/* <PluginCategories items={effects}/>
       <PluginCategories items={instruments}/> */}

@@ -39,17 +39,19 @@ const ConversationPage = () => {
                 role: "user",
                 content: values.prompt,
             }
-
+    
             const newMessages = [...messages, userMessage];
-
-            const response = await axios.post("/api/ai/conversation", {
+    
+            const response = await axios.post("/api/ai/langchainconvo", {
                 messages: newMessages,
             });
-
-            setMessages((current) => [...current, userMessage, response.data]);
-
+    
+            const botMessage = response.data.choices[0].message;
+    
+            setMessages((current) => [...current, userMessage, botMessage]);
+    
             form.reset();
-
+    
         } catch (error: any) {
             console.log(error);
         } finally {
@@ -101,19 +103,19 @@ const ConversationPage = () => {
                         <AiEmpty label="No conversation started."/>
                     )}
                     <div className="flex flex-col-reverse gap-y-4">
-                        {messages.map((message) => (
-                            <div 
-                                key={message.content}
-                                className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg", 
-                                message.role === "user" ? "bg-white border border-black/10" : "bg-muted"
-                                )}
-                            >
-                            {message.role === "user" ? <AiUserAvatar /> : <AiBotAvatar />}
-                            <p className="text-sm">
-                                {message.content}
-                            </p>
-                            </div>
-                        ))}
+                    {messages.map((message, index) => (
+    <div 
+        key={message.content}
+        className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg", 
+        message.role === "user" ? "bg-white border border-black/10" : "bg-muted"
+        )}
+    >
+    {message.role === "user" ? <AiUserAvatar /> : <AiBotAvatar />}
+    <p className="text-sm">
+        {message.content}
+    </p>
+    </div>
+))}
                     </div>
             </div>
         </div>

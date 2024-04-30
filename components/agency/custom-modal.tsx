@@ -13,7 +13,7 @@ import { useModal } from './modal-provider'
 type Props = {
   title: string
   subheading: string
-  children: React.ReactNode
+  children?: React.ReactNode
   defaultOpen?: boolean
 }
 

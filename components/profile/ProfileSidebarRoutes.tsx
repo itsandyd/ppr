@@ -4,12 +4,18 @@ import { BarChart, BellDotIcon, Compass, DotIcon, Home, Layout, List, Music2Icon
 
 import { usePathname } from "next/navigation";
 import { ProfileSidebarItem } from "./ProfileSidebarItem";
+import { FaBusinessTime } from "react-icons/fa";
 
 const guestRoutes = [
     {
         icon: Home,
         label: "Home",
         href: "/profile"
+    },
+    {
+        icon: FaBusinessTime,
+        label: "Agency",
+        href: "/agency"
     },
     // {
     //     icon: BellDotIcon,

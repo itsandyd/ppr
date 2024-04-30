@@ -62,11 +62,6 @@ export const LandingNavbar = () => {
                 ai
             </Button>
         </Link>
-        <Link href="/agency">
-            <Button variant="ghost" className="rounded-full">
-                Agency
-            </Button>
-        </Link>
         {/* <Link href="/dropbox">
             <Button variant="ghost" className="rounded-full">
                 Storage
@@ -99,11 +94,19 @@ export const LandingNavbar = () => {
       </Link>
       </div>
       <div className="flex items-center gap-x-2">
-        <Link href={isSignedIn ? "/profile" : "/sign-up"}>
-          <Button variant="outline" className="rounded-full">
+      {isSignedIn ? (
+    <Link href="/profile">
+        <Button variant="default" className="rounded-full">
+            View Profile
+        </Button>
+    </Link>
+) : (
+    <Link href="/sign-up">
+        <Button variant="default" className="rounded-full">
             Get Started
-          </Button>
-        </Link>
+        </Button>
+    </Link>
+)}
         {/* <ModeToggle /> */}
         <UserButton />
         </div>
