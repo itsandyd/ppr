@@ -19,7 +19,7 @@ import { saveActivityLogsNotification, updateFunnelProducts } from '@/lib/agency
 
 interface FunnelProductsTableProps {
   defaultData: Funnel
-  products: Stripe.Product[]
+  products: Stripe.Product[] | undefined
 }
 
 const FunnelProductsTable: React.FC<FunnelProductsTableProps> = ({
@@ -85,7 +85,7 @@ const FunnelProductsTable: React.FC<FunnelProductsTableProps> = ({
           </TableRow>
         </TableHeader>
         <TableBody className="font-medium truncate">
-          {products.map((product) => (
+          {products?.map((product) => (
             <TableRow key={product.id}>
               <TableCell>
                 <Input

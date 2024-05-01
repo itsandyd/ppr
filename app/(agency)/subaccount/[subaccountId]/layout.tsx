@@ -53,7 +53,7 @@ const SubaccountLayout = async ({ children, params }: Props) => {
 //   }
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="h-full overflow-hidden">
       <Sidebar
         id={params.subaccountId}
         type="subaccount"
