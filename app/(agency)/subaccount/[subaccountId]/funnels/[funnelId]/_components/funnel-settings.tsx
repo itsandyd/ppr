@@ -31,11 +31,11 @@ const FunnelSettings: React.FC<FunnelSettingsProps> = async ({
     },
   })
 
-  // if (!subaccountDetails) return
-  // if (!subaccountDetails.connectAccountId) return
-  // const products = await getConnectAccountProducts(
-  //   subaccountDetails.connectAccountId
-  // )
+  if (!subaccountDetails) return
+  if (!subaccountDetails.connectAccountId) return
+  const products = await getConnectAccountProducts(
+    subaccountDetails.connectAccountId
+  )
 
   return (
     <div className="flex gap-4 flex-col xl:!flex-row">
@@ -49,14 +49,16 @@ const FunnelSettings: React.FC<FunnelSettingsProps> = async ({
         </CardHeader>
         <CardContent>
           <>
-            {/* {subaccountDetails.connectAccountId ? (
+            {!subaccountDetails.connectAccountId ? (
               <FunnelProductsTable
                 defaultData={defaultData}
                 products={products}
-              /> */}
-            {/* ) : ( */}
-              Connect your stripe account to sell products.
-            {/* )} */}
+              />
+            ) : (
+              <p>
+                Connect your stripe account to sell products.
+              </p>
+            )}
           </>
         </CardContent>
       </Card>

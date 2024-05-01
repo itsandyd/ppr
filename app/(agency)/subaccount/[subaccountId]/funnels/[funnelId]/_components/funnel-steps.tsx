@@ -203,12 +203,12 @@ const FunnelSteps = ({ funnel, funnelId, pages, subaccountId }: Props) => {
   </Link>
 </div>
 
-                  {/* <CreateFunnelPage
+                  <CreateFunnelPage
                     subaccountId={subaccountId}
                     defaultData={clickedPage}
                     funnelId={funnelId}
                     order={clickedPage?.order || 0}
-                  /> */}
+                  />
                 </CardDescription>
               </CardHeader>
             </Card>
