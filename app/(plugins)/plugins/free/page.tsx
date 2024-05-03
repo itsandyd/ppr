@@ -1,5 +1,6 @@
+import type { Metadata, ResolvingMetadata } from 'next'
 import { auth } from "@clerk/nextjs"
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { CheckCircle, Clock } from "lucide-react";
 
 import { CoursesList } from "@/components/courses/courses-list";
@@ -18,13 +19,36 @@ interface SearchPageProps {
       title: string;
       categoryId: string;
       typeId: string;
+      pluginTypeName: string;
+      pluginTypeId: string;
     }
   };
+
+export async function generateMetadata(
+  { searchParams }: SearchPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
+  const plugins = await getFreePlugins({
+    ...searchParams,
+  });
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || []
+ 
+  return {
+    title: 'Free Plugins - The Ultimate VST Plugin Resource',
+    description: "Whether you're a bedroom producer or seasoned pro, get instant access to an extensive library of quality free and paid VST plugins all in one place.",
+    openGraph: {
+      images: previousImages,
+    },
+  }
+}
 
 const FreePluginsPage = async ({
     searchParams
 }: SearchPageProps) => {
-  
+
     const categories = await db.pluginEffectCategory.findMany({
       orderBy: {
         name: "asc"
@@ -53,7 +77,18 @@ const FreePluginsPage = async ({
     const plugins = await getFreePlugins({
         ...searchParams,
     });
-        
+
+    let pluginTypeName;
+    if (searchParams.pluginTypeId) {
+        pluginTypeName = await db.pluginType.findUnique({
+            where: {
+                id: searchParams.pluginTypeId,
+            },
+            select: {
+                name: true,
+            },
+        });
+    }
 
   return (
     <div className="p-6 space-y-4">
@@ -72,4 +107,3 @@ const FreePluginsPage = async ({
 }
 
 export default FreePluginsPage;
-

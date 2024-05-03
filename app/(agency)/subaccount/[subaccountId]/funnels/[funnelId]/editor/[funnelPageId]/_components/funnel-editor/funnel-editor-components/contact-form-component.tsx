@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation'
 
 import React from 'react'
 import { z } from 'zod'
+import ContactForm from './contact-form'
 
 type Props = {
   element: EditorElement
@@ -115,11 +116,11 @@ const ContactFormComponent = (props: Props) => {
             {state.editor.selectedElement.name}
           </Badge>
         )}
-      {/* <ContactFormComponent
+      <ContactForm
         subTitle="Contact Us"
         title="Want a free quote? We can help you"
         apiCall={onFormSubmit}
-      /> */}
+      />
       {state.editor.selectedElement.id === props.element.id &&
         !state.editor.liveMode && (
           <div className="absolute bg-primary px-2.5 py-1 text-xs font-bold  -top-[25px] -right-[1px] rounded-none rounded-t-lg !text-white">

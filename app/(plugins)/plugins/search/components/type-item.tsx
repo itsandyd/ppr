@@ -10,12 +10,14 @@ interface TypeItem {
     label: string;
     icon?: IconType;
     value?: string;
+    name?: string;
 }
 
 export const PluginTypeItem = ({
     label,
     icon,
-    value
+    value,
+    name
 }: TypeItem) => {
 
     const pathname = usePathname();
@@ -28,12 +30,13 @@ export const PluginTypeItem = ({
 
     const isSelected = currentTypeId === value;
 
+
     const onClick = () => {
         const url = qs.stringifyUrl({
             url: pathname || '',
             query: {
                 title: currentTitle ?? '',
-                pluginTypeId: value || '',
+                pluginTypeName: name || '', // Use the name in the URL
             }
         }, { skipNull: true, skipEmptyString: true });
 

@@ -7,15 +7,15 @@ type PluginWithType = Plugin & {
 
 interface GetFreePluginsParams {
   categoryId?: string; // Optional parameter for filtering by category
-  pluginTypeId?: string; // Optional parameter for filtering by pluginType's typeId
+  pluginTypeName?: string; // Optional parameter for filtering by pluginType's name
 }
 
-export const getFreePlugins = async ({ categoryId, pluginTypeId }: GetFreePluginsParams = {}): Promise<PluginWithType[]> => {
+export const getFreePlugins = async ({ categoryId, pluginTypeName }: GetFreePluginsParams = {}): Promise<PluginWithType[]> => {
   try {
     const products: PluginWithType[] = await db.plugin.findMany({
       where: {
         ...(categoryId && { categoryId: categoryId }), // Conditionally add categoryId to the query if it exists
-        ...(pluginTypeId && { pluginTypeId: pluginTypeId }), // Conditionally add pluginTypeId to the query if it exists
+        ...(pluginTypeName && { pluginType: { name: pluginTypeName } }), // Conditionally add pluginTypeName to the query if it exists
       },
       include: {
         pluginType: true, // Include the pluginType relation

@@ -10,6 +10,7 @@ import { PluginCategories } from "./categories";
 
 interface TypesProps {
     items: PluginType[];
+    onTypeSelect?: (typeId: string | null) => void; // Add this prop
 }
 
 const iconMap: Record<PluginType["name"], IconType> = {
@@ -28,11 +29,12 @@ export const PluginTypes = ({
             />
             {items.map((item) => (
                 <PluginTypeItem 
-                    key={item.id}
-                    label={item.name}
-                    icon={iconMap[item.name]}
-                    value={item.id}
-                />
+                key={item.id}
+                label={item.name}
+                icon={iconMap[item.name]}
+                value={item.id}
+                name={item.name} // Pass the name as a prop
+            />
             ))}
         </div>
     )
