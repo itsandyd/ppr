@@ -10,13 +10,13 @@ export default authMiddleware({
   async beforeAuth(auth, req) {},
   async afterAuth(auth, req) {
     //rewrite for domains
-    const url = req.nextUrl
-    const searchParams = url.searchParams.toString()
-    let hostname = req.headers
+    // const url = req.nextUrl
+    // const searchParams = url.searchParams.toString()
+    // let hostname = req.headers
 
-    const pathWithSearchParams = `${url.pathname}${
-      searchParams.length > 0 ? `?${searchParams}` : ''
-    }`
+    // const pathWithSearchParams = `${url.pathname}${
+    //   searchParams.length > 0 ? `?${searchParams}` : ''
+    // }`
 
     // if subdomain exists
     // const customSubDomain = hostname

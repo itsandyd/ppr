@@ -16,6 +16,7 @@ export const getFreePlugins = async ({ categoryId, pluginTypeName }: GetFreePlug
       where: {
         ...(categoryId && { categoryId: categoryId }), // Conditionally add categoryId to the query if it exists
         ...(pluginTypeName && { pluginType: { name: pluginTypeName } }), // Conditionally add pluginTypeName to the query if it exists
+        pricingType: "FREE", // Only include plugins where the pricingType is Free
       },
       include: {
         pluginType: true, // Include the pluginType relation
