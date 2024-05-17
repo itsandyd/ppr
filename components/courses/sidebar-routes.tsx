@@ -24,7 +24,7 @@ const guestRoutes = [
     {
         icon: Newspaper,
         label: "List Your Own Course",
-        href: "/academy/dashboard/teacher/list"
+        href: "/agency"
     }
 ];
 

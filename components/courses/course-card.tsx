@@ -45,10 +45,10 @@ export const CourseCard = ({
                 </div>
                 {progress !== null ? (
                     <div>
-                        Todo progress
+                        {/* Todo progress */}
                     </div>
                 ) : (
-                    <p className="text-md md:text-sm font-medium text-slate-700">
+                    <p className="text-md md:text-sm font-medium">
                         {formatPrice(price)}
                     </p>
                 )}
