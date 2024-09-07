@@ -11,6 +11,9 @@ const { Video } = new Mux(
     process.env.MUX_TOKEN_SECRET!,
 );
 
+export const maxDuration = 500; // This function can run for a maximum of 5 seconds
+export const dynamic = 'force-dynamic';
+
 export async function DELETE(
   req: Request,
   { params }: { params: { courseId: string; chapterId: string } }
@@ -202,5 +205,3 @@ export async function PATCH(
       return new NextResponse("Internal Error", { status: 500 }); 
     }
   }
-
-PATCH.maxDuration = 500;
