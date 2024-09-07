@@ -132,25 +132,37 @@ export async function PATCH(
   
       // Index the chapter description in Pinecone
       if (values.description) {
-        const embeddings = new OpenAIEmbeddings();
-        
-        const pinecone = new Pinecone();
+        try {
+          console.log("Starting indexing process...");
+          const embeddings = new OpenAIEmbeddings();
+          
+          console.log("Initializing Pinecone...");
+          const pinecone = new Pinecone();
 
-        const index = pinecone.Index(process.env.PINECONE_INDEX!);
+          console.log("Getting Pinecone index...");
+          const index = pinecone.Index(process.env.PINECONE_INDEX!);
 
-        const vectorStore = await PineconeStore.fromExistingIndex(
-          embeddings,
-          { 
-            pineconeIndex: index,
-            namespace: params.courseId, // Optional: use course ID as namespace
-            textKey: 'text', // The name of the text field in your documents
-          }
-        );
+          console.log("Creating vector store...");
+          const vectorStore = await PineconeStore.fromExistingIndex(
+            embeddings,
+            { 
+              pineconeIndex: index,
+              namespace: params.courseId,
+              textKey: 'text',
+            }
+          );
 
-        await vectorStore.addDocuments([{
-          pageContent: values.description,
-          metadata: { courseId: params.courseId, chapterId: params.chapterId }
-        }]);
+          console.log("Adding documents to vector store...");
+          await vectorStore.addDocuments([{
+            pageContent: values.description,
+            metadata: { courseId: params.courseId, chapterId: params.chapterId }
+          }]);
+
+          console.log("Indexing completed successfully.");
+        } catch (error) {
+          console.error("Error during indexing:", error);
+          // Don't throw the error, just log it, so we can still update the chapter
+        }
       }
 
       if (values.videoUrl) {
@@ -186,7 +198,7 @@ export async function PATCH(
   
       return NextResponse.json(chapter);
     } catch (error) {
-      console.log("[COURSES_CHAPTER_ID]", error);
+      console.error("[COURSES_CHAPTER_ID]", error);
       return new NextResponse("Internal Error", { status: 500 }); 
     }
   }
