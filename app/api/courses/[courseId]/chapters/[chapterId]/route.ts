@@ -11,7 +11,7 @@ const { Video } = new Mux(
     process.env.MUX_TOKEN_SECRET!,
 );
 
-export const maxDuration = 500; // This function can run for a maximum of 5 seconds
+export const maxDuration = 300; // This function can run for a maximum of 5 seconds
 export const dynamic = 'force-dynamic';
 
 export async function DELETE(
