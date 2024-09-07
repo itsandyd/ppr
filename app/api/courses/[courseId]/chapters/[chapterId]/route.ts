@@ -1,8 +1,11 @@
+import fetch from "node-fetch";
+global.fetch = fetch as any;
+
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import Mux from "@mux/mux-node";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { OpenAIEmbeddings } from "@langchain/openai";
 import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeStore } from "@langchain/pinecone";
 
@@ -152,7 +155,8 @@ export async function PATCH(
               pineconeIndex: index,
               namespace: params.courseId,
               textKey: 'text',
-            }
+  
+            },
           );
 
           console.log("Adding documents to vector store...");
@@ -164,6 +168,10 @@ export async function PATCH(
           console.log("Indexing completed successfully.");
         } catch (error) {
           console.error("Error during indexing:", error);
+          if (error instanceof Error) {
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+          }
           // Don't throw the error, just log it, so we can still update the chapter
         }
       }

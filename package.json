@@ -18,13 +18,13 @@
     "@langchain/community": "^0.0.53",
     "@langchain/core": "^0.1.61",
     "@langchain/openai": "^0.0.28",
-    "@langchain/pinecone": "^0.0.9",
+    "@langchain/pinecone": "^0.0.4",
     "@livekit/components-react": "^1.1.7",
     "@livekit/components-styles": "^1.0.6",
     "@mux/mux-node": "^7.3.1",
     "@mux/mux-player-react": "^1.14.2",
     "@nanostores/react": "github:ai/react",
-    "@pinecone-database/pinecone": "^3.0.2",
+    "@pinecone-database/pinecone": "^0.1.6",
     "@prisma/client": "^5.12.1",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
@@ -128,7 +128,8 @@
     "wavesurfer.js": "^7.4.2",
     "world-countries": "^5.0.0",
     "zod": "^3.22.2",
-    "zustand": "^4.4.1"
+    "zustand": "^4.4.1",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.3",
