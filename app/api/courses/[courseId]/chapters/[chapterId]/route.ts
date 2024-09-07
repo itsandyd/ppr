@@ -152,7 +152,7 @@ export async function PATCH(
           const vectorStore = await PineconeStore.fromExistingIndex(
             embeddings,
             { 
-              pineconeIndex: index,
+              pineconeIndex: index as any, // Type assertion
               namespace: params.courseId,
               textKey: 'text',
   
