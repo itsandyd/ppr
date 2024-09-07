@@ -2,6 +2,9 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import Mux from "@mux/mux-node";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeStore } from "@langchain/pinecone";
 
 const { Video } = new Mux(
     process.env.MUX_TOKEN_ID!,
@@ -127,6 +130,29 @@ export async function PATCH(
         }
       });
   
+      // Index the chapter description in Pinecone
+      if (values.description) {
+        const embeddings = new OpenAIEmbeddings();
+        
+        const pinecone = new Pinecone();
+
+        const index = pinecone.Index(process.env.PINECONE_INDEX!);
+
+        const vectorStore = await PineconeStore.fromExistingIndex(
+          embeddings,
+          { 
+            pineconeIndex: index,
+            namespace: params.courseId, // Optional: use course ID as namespace
+            textKey: 'text', // The name of the text field in your documents
+          }
+        );
+
+        await vectorStore.addDocuments([{
+          pageContent: values.description,
+          metadata: { courseId: params.courseId, chapterId: params.chapterId }
+        }]);
+      }
+
       if (values.videoUrl) {
         const existingMuxData = await db.muxData.findFirst({
           where: {
