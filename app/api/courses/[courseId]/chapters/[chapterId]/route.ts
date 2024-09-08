@@ -136,45 +136,45 @@ export async function PATCH(
         }
       });
   
-      // Index the chapter description in Pinecone
-      if (values.description) {
-        try {
-          console.log("Starting indexing process...");
-          const embeddings = new OpenAIEmbeddings();
+      // // Index the chapter description in Pinecone
+      // if (values.description) {
+      //   try {
+      //     console.log("Starting indexing process...");
+      //     const embeddings = new OpenAIEmbeddings();
           
-          console.log("Initializing Pinecone...");
-          const pinecone = new Pinecone();
+      //     console.log("Initializing Pinecone...");
+      //     const pinecone = new Pinecone();
 
-          console.log("Getting Pinecone index...");
-          const index = pinecone.Index(process.env.PINECONE_INDEX!);
+      //     console.log("Getting Pinecone index...");
+      //     const index = pinecone.Index(process.env.PINECONE_INDEX!);
 
-          console.log("Creating vector store...");
-          const vectorStore = await PineconeStore.fromExistingIndex(
-            embeddings,
-            { 
-              pineconeIndex: index as any, // Type assertion
-              namespace: params.courseId,
-              textKey: 'text',
+      //     console.log("Creating vector store...");
+      //     const vectorStore = await PineconeStore.fromExistingIndex(
+      //       embeddings,
+      //       { 
+      //         pineconeIndex: index as any, // Type assertion
+      //         namespace: params.courseId,
+      //         textKey: 'text',
   
-            },
-          );
+      //       },
+      //     );
 
-          console.log("Adding documents to vector store...");
-          await vectorStore.addDocuments([{
-            pageContent: values.description,
-            metadata: { courseId: params.courseId, chapterId: params.chapterId }
-          }]);
+      //     console.log("Adding documents to vector store...");
+      //     await vectorStore.addDocuments([{
+      //       pageContent: values.description,
+      //       metadata: { courseId: params.courseId, chapterId: params.chapterId }
+      //     }]);
 
-          console.log("Indexing completed successfully.");
-        } catch (error) {
-          console.error("Error during indexing:", error);
-          if (error instanceof Error) {
-            console.error("Error message:", error.message);
-            console.error("Error stack:", error.stack);
-          }
-          // Don't throw the error, just log it, so we can still update the chapter
-        }
-      }
+      //     console.log("Indexing completed successfully.");
+      //   } catch (error) {
+      //     console.error("Error during indexing:", error);
+      //     if (error instanceof Error) {
+      //       console.error("Error message:", error.message);
+      //       console.error("Error stack:", error.stack);
+      //     }
+      //     // Don't throw the error, just log it, so we can still update the chapter
+      //   }
+      // }
 
       if (values.videoUrl) {
         const existingMuxData = await db.muxData.findFirst({
