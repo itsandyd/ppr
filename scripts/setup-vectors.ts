@@ -13,7 +13,7 @@ async function main() {
       CREATE TABLE IF NOT EXISTS ChapterEmbedding (
         id VARCHAR(191) NOT NULL,
         embedding JSON NULL,
-        chapterId VARCHAR(191) NOT NULL,
+        chapterId VARCHAR(191) NOT NULL UNIQUE,
         createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
         updatedAt DATETIME(3) NOT NULL,
         PRIMARY KEY (id)
@@ -30,6 +30,17 @@ async function main() {
         updatedAt DATETIME(3) NOT NULL,
         PRIMARY KEY (id)
       );
+    `;
+
+    // Create indexes
+    await prisma.$executeRaw`
+      CREATE INDEX IF NOT EXISTS ChapterEmbedding_chapterId_idx 
+      ON ChapterEmbedding(chapterId);
+    `;
+
+    await prisma.$executeRaw`
+      CREATE INDEX IF NOT EXISTS VectorEmbedding_userId_idx 
+      ON VectorEmbedding(userId);
     `;
 
     // Safely modify columns to VECTOR type
