@@ -63,7 +63,7 @@ export const ProModal = () => {
                             .00 / month
                         </span>
                     </p>
-                    <Button disabled={loading} onClick={onSubscribe} variant="premium">
+                    <Button disabled={loading} onClick={onSubscribe} variant="default">
                         Subscribe
                     </Button>
                 </div>

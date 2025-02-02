@@ -40,7 +40,7 @@ export const CompanionNavbar = ({
             </div>
             <div className="flex items-center gap-x-3">
                 {!isPro && (
-                <Button size="sm" variant="premium" onClick={proModal.onOpen}>
+                <Button size="sm" variant="default" onClick={proModal.onOpen}>
                     Upgrade
                     <Sparkles className="h-4 w-4 fill-white text-white ml-2"/>
                 </Button>

@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fullTextIndex", "fullTextSearch"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -141,7 +140,6 @@ model Companion {
   messages     CompanionMessage[]
 
   @@index([categoryId])
-  @@fulltext([name])
 }
 
 model UserSubscription {
@@ -163,30 +161,33 @@ model Prompt {
 }
 
 model User {
-  id             String                @id @default(uuid())
-  name           String?
-  email          String?               @unique
-  emailVerified  DateTime?
-  image          String?
-  hashedPassword String?
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
-  agencyId       String?
-  role           AgencyRole?           @default(SUBACCOUNT_USER)
-  avatarUrl      String?               @db.Text
-  userRoleId     String?
-  userTypeId     String?
-  favorites      Favorite[]
-  accounts       Account[]
-  reservations   CoachingReservation[]
-  StorageFolder  StorageFolder[]
-  StorageFile    StorageFile[]
-  SharedTrack    SharedTrack[]
-  Agency         Agency?               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  Permissions    Permissions[]
-  Ticket         Ticket[]
-  Notification   Notification[]
-  Sound          Sounds[]
+  id              String                @id @default(uuid())
+  name            String?
+  email           String?               @unique
+  emailVerified   DateTime?
+  image           String?
+  hashedPassword  String?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  agencyId        String?
+  role            AgencyRole?           @default(SUBACCOUNT_USER)
+  avatarUrl       String?               @db.Text
+  userRoleId      String?
+  userTypeId      String?
+  favorites       Favorite[]
+  accounts        Account[]
+  reservations    CoachingReservation[]
+  StorageFolder   StorageFolder[]
+  StorageFile     StorageFile[]
+  SharedTrack     SharedTrack[]
+  Agency          Agency?               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  Permissions     Permissions[]
+  Ticket          Ticket[]
+  Notification    Notification[]
+  Sound           Sounds[]
+  campaigns       Campaign[]
+  MusicProfile    MusicProfile[]
+  VectorEmbedding VectorEmbedding[]
 
   @@index([agencyId])
 }
@@ -316,7 +317,6 @@ model Course {
   purchaseCourse   PurchaseCourse[]
 
   @@index([courseCategoryId])
-  @@fulltext([title])
 }
 
 model Attachment {
@@ -338,19 +338,20 @@ model CourseCategory {
 }
 
 model CourseChapter {
-  id           String         @id @default(uuid())
+  id           String            @id @default(uuid())
   title        String
-  description  String?        @db.Text
-  videoUrl     String?        @db.Text
+  description  String?           @db.Text
+  videoUrl     String?           @db.Text
   position     Int
-  isPublished  Boolean        @default(false)
-  isFree       Boolean        @default(false)
+  isPublished  Boolean           @default(false)
+  isFree       Boolean           @default(false)
   courseId     String
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
   muxData      MuxData?
-  course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course       Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
   userProgress UserProgress[]
+  embedding    ChapterEmbedding?
 
   @@index([courseId])
 }
@@ -998,4 +999,97 @@ enum InvitationStatus {
 enum Plan {
   price_1OYxkqFj9oKEERu1NbKUxXxN
   price_1OYxkqFj9oKEERu1KfJGWxgN
+}
+
+model Campaign {
+  id     String   @id @default(uuid())
+  name   String
+  date   DateTime
+  time   String
+  userId String
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Add other fields as necessary
+
+  @@index([userId])
+}
+
+model EmailTemplate {
+  id        String                @id @default(uuid())
+  subject   String                @db.Text
+  content   String                @db.Text
+  userId    String
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  nodes     EmailAutomationNode[]
+
+  @@index([userId])
+}
+
+model EmailAutomation {
+  id        String                @id @default(uuid())
+  name      String
+  userId    String
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  nodes     EmailAutomationNode[]
+  edges     EmailAutomationEdge[]
+
+  @@index([userId])
+}
+
+model EmailAutomationNode {
+  id           String          @id @default(uuid())
+  type         String // 'email' | 'delay' | 'condition'
+  position     Json // { x: number, y: number }
+  data         Json // Store node-specific data
+  automationId String
+  templateId   String? // Only for email nodes
+  automation   EmailAutomation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  template     EmailTemplate?  @relation(fields: [templateId], references: [id])
+
+  @@index([automationId])
+  @@index([templateId])
+}
+
+model EmailAutomationEdge {
+  id           String          @id @default(uuid())
+  source       String // Node ID
+  target       String // Node ID
+  automationId String
+  automation   EmailAutomation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  @@index([automationId])
+}
+
+model MusicProfile {
+  id       String @id @default(uuid())
+  platform String
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Add other fields as necessary
+
+  @@index([userId])
+}
+
+model VectorEmbedding {
+  id        String   @id @default(uuid())
+  content   String?  @db.Text
+  embedding Json?    @db.Json
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ChapterEmbedding {
+  id        String        @id @default(uuid())
+  embedding Json?         @db.Json
+  chapterId String        @unique
+  chapter   CourseChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([chapterId])
 }

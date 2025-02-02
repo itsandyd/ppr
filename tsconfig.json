@@ -35,7 +35,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/(community)/(main)/(routes)/servers/[se", "actions/getCurrentUser.tss" ],
+    "app/(community)/(main)/(routes)/servers/[se", "actions/getCurrentUser.tss", "app/(promopulse)/promopulse/dashboard/_components/recipient-database" ],
   "exclude": [
     "node_modules"
   ]
