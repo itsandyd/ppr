@@ -41,13 +41,22 @@ const ChatIdPage = async ({
       }
     });
   
+    // Get related chapter embeddings
+    const chapterEmbeddings = await db.chapterEmbedding.findMany({
+      include: {
+        chapter: true
+      }
+    });
   
     if (!companion) {
       return redirect("/");
     }
   
     return (
-      <ChatClient companion={companion} />
+      <ChatClient 
+        companion={companion} 
+        chapterEmbeddings={chapterEmbeddings}
+      />
     );
   }
    

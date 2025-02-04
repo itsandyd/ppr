@@ -3,6 +3,7 @@
 import { ChatRequestOptions } from "ai";
 import { SendHorizonal } from "lucide-react";
 import { ChangeEvent, FormEvent } from "react";
+import { ChapterEmbedding } from "@prisma/client";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,13 @@ interface ChatFormProps {
   handleInputChange: (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => void;
   onSubmit: (e: FormEvent<HTMLFormElement>, chatRequestOptions?: ChatRequestOptions | undefined) => void;
   isLoading: boolean;
+  chapterEmbeddings: (ChapterEmbedding & {
+    chapter: {
+      id: string;
+      title: string;
+      description: string | null;
+    }
+  })[];
 }
 
 export const ChatForm = ({
@@ -19,6 +27,7 @@ export const ChatForm = ({
   handleInputChange,
   onSubmit,
   isLoading,
+  chapterEmbeddings
 }: ChatFormProps) => {
   return (
     <form onSubmit={onSubmit} className="border-t border-primary/10 py-4 flex items-center gap-x-2">

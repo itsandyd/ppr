@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 
-
 import { useProModal } from "@/hooks/use-pro-modal";
 import { ModeToggle } from "@/components/community/mode-toggle";
 import MobileSidebar from "./companion-mobile-sidebar";
@@ -25,11 +24,10 @@ interface NavBarProps {
 export const CompanionNavbar = ({
     isPro
 }: NavBarProps) => {
-
     const proModal = useProModal();
 
     return (
-        <div className="fixed w-full z-50 flex justify-between items-center py-2 px-4 border-b border-primary/10 bg-secondary h-16">
+        <nav className="fixed w-full z-50 flex justify-between items-center py-2 px-4 h-16 border-b shadow-sm bg-white dark:bg-zinc-950">
             <div className="flex items-center">
                 <CompanionMobileSidebar isPro={isPro}/>
                 <Link href="/ai">
@@ -48,6 +46,6 @@ export const CompanionNavbar = ({
                 <ModeToggle />
                 <UserButton/>
             </div>
-        </div>
+        </nav>
     );
 }

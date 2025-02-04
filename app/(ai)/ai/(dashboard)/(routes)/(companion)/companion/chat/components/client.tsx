@@ -1,18 +1,14 @@
 "use client";
 
-
-
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { useCompletion } from "ai/react"
 
-
 import { ChatForm } from "@/components/ai/companion/chat/chat-form";
-import { Companion, CompanionMessage } from "@prisma/client";
+import { Companion, CompanionMessage, ChapterEmbedding } from "@prisma/client";
 import { ChatHeader } from "@/components/ai/companion/chat/chat-header";
 import { ChatMessages } from "@/components/ai/companion/chat/chat-messages";
 import { ChatMessageProps } from "@/components/ai/companion/chat/chat-message";
-
 
 interface ChatClientProps {
   companion: Companion & {
@@ -21,10 +17,18 @@ interface ChatClientProps {
       messages: number;
     }
   };
+  chapterEmbeddings: (ChapterEmbedding & {
+    chapter: {
+      id: string;
+      title: string;
+      description: string | null;
+    }
+  })[];
 };
 
 export const ChatClient = ({
   companion,
+  chapterEmbeddings,
 }: ChatClientProps) => {
   const router = useRouter();
   const [messages, setMessages] = useState<ChatMessageProps[]>(companion.messages);
@@ -68,12 +72,14 @@ export const ChatClient = ({
         companion={companion}
         isLoading={isLoading}
         messages={messages}
+        chapterEmbeddings={chapterEmbeddings}
       />
       <ChatForm 
         isLoading={isLoading} 
         input={input} 
         handleInputChange={handleInputChange} 
-        onSubmit={onSubmit} 
+        onSubmit={onSubmit}
+        chapterEmbeddings={chapterEmbeddings}
       />
     </div>
    );

@@ -16,56 +16,21 @@ async function generateEmbedding(text: string) {
 
 export async function POST() {
   try {
-    // First set up the tables
-    await db.$executeRaw`
-      CREATE TABLE IF NOT EXISTS ChapterEmbedding (
-        id VARCHAR(191) NOT NULL,
-        embedding JSON NULL,
-        chapterId VARCHAR(191) NOT NULL UNIQUE,
-        createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-        updatedAt DATETIME(3) NOT NULL,
-        PRIMARY KEY (id)
-      );
-    `;
-
-    await db.$executeRaw`
-      CREATE TABLE IF NOT EXISTS VectorEmbedding (
-        id VARCHAR(191) NOT NULL,
-        content TEXT NULL,
-        embedding JSON NULL,
-        userId VARCHAR(191) NOT NULL,
-        createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-        updatedAt DATETIME(3) NOT NULL,
-        PRIMARY KEY (id)
-      );
-    `;
-
-    // Create indexes
-    await db.$executeRaw`
-      CREATE INDEX IF NOT EXISTS ChapterEmbedding_chapterId_idx 
-      ON ChapterEmbedding(chapterId);
-    `;
-
-    await db.$executeRaw`
-      CREATE INDEX IF NOT EXISTS VectorEmbedding_userId_idx 
-      ON VectorEmbedding(userId);
-    `;
-
     // Modify columns to VECTOR type
-    try {
-      await db.$executeRaw`
-        ALTER TABLE ChapterEmbedding 
-        MODIFY COLUMN embedding VECTOR(1536);
-      `;
-      await db.$executeRaw`
-        ALTER TABLE VectorEmbedding 
-        MODIFY COLUMN embedding VECTOR(1536);
-      `;
-    } catch (error: any) {
-      if (!error.message.includes('Duplicate')) {
-        throw error;
-      }
-    }
+    // try {
+    //   await db.$executeRaw`
+    //     ALTER TABLE ChapterEmbedding 
+    //     MODIFY COLUMN embedding VECTOR(1536);
+    //   `;
+    //   await db.$executeRaw`
+    //     ALTER TABLE VectorEmbedding 
+    //     MODIFY COLUMN embedding VECTOR(1536);
+    //   `;
+    // } catch (error: any) {
+    //   if (!error.message.includes('Duplicate')) {
+    //     throw error;
+    //   }
+    // }
 
     // Get all course chapters that don't have embeddings yet
     const chapters = await db.courseChapter.findMany({
@@ -103,7 +68,7 @@ export async function POST() {
 
     return NextResponse.json({ 
       success: true, 
-      message: `Vector columns set up and embeddings generated for ${chapters.length} chapters!` 
+      message: `Vector columns modified and embeddings generated for ${chapters.length} chapters!` 
     });
   } catch (error: any) {
     console.error("Error setting up vector columns:", error);

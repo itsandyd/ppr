@@ -3,6 +3,7 @@
 import { BeatLoader } from "react-spinners";
 import { Copy } from "lucide-react";
 import { useTheme } from "next-themes";
+import { ChapterEmbedding } from "@prisma/client";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -11,17 +12,25 @@ import { BotAvatar } from "./bot-avatar";
 import { UserAvatar } from "./user-avatar";
 
 export interface ChatMessageProps {
-  role: "system" | "user",
+  role: "system" | "user";
   content?: string;
   isLoading?: boolean;
   src?: string;
+  chapterEmbeddings?: (ChapterEmbedding & {
+    chapter: {
+      id: string;
+      title: string;
+      description: string | null;
+    }
+  })[];
 }
 
 export const ChatMessage = ({
   role,
   content,
   isLoading,
-  src
+  src,
+  chapterEmbeddings
 }: ChatMessageProps) => {
   const { toast } = useToast();
   const { theme } = useTheme();
@@ -38,6 +47,24 @@ export const ChatMessage = ({
     })
   }
 
+  // const renderChapterReferences = () => {
+  //   if (role === "system" && chapterEmbeddings && chapterEmbeddings.length > 0) {
+  //     return (
+  //       <div className="mt-2 text-xs text-muted-foreground">
+  //         <p className="font-semibold">Related Chapters:</p>
+  //         <ul className="list-disc pl-4">
+  //           {chapterEmbeddings.map((embedding) => (
+  //             <li key={embedding.id}>
+  //               {embedding.chapter.title}
+  //             </li>
+  //           ))}
+  //         </ul>
+  //       </div>
+  //     );
+  //   }
+  //   return null;
+  // };
+
   return (
     <div className={cn(
       "group flex items-start gap-x-3 py-4 w-full",
@@ -47,7 +74,12 @@ export const ChatMessage = ({
       <div className="rounded-md px-4 py-2 max-w-sm text-sm bg-primary/10">
         {isLoading 
           ? <BeatLoader color={theme === "light" ? "black" : "white"} size={5} /> 
-          : content
+          : (
+            <>
+              {content}
+              {/* {renderChapterReferences()} */}
+            </>
+          )
         }
       </div>
       {role === "user" && <UserAvatar />}

@@ -1,19 +1,27 @@
 "use client";
 
 import { ElementRef, useEffect, useRef, useState } from "react";
-import { Companion } from "@prisma/client";
+import { Companion, ChapterEmbedding } from "@prisma/client";
 import { ChatMessage, ChatMessageProps } from "./chat-message";
 
 interface ChatMessagesProps {
   messages: ChatMessageProps[];
   isLoading: boolean;
-  companion: Companion
+  companion: Companion;
+  chapterEmbeddings: (ChapterEmbedding & {
+    chapter: {
+      id: string;
+      title: string;
+      description: string | null;
+    }
+  })[];
 }
 
 export const ChatMessages = ({
   messages = [],
   isLoading,
   companion,
+  chapterEmbeddings,
 }: ChatMessagesProps) => {
   const scrollRef = useRef<ElementRef<"div">>(null);
 
@@ -47,6 +55,7 @@ export const ChatMessages = ({
           src={companion.src}
           content={message.content}
           role={message.role}
+          chapterEmbeddings={chapterEmbeddings}
         />
       ))}
       {isLoading && (
