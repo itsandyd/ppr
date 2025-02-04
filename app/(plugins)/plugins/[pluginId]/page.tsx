@@ -1,3 +1,4 @@
+import type { Metadata, ResolvingMetadata } from 'next'
 import { getChapter } from '@/actions/get-chapter';
 import { Banner } from '@/components/courses/banner';
 import { CourseCard } from '@/components/courses/course-card';
@@ -7,7 +8,6 @@ import { auth } from '@clerk/nextjs';
 import { redirect, useRouter } from 'next/navigation';
 import react from 'react';
 
-
 import { Separator } from '@/components/ui/separator';
 import { Preview } from '@/components/courses/preview';
 import { getPlugins } from '@/actions/get-plugins';
@@ -16,11 +16,73 @@ import Image from 'next/image';
 import { PluginPurchaseButton } from './components/PluginPurchaseButton';
 import { PluginEditButton } from './components/PluginEditButton';
 
-const ChapterIdPage = async ({
+interface PageProps {
+  params: { 
+    pluginId: string;
+  }
+}
+
+export async function generateMetadata(
+  { params }: PageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { plugin } = await getPlugin({
+    pluginId: params.pluginId,
+  });
+
+  if (!plugin) {
+    return {
+      title: 'Plugin Not Found | PausePlayRepeat',
+      description: 'The requested VST plugin could not be found. Browse our collection of other audio plugins for music production.',
+    }
+  }
+
+  const previousImages = (await parent).openGraph?.images || []
+  const pluginType = (plugin.price ?? 0) > 0 ? 'Paid' : 'Free';
+  const priceInfo = (plugin.price ?? 0) > 0 ? `Price: $${plugin.price}` : 'Free Download';
+
+  // Get category name from categoryId
+  const category = plugin.categoryId ? await db.pluginCategory.findUnique({
+    where: { id: plugin.categoryId }
+  }) : null;
+  const categoryName = category?.name || 'Audio';
+ 
+  return {
+    title: `${plugin.name} — ${pluginType} ${categoryName} Plugin | PausePlayRepeat`,
+    description: `${plugin.description || `${plugin.name} - Professional audio plugin for music production`}. ${priceInfo}. Find more ${categoryName} plugins at PausePlayRepeat.`,
+    keywords: [
+      plugin.name,
+      categoryName,
+      pluginType + ' plugin',
+      'VST plugin',
+      'audio production',
+      'music production',
+      plugin.pricingType || '',
+      'DAW tools'
+    ].filter(Boolean),
+    openGraph: {
+      title: `${plugin.name} — ${pluginType} ${categoryName} Plugin`,
+      description: plugin.description || `${plugin.name} - Professional audio plugin for music production`,
+      type: 'website',
+      images: [...(plugin.image ? [{ 
+        url: plugin.image,
+        alt: `${plugin.name} - ${pluginType} VST Plugin`
+      }] : []), ...previousImages],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${plugin.name} — ${pluginType} ${categoryName} Plugin`,
+      description: plugin.description || `${plugin.name} - Professional audio plugin for music production`,
+    },
+    alternates: {
+      canonical: `/plugins/${params.pluginId}`,
+    }
+  }
+}
+
+const PluginPage = async ({
   params
-}: {
-  params: { pluginId: string }
-}) => {
+}: PageProps) => {
   const { userId } = auth();
   
   if (!userId) {
@@ -30,69 +92,45 @@ const ChapterIdPage = async ({
   const {
     plugin,
   } = await getPlugin({
-    // userId,
     pluginId: params.pluginId,
   });
 
   if (!plugin) {
-    // Example: Redirect to a not found page or display a message
     return redirect("/plugins");
   }
 
-//   if (!chapter || !course) {
-//     return redirect("/")
-//   }
-
-
-//   const isLocked = !chapter.isFree && !purchase;
-//   const completeOnEnd = !!purchase && !userProgress?.isCompleted;
-
-
-    return ( 
-        <div className='pt-12'>
-            {/* {userProgress?.isCompleted && (
-            <Banner 
-                variant="success"
-                label="You have completed this chapter."
-            />
-            )}
-            {isLocked && (
-                <Banner 
-                    variant="warning"
-                    label="This chapter is locked."
-                />
-            )} */}
-            
-<div className="group pt-12 transition overflow-hidden border rounded-lg p-3 mx-auto max-w-4xl">
-    <div className="flex justify-center items-center p-4">
-        <Image 
+  return ( 
+    <div className='pt-12'>
+      <div className="group pt-12 transition overflow-hidden border rounded-lg p-3 mx-auto max-w-4xl">
+        <div className="flex justify-center items-center p-4">
+          <Image 
             src={plugin?.image || 'placeholder.svg'}
             alt={plugin?.name || 'Plugin Name'}
             width={500}
             height={500}
             className="object-cover rounded-md"
-        />
-    </div>
-    <div className="flex flex-col pt-2">
-        <div className="p-4 flex flex-col md:flex-row items-center justify-between">
-          <h2 className="text-lg md:text-base font-bold mb-2">{plugin?.name}</h2>
+          />
+        </div>
+        <div className="flex flex-col pt-2">
+          <div className="p-4 flex flex-col md:flex-row items-center justify-between">
+            <h2 className="text-lg md:text-base font-bold mb-2">{plugin?.name}</h2>
             <PluginPurchaseButton 
-                pluginId={params.pluginId}
-                price={plugin.price || 0} // Ensure there's a default or conditional rendering based on the existence of price
-                pricingType={plugin.pricingType}
-                optInFormUrl={plugin.optInFormUrl || ''}
-                purchaseUrl={plugin.purchaseUrl || ''}
+              pluginId={params.pluginId}
+              price={plugin.price || 0}
+              pricingType={plugin.pricingType}
+              optInFormUrl={plugin.optInFormUrl || ''}
+              purchaseUrl={plugin.purchaseUrl || ''}
             />
             {userId === plugin.userId && <PluginEditButton pluginId={params.pluginId} />}
-        </div>
-        <Separator />
-        <div>
+          </div>
+          <Separator />
+          <div>
             <Preview value={plugin?.description!}/>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-        </div>
-     );
+  );
 }
 
-export default ChapterIdPage;
+export default PluginPage;

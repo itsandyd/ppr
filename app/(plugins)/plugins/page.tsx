@@ -1,8 +1,7 @@
-import { auth } from "@clerk/nextjs"
+import type { Metadata, ResolvingMetadata } from 'next'
 import { redirect, useRouter } from "next/navigation";
 import { CheckCircle, Clock } from "lucide-react";
 
-import { CoursesList } from "@/components/courses/courses-list";
 import { getPlugins } from "@/actions/get-plugins";
 import { db } from "@/lib/db";
 import { PluginList } from "./search/components/PluginList";
@@ -10,7 +9,6 @@ import { PluginTypes } from "./search/components/types";
 import { PluginCategories } from "./search/components/categories";
 import { getFreePlugins } from "@/actions/get-free-plugins";
 import { PluginHero } from "./components/PluginHero";
-// import { InfoCard } from "./components/InfoCard";
 
 interface SearchPageProps {
   searchParams: {
@@ -20,101 +18,83 @@ interface SearchPageProps {
   }
 };
 
+export async function generateMetadata(
+  { searchParams }: SearchPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const plugins = await getPlugins({
+    ...searchParams,
+  });
+
+  const previousImages = (await parent).openGraph?.images || []
+ 
+  return {
+    title: {
+      default: 'PausePlayRepeat — Music Producer Plugin Marketplace',
+      template: '%s | PausePlayRepeat',
+    },
+    description: "Discover free and paid VST plugins, DAW tools, and audio effects for music production. Explore synth plugins, amp simulators, and more.",
+    keywords: ['VST plugins', 'audio production tools', 'free VST', 'paid plugins', 'synth plugins', 'music production', 'DAW tools', 'audio effects'],
+    openGraph: {
+      title: 'PausePlayRepeat — Music Producer Plugin Marketplace',
+      description: "Discover free and paid VST plugins, DAW tools, and audio effects for music production. Explore synth plugins, amp simulators, and more.",
+      type: 'website',
+      images: previousImages,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'PausePlayRepeat — Music Producer Plugin Marketplace',
+      description: "Discover free and paid VST plugins, DAW tools, and audio effects for music production. Explore synth plugins, amp simulators, and more.",
+    },
+    alternates: {
+      canonical: '/plugins',
+    }
+  }
+}
 
 const PluginsPage = async ({
   searchParams
 }: SearchPageProps) => {
-//   const { userId } = auth();
+  const plugins = await getPlugins({
+    ...searchParams,
+  });
 
-//   if (!userId) {
-//     return redirect("/");
-//   }
+  const effects = await db.pluginEffectCategory.findMany({
+    orderBy: {
+      name: "asc"
+    },
+  });
 
-  // const {
-  //   completedCourses,
-  //   coursesInProgress
-  // } = await getDashboardCourses(userId);
+  const types = await db.pluginType.findMany({
+    orderBy: {
+      name: "asc"
+    },
+  });
 
-  // const { userId } = auth();
-  
-  //   if (!userId) {
-  //     return redirect("/");
-  //   }
-  
-    // const type = await db.pluginType.findMany({
-    //   orderBy: {
-    //     name: "desc"
-    //   }
-    // });
-  
-    // if (!type) {
-    //   return (
-    //     <div>
-    //       <h1>No plugins found</h1>
-    //     </div>
-    //   );
-    // }
-    
-  
-    const plugins = await getPlugins({
-      ...searchParams,
-    });
+  if (!effects) {
+    return (
+      <div>
+        <h1>No plugins found</h1>
+      </div>
+    );
+  }
 
-
-    const effects = await db.pluginEffectCategory.findMany({
-      orderBy: {
-        name: "asc"
-      },
-    });
-
-    const types = await db.pluginType.findMany({
-      orderBy: {
-        name: "asc"
-      },
-    });
-  
-    if (!effects) {
-      return (
-        <div>
-          <h1>No plugins found</h1>
-        </div>
-      );
-    }
-
-    const instruments = await db.pluginInstrumentCategory.findMany({
-      orderBy: {
-        name: "asc"
-      },
-    });
-        
+  const instruments = await db.pluginInstrumentCategory.findMany({
+    orderBy: {
+      name: "asc"
+    },
+  });
 
   return (
     <div className="p-6 space-y-4">
-        <PluginHero />
+      <PluginHero />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-       {/* <InfoCard
-          icon={Clock}
-          label="In Progress"
-          // numberOfItems={coursesInProgress.length}
-       /> 
-       <InfoCard
-          icon={CheckCircle}
-          label="Completed"
-          // numberOfItems={completedCourses.length}
-          variant="success"
-       /> */}
       </div>
       <PluginTypes
-      items={types}
+        items={types}
       />
       {searchParams.typeId === "4d3c10bb-a7a0-43d8-9ac2-79e855e4708a" && <PluginCategories items={effects}/>}
       {searchParams.typeId === "4d3c10bb-a7a0-43d8-9ac2-79e855e4708a" && <PluginCategories items={effects}/>}
-      {/* {searchParams.typeId === "instruments" && <PluginCategories items={instruments}/>} */}
-      {/* <PluginCategories items={effects}/>
-      <PluginCategories items={instruments}/> */}
-      {/* <CoursesList
-        items={[...coursesInProgress, ...completedCourses]}
-      /> */}
       <PluginList items={plugins} />
     </div>
   )

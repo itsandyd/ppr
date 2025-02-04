@@ -1,9 +1,7 @@
 import type { Metadata, ResolvingMetadata } from 'next'
-import { auth } from "@clerk/nextjs"
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { CheckCircle, Clock } from "lucide-react";
 
-import { CoursesList } from "@/components/courses/courses-list";
 import { getPlugins } from "@/actions/get-plugins";
 import { db } from "@/lib/db";
 import { PluginList } from "../search/components/PluginList";
