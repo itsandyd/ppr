@@ -1,107 +1,36 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/agYn8qiUbZD
- */
-import Link from "next/link"
-import { Avatar } from "@/components/ui/avatar"
+
+import { SidebarNav } from "@/components/music/sidebar-nav"
+import { SiteHeader } from "@/components/music/site-header"
 import { Button } from "@/components/ui/button"
-import { CardContent, Card } from "@/components/ui/card"
-import Image from "next/image"
-import { UserButton } from "@clerk/nextjs"
-import { TrackListing } from "@/components/music/TrackListing"
 
-export default function Component() {
-
+export default function Home() {
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-[240px_1fr]">
-      <nav className="hidden lg:flex flex-col gap-4 p-4 border-r bg-zinc-100/40 dark:bg-zinc-800/40">
-        <div className="grid gap-2">
-          <Link className="font-semibold" href="#">
-            Library
-          </Link>
-          <Link className="font-semibold" href="#">
-            Playlists
-          </Link>
-          <Link className="font-semibold" href="#">
-            Albums
-          </Link>
-          <Link className="font-semibold" href="#">
-            Artists
-          </Link>
-          <Link className="font-semibold" href="#">
-            Settings
-          </Link>
-        </div>
-      </nav>
-      <div className="flex flex-col">
-        <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-zinc-100/40 px-6 dark:bg-zinc-800/40">
-          <Link className="lg:hidden" href="#">
-            <IconMountain className="h-6 w-6" />
-            <span className="sr-only">Home</span>
-          </Link>
-          <div className="flex-1 flex justify-between">
-            <div className="flex gap-4">
-              <Link className="font-semibold" href="#">
-                Home
-              </Link>
-              <Link className="font-semibold" href="#">
-                Discover
-              </Link>
-              <Link className="font-semibold" href="#">
-                Community
-              </Link>
-              <Link className="font-semibold" href="#">
-                Profile
-              </Link>
-            </div>
-            <div className="flex items-center gap-2">
-                <UserButton />
-            </div>
+    <div className="min-h-screen bg-black text-white flex">
+      <SidebarNav />
+      <main className="flex-1">
+        <SiteHeader />
+        <div
+          className="relative min-h-[calc(100vh-88px)] flex items-center justify-center text-center px-4"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div className="max-w-3xl mx-auto space-y-8">
+            <h1 className="text-6xl md:text-7xl font-bold tracking-tight">Elevate Your Music Journey</h1>
+            <p className="text-xl text-zinc-300">
+              Pauseplayrepeat is more than just a music app – it&apos;s a thriving community where artists and fans connect
+              through the universal language of music.
+            </p>
+            <Button className="bg-[#BAE6FD] text-black hover:bg-[#93C5FD] rounded-full px-8 py-6 text-lg font-medium">
+              View our Collection
+            </Button>
           </div>
-        </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-         <TrackListing />
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   )
 }
 
-function IconMountain(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
-    </svg>
-  )
-}
-
-
-function IconPlay(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polygon points="5 3 19 12 5 21 5 3" />
-    </svg>
-  )
-}

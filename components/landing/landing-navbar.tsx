@@ -82,7 +82,7 @@ export const LandingNavbar = () => {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu> */}
-        <Link href="https://music.pauseplayrepeat.com">
+        <Link href="/music">
             <Button variant="ghost" className="rounded-full">
                 Music
             </Button>
