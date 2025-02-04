@@ -473,6 +473,7 @@ model PluginCategory {
 model Plugin {
   id           String      @id @default(uuid())
   name         String
+  slug         String      @unique
   author       String?
   description  String?     @db.Text
   image        String?     @db.Text

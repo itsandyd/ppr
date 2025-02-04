@@ -19,8 +19,9 @@ export const PluginList = ({
           <PluginCard
             key={item.id}
             id={item.id}
+            slug={item.slug || item.id}
             name={item.name} 
-            imageUrl={item.image || 'placeholder.svg' as string} // Assuming 'image' is the correct field for the plugin's image URL
+            imageUrl={item.image || 'placeholder.svg'}
             description={item.description}
             type={item.pluginType?.name || 'No Type'} // Handle possibly undefined category
           />

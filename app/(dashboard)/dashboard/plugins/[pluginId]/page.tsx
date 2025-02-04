@@ -11,24 +11,25 @@ import PluginCategoryForm from "./components/PluginCategoryForm";
 import PluginPriceForm from "./components/PluginPriceForm";
 import PluginTypeForm from "./components/PluginTypeForm";
 
-
-const PluginIdPage = async ({
-    params,
-}: {
+interface PluginPageProps {
     params: {
         pluginId: string;
     };
-}) => {
+}
 
+const PluginIdPage = async ({ params }: PluginPageProps) => {
     const { userId } = auth();
 
     if (!userId) {
         return redirect("/");
     }
 
-    const plugin = await db.plugin.findUnique({
+    const plugin = await db.plugin.findFirst({
         where: {
-            id: params.pluginId,
+            OR: [
+                { id: params.pluginId },
+                { slug: params.pluginId }
+            ],
             userId,
         },
     });
@@ -45,17 +46,15 @@ const PluginIdPage = async ({
     
     const instrumentCategories = (await db.pluginInstrumentCategory.findMany({
         orderBy: {
+            name: "asc"
         }
     })).map(category => ({ label: category.name, value: category.id }));
 
     const studioToolCategories = (await db.pluginStudioToolCategory.findMany({
         orderBy: {
+            name: "asc"
         }
     })).map(category => ({ label: category.name, value: category.id }));
-
-    console.log(effectCategories)
-    console.log(instrumentCategories)
-    console.log(studioToolCategories)
     
     const types = (await db.pluginType.findMany({
         orderBy: {
@@ -67,16 +66,13 @@ const PluginIdPage = async ({
         plugin.name,
         plugin.description,
         plugin.image,
-        // plugin.price,
         plugin.categoryId,
-        // course.courseChapter.some(chapter => chapter.title),
+        plugin.slug,
     ];
 
     const totalFields = requiredFields.length;
     const completedFields = requiredFields.filter(Boolean).length;
-
-    const completionText = `(${completedFields}/${totalFields})`
-
+    const completionText = `(${completedFields}/${totalFields})`;
     const isComplete = requiredFields.every(Boolean);
 
     return ( 
@@ -124,12 +120,12 @@ const PluginIdPage = async ({
                     />
                    <PluginCategoryForm
                         initialData={plugin}
-                        pluginId={params.pluginId}
+                        pluginId={plugin.id}
                         effectCategories={effectCategories}
                         instrumentCategories={instrumentCategories}
                         types={types}
                         studioToolCategories={studioToolCategories}
-/>
+                    />
                 </div>
                 <div className="space-y-6">
                     <div>

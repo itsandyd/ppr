@@ -5,7 +5,7 @@ import { CourseCard } from '@/components/courses/course-card';
 import { CourseNavbar } from '@/components/courses/navbar';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import react from 'react';
 
 import { Separator } from '@/components/ui/separator';
@@ -26,14 +26,25 @@ export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const { plugin } = await getPlugin({
-    pluginId: params.pluginId,
+  const plugin = await db.plugin.findFirst({
+    where: {
+      OR: [
+        { id: params.pluginId },
+        { slug: params.pluginId }
+      ]
+    },
+    include: {
+      pluginType: true
+    }
   });
 
   if (!plugin) {
     return {
       title: 'Plugin Not Found | PausePlayRepeat',
       description: 'The requested VST plugin could not be found. Browse our collection of other audio plugins for music production.',
+      alternates: {
+        canonical: '/plugins',
+      }
     }
   }
 
@@ -68,6 +79,7 @@ export async function generateMetadata(
         url: plugin.image,
         alt: `${plugin.name} - ${pluginType} VST Plugin`
       }] : []), ...previousImages],
+      url: `/plugins/${plugin.slug}`,
     },
     twitter: {
       card: 'summary_large_image',
@@ -75,24 +87,19 @@ export async function generateMetadata(
       description: plugin.description || `${plugin.name} - Professional audio plugin for music production`,
     },
     alternates: {
-      canonical: `/plugins/${params.pluginId}`,
+      canonical: `/plugins/${plugin.slug}`,
     }
   }
 }
 
-const PluginPage = async ({
-  params
-}: PageProps) => {
-  const { userId } = auth();
-  
-  if (!userId) {
-    null;
-  } 
-
-  const {
-    plugin,
-  } = await getPlugin({
-    pluginId: params.pluginId,
+const PluginPage = async ({ params }: PageProps) => {
+  const plugin = await db.plugin.findFirst({
+    where: {
+      OR: [
+        { id: params.pluginId },
+        { slug: params.pluginId }
+      ]
+    }
   });
 
   if (!plugin) {
@@ -115,13 +122,13 @@ const PluginPage = async ({
           <div className="p-4 flex flex-col md:flex-row items-center justify-between">
             <h2 className="text-lg md:text-base font-bold mb-2">{plugin?.name}</h2>
             <PluginPurchaseButton 
-              pluginId={params.pluginId}
+              pluginId={plugin.id}
               price={plugin.price || 0}
               pricingType={plugin.pricingType}
               optInFormUrl={plugin.optInFormUrl || ''}
               purchaseUrl={plugin.purchaseUrl || ''}
             />
-            {userId === plugin.userId && <PluginEditButton pluginId={params.pluginId} />}
+            {plugin.userId && <PluginEditButton pluginId={plugin.id} />}
           </div>
           <Separator />
           <div>
