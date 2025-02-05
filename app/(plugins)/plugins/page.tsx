@@ -73,7 +73,7 @@ const PluginsPage = async ({
 
   if (!effects) {
     return (
-      <div>
+      <div className="flex items-center justify-center h-full text-white">
         <h1>No plugins found</h1>
       </div>
     );
@@ -86,7 +86,7 @@ const PluginsPage = async ({
   });
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-6 space-y-6 text-white">
       <PluginHero />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       </div>

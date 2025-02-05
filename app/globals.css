@@ -61,3 +61,16 @@
     z-index: 1 !important; /* Adjust as needed */
   }
 }
+
+/* Sidebar adjustments */
+@media (min-width: 768px) {
+  .md\:sidebar-adjusted {
+    padding-left: var(--sidebar-width, 240px);
+    width: calc(100% - var(--sidebar-width, 240px));
+    transition: all 0.3s ease;
+  }
+
+  [data-collapsed="true"] .md\:sidebar-adjusted {
+    --sidebar-width: 70px;
+  }
+}

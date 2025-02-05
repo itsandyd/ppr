@@ -1,60 +1,68 @@
 "use client"
 
-import { BarChart, BellDotIcon, Compass, DotIcon, HeartHandshake, Landmark, Layout, List, Music2Icon, Newspaper, PlusCircle } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Compass, Download, Folder, Home, Music2, Search } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
-import { usePathname } from "next/navigation";
-import { TbBuildingCommunity } from "react-icons/tb";
-import { SidebarItem } from "./plugin-sidebar-item";
+interface PluginSidebarRoutesProps {
+  isCollapsed?: boolean;
+}
 
-const guestRoutes = [
+export const PluginSidebarRoutes = ({
+  isCollapsed
+}: PluginSidebarRoutesProps) => {
+  const pathname = usePathname();
+
+  const routes = [
     {
-        icon: HeartHandshake,
-        label: "Free Plugins",
-        href: "/plugins/free"
+      label: 'Browse',
+      icon: Compass,
+      href: '/plugins',
     },
     {
-        icon: Landmark,
-        label: "Paid Plugins",
-        href: "/plugins/paid"
+      label: 'Search',
+      icon: Search,
+      href: '/plugins/search',
+    },
+    {
+      label: 'Free',
+      icon: Download,
+      href: '/plugins/free',
+    },
+    {
+      label: 'Paid',
+      icon: Music2,
+      href: '/plugins/paid',
     },
     // {
-    //     icon: PlusCircle,
-    //     label: "List Your Own Plugin",
-    //     href: "/plugins/dashboard/author/list"
-    // }
-];
+    //   label: 'Synths',
+    //   icon: Folder,
+    //   href: '/plugins/synths',
+    // },
+  ];
 
-const teacherRoutes = [
-    {
-        icon: List,
-        label: "Courses",
-        href: "/academy/dashboard/teacher/courses"
-    },
-    {
-        icon: BarChart,
-        label: "Analytics",
-        href: "/academy/dashboard/teacher/analytics"
-    },
-
-]
-
-export const PluginSidebarRoutes = () => {
-    const pathname = usePathname();
-
-    const isTeacherPage = pathname?.includes("/courses/teacher");
-
-    const routes = isTeacherPage ? teacherRoutes : guestRoutes;
-
-    return (
-        <div className="flex flex-col w-full">
-            {routes.map((route) => (
-                <SidebarItem 
-                    key={route.href}
-                    icon={route.icon}
-                    label={route.label}
-                    href={route.href}
-                />
-            ))}
-        </div>
-    )
+  return (
+    <div className="flex flex-col w-full space-y-1">
+      {routes.map((route) => (
+        <Link
+          key={route.href}
+          href={route.href}
+          className={cn(
+            "flex items-center gap-x-2 text-sm text-gray-400 font-medium px-3 py-2 transition-all hover:text-white hover:bg-gray-700/50",
+            pathname === route.href && "text-white bg-gray-700/50",
+            isCollapsed ? "justify-center px-2" : "px-3"
+          )}
+        >
+          <route.icon className={cn(
+            "h-4 w-4",
+            pathname === route.href ? "text-white" : "text-gray-400"
+          )} />
+          {!isCollapsed && (
+            <span>{route.label}</span>
+          )}
+        </Link>
+      ))}
+    </div>
+  );
 }
