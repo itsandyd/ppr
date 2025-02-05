@@ -23,7 +23,12 @@ export default async function PlaylistsPage() {
     orderBy: {
       createdAt: 'desc'
     }
-  });
+  }).then(playlists => playlists.map(playlist => ({
+    id: playlist.id.toString(),
+    name: playlist.name,
+    description: null,
+    songs: playlist.songs
+  })));
 
   return (
     <div className="min-h-screen bg-black text-white flex">

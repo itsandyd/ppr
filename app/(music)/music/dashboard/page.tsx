@@ -43,16 +43,20 @@ export default async function DashboardPage() {
 
           <div className="mb-6">
             <h2 className="text-2xl font-semibold mb-4">Newest songs</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {songs.map((song) => (
-                <Link key={song.id} href={`/music/songs/${song.id}`} className="block">
-                  <div className="bg-zinc-900/50 rounded-lg p-4 hover:bg-zinc-800/50 transition">
-                    <h3 className="font-semibold">{song.title}</h3>
-                    <p className="text-zinc-400">{song.author}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            {songs.length === 0 ? (
+              <div className="text-zinc-400">No songs found</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {songs.map((song) => (
+                  <Link key={song.id} href={`/music/songs/${song.id}`} className="block">
+                    <div className="bg-zinc-900/50 rounded-lg p-4 hover:bg-zinc-800/50 transition">
+                      <h3 className="font-semibold">{song.title}</h3>
+                      <p className="text-zinc-400">{song.artist}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
           <Link href="/music/submit">

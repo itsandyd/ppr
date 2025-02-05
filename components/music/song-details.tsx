@@ -35,7 +35,7 @@ export const SongDetails = ({
           <div className="space-y-4">
             <div>
               <h1 className="text-3xl font-bold">{data.title}</h1>
-              <p className="text-xl text-muted-foreground">{data.author}</p>
+              <p className="text-xl text-muted-foreground">{data.artist}</p>
             </div>
             <div className="flex items-center gap-x-2">
               {data.url ? (
@@ -47,7 +47,7 @@ export const SongDetails = ({
                   <PlayCircle className="h-5 w-5" />
                   Play on {data.platform}
                 </Button>
-              ) : data.songPath ? (
+              ) : data.url ? (
                 <Button
                   size="lg"
                   className="w-fit gap-x-2"
@@ -76,13 +76,13 @@ export const SongDetails = ({
               </Button>
             </div>
           </div>
-          {data.songPath && (
+          {data.url && (
             <div className="mt-6">
               <audio
                 id="audio-player"
                 controls
                 className="w-full"
-                src={data.songPath || undefined}
+                src={data.url || undefined}
               >
                 Your browser does not support the audio element.
               </audio>

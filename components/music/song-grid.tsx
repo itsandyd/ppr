@@ -55,7 +55,7 @@ export const SongGrid = ({
               {item.title}
             </p>
             <p className="text-sm text-muted-foreground truncate w-full">
-              {item.author}
+              {item.artist}
             </p>
           </CardFooter>
         </Card>

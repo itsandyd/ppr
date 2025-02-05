@@ -188,6 +188,7 @@ model User {
   campaigns       Campaign[]
   MusicProfile    MusicProfile[]
   VectorEmbedding VectorEmbedding[]
+  playlists       Playlist[]
 
   @@index([agencyId])
 }
@@ -405,16 +406,20 @@ enum MusicPlatform {
 
 model Song {
   id        String         @id @default(uuid())
-  userId    String
-  author    String
   title     String
-  platform  MusicPlatform?
-  url       String?
-  songPath  String?
+  artist    String
+  duration  Int
+  url       String
+  userId    String
   imagePath String?
   createdAt DateTime       @default(now())
-  updatedAt DateTime       @default(now()) @updatedAt
-  playlists Playlist[]     @relation("PlaylistToSong")
+  updatedAt DateTime       @updatedAt
+  playlists Playlist[]
+  platform  MusicPlatform?
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([artist])
 }
 
 model CompanionMessage {
@@ -1107,11 +1112,14 @@ model ChapterEmbedding {
 }
 
 model Playlist {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  songs       Song[]   @relation("PlaylistToSong")
+  id        Int      @id @default(autoincrement())
+  name      String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  songs     Song[]
+  User      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([createdAt])
 }

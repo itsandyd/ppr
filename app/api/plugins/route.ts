@@ -2,13 +2,13 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
-export async function POST(
-    req: Request, 
-) {
+export async function POST(request: Request) {
     try {
         const { userId } = auth();
-        const body = await req.json();
-
+        const body = await request.json();
+        
+        // Implement rate limiting check here
+        
         const { name } = body;
 
         if (!userId) {
@@ -29,6 +29,9 @@ export async function POST(
 
     } catch (error) {
         console.log("[PLUGIN]", error)
-        return new NextResponse("Internal error", { status: 500 });
+        return NextResponse.json(
+            { error: "Invalid request" },
+            { status: 400 }
+        );
     }
 }

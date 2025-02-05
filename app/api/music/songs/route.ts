@@ -8,19 +8,19 @@ export async function POST(req: Request) {
     const { userId } = auth();
     const body = await req.json();
 
-    const { title, author, platform, url, songPath, imagePath } = body;
+    const { title, artist, platform, url, imagePath } = body;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!title || !author) {
+    if (!title || !artist) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
 
-    // Check if either platform+url or songPath is provided
-    if (!((platform && url) || songPath)) {
-      return new NextResponse("Either platform and URL or songPath must be provided", { status: 400 });
+    // Check if platform+url is provided
+    if (!(platform && url)) {
+      return new NextResponse("Platform and URL must be provided", { status: 400 });
     }
 
     // If platform is provided, validate it
@@ -31,12 +31,12 @@ export async function POST(req: Request) {
     const song = await db.song.create({
       data: {
         title,
-        author,
+        artist,
         platform: platform || null,
         url: url || null,
-        songPath: songPath || null,
         imagePath: imagePath || null,
-        userId
+        userId,
+        duration: 0  // Add a default duration since it's required
       }
     });
 
@@ -67,8 +67,7 @@ export async function GET(req: Request) {
     // Transform the response to handle both old and new formats
     const transformedSongs = songs.map(song => ({
       ...song,
-      // If platform and url exist, use those, otherwise use legacy songPath
-      source: song.platform && song.url ? song.url : song.songPath,
+      source: song.url,
       type: song.platform || 'LEGACY'
     }));
 
