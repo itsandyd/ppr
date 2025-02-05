@@ -409,7 +409,7 @@ model Song {
   title     String
   artist    String
   duration  Int
-  url       String
+  url       String?
   userId    String
   imagePath String?
   createdAt DateTime       @default(now())
