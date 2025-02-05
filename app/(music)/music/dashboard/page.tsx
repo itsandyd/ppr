@@ -55,7 +55,11 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <Button className="bg-[#BAE6FD] text-black hover:bg-[#93C5FD] rounded-full px-6">Submit Your Music</Button>
+          <Link href="/music/submit">
+            <Button className="bg-[#BAE6FD] text-black hover:bg-[#93C5FD] rounded-full px-6">
+              Submit Your Music
+            </Button>
+          </Link>
         </div>
       </main>
     </div>
