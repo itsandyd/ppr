@@ -1,4 +1,4 @@
-import { MusicNavbar } from "@/components/music/MusicNavbar";
+import { MusicNavbar } from "@/components/music/music-navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Youtube } from "lucide-react";
@@ -6,8 +6,7 @@ import Link from "next/link";
 import { BsSpotify } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
 
-
-const CampaignGoal = () => {
+export default function SpotifyAdsPage() {
   const goals = [
     {
       icon: BsSpotify,
@@ -44,41 +43,41 @@ const CampaignGoal = () => {
   ];
 
   return (
-    <>
-    <MusicNavbar />
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Select your campaign goal</h1>
+    <div className="h-full">
+      <MusicNavbar />
+      <div className="p-6">
+        <h1 className="text-3xl font-bold mb-4">Create Ad Campaign</h1>
+        {/* Add ad campaign creation form here */}
+        <h1 className="text-3xl font-bold mb-4">Select your campaign goal</h1>
 
-      {goals.map((goal, index) => (
-        <Card key={index} className="mt-4 mb-4">
-          <CardHeader>
-            <div className="flex items-center">
-              <goal.icon className="mr-2" />  {/* This line is added to display the icon */}
-              <CardTitle>{goal.title}</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>{goal.description}</CardContent>
-          <CardFooter>
-          <Link href={goal.link || "#"} passHref>
-              <Button variant="default">
-                SELECT
-              </Button>
-            </Link>
-            {/* <Link href="/path/to/how-it-works" className="text-blue-500 underline">
-              see how it works here
-            </Link> */}
-          </CardFooter>
-        </Card>
-      ))}
+        {goals.map((goal, index) => (
+          <Card key={index} className="mt-4 mb-4">
+            <CardHeader>
+              <div className="flex items-center">
+                <goal.icon className="mr-2" />  {/* This line is added to display the icon */}
+                <CardTitle>{goal.title}</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>{goal.description}</CardContent>
+            <CardFooter>
+            <Link href={goal.link || "#"} passHref>
+                <Button variant="default">
+                  SELECT
+                </Button>
+              </Link>
+              {/* <Link href="/path/to/how-it-works" className="text-blue-500 underline">
+                see how it works here
+              </Link> */}
+            </CardFooter>
+          </Card>
+        ))}
 
-      <div className="mt-4">
-        <Button variant="secondary">
-          GO BACK
-        </Button>
+        <div className="mt-4">
+          <Button variant="secondary">
+            GO BACK
+          </Button>
+        </div>
       </div>
     </div>
-    </>
   );
-};
-
-export default CampaignGoal;
+}

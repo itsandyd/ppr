@@ -1,45 +1,39 @@
-import { SidebarNav } from "@/components/music/sidebar-nav"
-import { SiteHeader } from "@/components/music/site-header"
-import { SongDetails } from "@/components/music/song-details"
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
+import { SongDetails } from "@/components/music/song-details";
+import { db } from "@/lib/db";
 
-// This would typically come from your database
-const songs = [
-  {
-    id: 1,
-    title: "Midnight Dreams",
-    artist: "Luna Wave",
-    album: "Nocturnal Echoes",
-    duration: "3:45",
-    image: "/placeholder.svg?height=400&width=400",
-  },
-  // ... other songs ...
-]
+interface SongPageProps {
+  params: {
+    id: string;
+  };
+}
 
-export default function SongPage({ params }: { params: { id: string } }) {
-  const song = songs.find((s) => s.id === Number.parseInt(params.id))
+export default async function SongPage({
+  params
+}: SongPageProps) {
+  const { userId } = auth();
+
+  if (!userId) {
+    redirect('/sign-in');
+  }
+
+  const song = await db.song.findUnique({
+    where: {
+      id: params.id,
+      userId
+    }
+  });
 
   if (!song) {
-    return <div>Song not found</div>
+    redirect('/music/songs');
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
-      <SidebarNav />
-      <main className="flex-1">
-        <SiteHeader />
-        <div className="p-6">
-          <div
-            className="rounded-xl p-8 mb-8"
-            style={{
-              background: "linear-gradient(to bottom, rgba(176, 216, 243, 0.2) 0%, rgba(0,0,0,1) 100%)",
-            }}
-          >
-            <SongDetails {...song} />
-          </div>
-        </div>
-      </main>
+    <div className="h-full p-4 space-y-2">
+      <SongDetails data={song} />
     </div>
-  )
+  );
 }
 

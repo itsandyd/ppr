@@ -32,7 +32,8 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
-import { MusicNavbar } from "@/components/music/MusicNavbar";
+import { MusicNavbar } from "@/components/music/music-navbar";
+
 
 const formSchema = z.object({
   searchInput: z.string(),

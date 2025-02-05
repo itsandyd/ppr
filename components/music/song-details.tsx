@@ -1,58 +1,96 @@
 "use client"
 
-import { useState } from "react"
-import { Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react"
+import Image from "next/image"
+import { Song } from "@prisma/client"
+import { PlayCircle, Share2 } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
-import { Slider } from "@/components/ui/slider"
+import { Card } from "@/components/ui/card"
 
 interface SongDetailsProps {
-  id: number
-  title: string
-  artist: string
-  album: string
-  duration: string
-  image: string
+  data: Song
 }
 
-export function SongDetails({ id, title, artist, album, duration, image }: SongDetailsProps) {
-  const [isPlaying, setIsPlaying] = useState(false)
-
+export const SongDetails = ({
+  data
+}: SongDetailsProps) => {
   return (
-    <div className="flex flex-col md:flex-row gap-8">
-      <div className="flex-shrink-0">
-        <img src={image || "/placeholder.svg"} alt={title} className="w-64 h-64 object-cover rounded-lg shadow-lg" />
-      </div>
-      <div className="flex flex-col justify-between">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">{title}</h1>
-          <p className="text-xl text-zinc-400 mb-4">{artist}</p>
-          <p className="text-zinc-500">Album: {album}</p>
-          <p className="text-zinc-500">Duration: {duration}</p>
+    <Card className="p-6 w-full">
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="relative aspect-square w-full md:w-[300px] rounded-lg overflow-hidden">
+          {data.imagePath ? (
+            <Image
+              src={data.imagePath}
+              alt={data.title}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-muted flex items-center justify-center">
+              <PlayCircle className="h-20 w-20 text-muted-foreground" />
+            </div>
+          )}
         </div>
-        <div className="mt-8">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <Button size="icon" variant="ghost">
-              <SkipBack className="h-6 w-6" />
-            </Button>
-            <Button
-              size="icon"
-              className="rounded-full bg-white text-black hover:bg-zinc-200 h-12 w-12"
-              onClick={() => setIsPlaying(!isPlaying)}
-            >
-              {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
-            </Button>
-            <Button size="icon" variant="ghost">
-              <SkipForward className="h-6 w-6" />
-            </Button>
+        <div className="flex flex-col justify-between flex-1">
+          <div className="space-y-4">
+            <div>
+              <h1 className="text-3xl font-bold">{data.title}</h1>
+              <p className="text-xl text-muted-foreground">{data.author}</p>
+            </div>
+            <div className="flex items-center gap-x-2">
+              {data.url ? (
+                <Button
+                  size="lg"
+                  className="w-fit gap-x-2"
+                  onClick={() => window.open(data.url || "", "_blank")}
+                >
+                  <PlayCircle className="h-5 w-5" />
+                  Play on {data.platform}
+                </Button>
+              ) : data.songPath ? (
+                <Button
+                  size="lg"
+                  className="w-fit gap-x-2"
+                  onClick={() => {
+                    const audio = document.getElementById("audio-player") as HTMLAudioElement;
+                    if (audio) {
+                      audio.play();
+                    }
+                  }}
+                >
+                  <PlayCircle className="h-5 w-5" />
+                  Play
+                </Button>
+              ) : null}
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-fit gap-x-2"
+                onClick={() => {
+                  // Implement share functionality
+                  navigator.clipboard.writeText(window.location.href);
+                }}
+              >
+                <Share2 className="h-5 w-5" />
+                Share
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <Slider defaultValue={[0]} max={100} step={1} className="w-full" />
-            <Volume2 className="h-5 w-5 text-zinc-400" />
-            <Slider defaultValue={[75]} max={100} step={1} className="w-24" />
-          </div>
+          {data.songPath && (
+            <div className="mt-6">
+              <audio
+                id="audio-player"
+                controls
+                className="w-full"
+                src={data.songPath || undefined}
+              >
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </Card>
   )
 }
 

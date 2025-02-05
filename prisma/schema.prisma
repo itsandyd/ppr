@@ -397,13 +397,23 @@ model StripeCustomer {
   updatedAt        DateTime @updatedAt
 }
 
+enum MusicPlatform {
+  SPOTIFY
+  YOUTUBE
+  SOUNDCLOUD
+}
+
 model Song {
-  id        String @id @default(uuid())
+  id        String         @id @default(uuid())
   userId    String
   author    String
   title     String
-  songPath  String
-  imagePath String
+  platform  MusicPlatform?
+  url       String?
+  songPath  String?
+  imagePath String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @default(now()) @updatedAt
 }
 
 model CompanionMessage {
@@ -473,7 +483,7 @@ model PluginCategory {
 model Plugin {
   id           String      @id @default(uuid())
   name         String
-  slug         String      @unique
+  slug         String
   author       String?
   description  String?     @db.Text
   image        String?     @db.Text

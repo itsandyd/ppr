@@ -7,16 +7,21 @@ export async function POST(
 ) {
     try {
         const { userId } = auth();
-        const { name } = await req.json();
+        const body = await req.json();
+
+        const { name } = body;
 
         if (!userId) {
-            throw new NextResponse("You must be logged in to create a plugin", { status: 401 });
+            return new NextResponse("Unauthorized", { status: 401 });
         }
+
+        const slug = name.toLowerCase().replace(/\s+/g, '-');
 
         const plugin = await db.plugin.create({
             data: {
                 name,
                 userId,
+                slug,
             },
         });
 
@@ -24,6 +29,6 @@ export async function POST(
 
     } catch (error) {
         console.log("[PLUGIN]", error)
-        return new NextResponse("Interanl Error", { status: 500 });
+        return new NextResponse("Internal error", { status: 500 });
     }
 }
