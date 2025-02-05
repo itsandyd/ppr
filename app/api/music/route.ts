@@ -6,7 +6,7 @@ import { auth } from '@clerk/nextjs';
 import { Song } from '@prisma/client';
 
 export async function POST(req: NextRequest) {
-    const { author, title, song, image } = await req.json();
+    const { title, artist, url, image } = await req.json();
 
     const { userId } = auth();
 
@@ -24,17 +24,15 @@ export async function POST(req: NextRequest) {
         return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const newSongData = {
-        author,
-        title,
-        songPath: song, // replace with actual path after handling file
-        imagePath: image, // replace with actual path after handling file
-        userId
-    };
-
     const newSong = await db.song.create({
         data: {
-            ...newSongData
+            title,
+            artist,
+            url,
+            imagePath: image,
+            duration: 0,
+            userId,
+            platform: null
         }
     });
 
