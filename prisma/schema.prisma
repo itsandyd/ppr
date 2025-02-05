@@ -414,6 +414,7 @@ model Song {
   imagePath String?
   createdAt DateTime       @default(now())
   updatedAt DateTime       @default(now()) @updatedAt
+  playlists Playlist[]     @relation("PlaylistToSong")
 }
 
 model CompanionMessage {
@@ -1103,4 +1104,14 @@ model ChapterEmbedding {
   updatedAt DateTime      @updatedAt
 
   @@index([chapterId])
+}
+
+model Playlist {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  songs       Song[]   @relation("PlaylistToSong")
 }

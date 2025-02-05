@@ -4,54 +4,36 @@ import Link from "next/link"
 import { Play, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { Music, PlayCircle } from "lucide-react"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
 
-// This would typically come from your database
-const playlists = [
-  {
-    id: 1,
-    title: "Chill Vibes",
-    creator: "MoodMaster",
-    songCount: 25,
-    image: "/placeholder.svg?height=400&width=400",
-  },
-  {
-    id: 2,
-    title: "Workout Mix",
-    creator: "FitnessFreak",
-    songCount: 40,
-    image: "/placeholder.svg?height=400&width=400",
-  },
-  {
-    id: 3,
-    title: "Road Trip Anthems",
-    creator: "Wanderlust",
-    songCount: 50,
-    image: "/placeholder.svg?height=400&width=400",
-  },
-  {
-    id: 4,
-    title: "90s Nostalgia",
-    creator: "RetroLover",
-    songCount: 35,
-    image: "/placeholder.svg?height=400&width=400",
-  },
-  {
-    id: 5,
-    title: "Jazz Classics",
-    creator: "SmoothOperator",
-    songCount: 30,
-    image: "/placeholder.svg?height=400&width=400",
-  },
-  {
-    id: 6,
-    title: "Indie Discoveries",
-    creator: "HipsterVibes",
-    songCount: 45,
-    image: "/placeholder.svg?height=400&width=400",
-  },
-]
+interface PlaylistGridProps {
+  data: {
+    id: string;
+    name: string;
+    description: string | null;
+    songs: any[];
+  }[];
+}
 
-export function PlaylistGrid() {
+export const PlaylistGrid = ({
+  data = []
+}: PlaylistGridProps) => {
+  const router = useRouter();
+
+  if (data.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
+        <Music className="h-10 w-10 text-muted-foreground" />
+        <p className="text-muted-foreground text-sm text-center">
+          No playlists found. Create your first playlist to get started!
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -62,48 +44,37 @@ export function PlaylistGrid() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-        {playlists.map((playlist) => (
-          <div key={playlist.id} className="group relative">
-            <Link href={`/music/playlists/${playlist.id}`}>
-              <div className="aspect-square overflow-hidden rounded-lg">
-                <img
-                  src={playlist.image || "/placeholder.svg"}
-                  alt={playlist.title}
-                  className="object-cover w-full h-full"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <Button
-                    size="icon"
-                    className="rounded-full bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition"
-                  >
-                    <Play className="h-6 w-6" />
-                  </Button>
-                </div>
+        {data.map((playlist) => (
+          <Card
+            key={playlist.id}
+            className="group cursor-pointer transition overflow-hidden border rounded-lg"
+            onClick={() => router.push(`/music/playlists/${playlist.id}`)}
+          >
+            <CardContent className="p-0">
+              <div className="relative aspect-square bg-muted">
+                {playlist.songs[0]?.imagePath ? (
+                  <Image
+                    src={playlist.songs[0].imagePath}
+                    alt={playlist.name}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <PlayCircle className="h-12 w-12 text-muted-foreground" />
+                  </div>
+                )}
               </div>
-              <div className="mt-2">
-                <h3 className="font-semibold text-sm truncate">{playlist.title}</h3>
-                <p className="text-zinc-400 text-xs truncate">By {playlist.creator}</p>
-              </div>
-            </Link>
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-75"
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem>Add to Library</DropdownMenuItem>
-                  <DropdownMenuItem>Share</DropdownMenuItem>
-                  <DropdownMenuItem>View Creator</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
+            </CardContent>
+            <CardFooter className="flex-col items-start p-2">
+              <p className="font-semibold truncate w-full">
+                {playlist.name}
+              </p>
+              <p className="text-sm text-muted-foreground truncate w-full">
+                {playlist.songs.length} {playlist.songs.length === 1 ? 'song' : 'songs'}
+              </p>
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>

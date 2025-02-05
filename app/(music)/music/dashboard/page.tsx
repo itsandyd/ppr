@@ -1,18 +1,26 @@
 import Link from "next/link"
+import { auth } from "@clerk/nextjs"
+import { redirect } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { SiteHeader } from "@/components/music/site-header"
 import { SidebarNav } from "@/components/music/sidebar-nav"
+import { db } from "@/lib/db"
 
-// This would typically come from your database
-const songs = [
-  { id: 1, title: "Midnight Dreams", artist: "Luna Wave", artistId: 101 },
-  { id: 2, title: "Neon Lights", artist: "Electric Echo", artistId: 102 },
-  { id: 3, title: "Ocean Breeze", artist: "Coastal Vibes", artistId: 103 },
-  { id: 4, title: "Urban Jungle", artist: "City Sounds", artistId: 104 },
-]
+export default async function DashboardPage() {
+  const { userId } = auth();
 
-export default function DashboardPage() {
+  if (!userId) {
+    redirect('/sign-in');
+  }
+
+  const songs = await db.song.findMany({
+    take: 4,
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+
   return (
     <div className="min-h-screen bg-black text-white flex">
       <SidebarNav />
@@ -37,10 +45,10 @@ export default function DashboardPage() {
             <h2 className="text-2xl font-semibold mb-4">Newest songs</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {songs.map((song) => (
-                <Link key={song.id} href={`/profile/${song.artistId}`} className="block">
+                <Link key={song.id} href={`/music/songs/${song.id}`} className="block">
                   <div className="bg-zinc-900/50 rounded-lg p-4 hover:bg-zinc-800/50 transition">
                     <h3 className="font-semibold">{song.title}</h3>
-                    <p className="text-zinc-400">{song.artist}</p>
+                    <p className="text-zinc-400">{song.author}</p>
                   </div>
                 </Link>
               ))}
