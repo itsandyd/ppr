@@ -121,9 +121,9 @@ const PluginPage = async ({ params }: PageProps) => {
   // <<< NEW CODE ENDS >>>
 
   return (
-    <div className="pt-12 max-w-4xl mx-auto px-4 bg-gradient-to-b from-white via-blue-50 to-white min-h-screen">
+    <div className="pt-12 max-w-4xl mx-auto px-4 min-h-screen bg-background text-foreground dark:bg-background dark:text-foreground transition-colors">
       <div className='pt-12'>
-        <div className="group pt-12 transition overflow-hidden border rounded-lg mx-auto max-w-4xl bg-white shadow-xl">
+        <div className="group pt-12 transition overflow-hidden border rounded-lg mx-auto max-w-4xl bg-card text-card-foreground dark:bg-card dark:text-card-foreground shadow-xl">
           <div className="p-3">
             <div className="flex justify-center items-center p-4">
               <Image 
@@ -166,7 +166,7 @@ const PluginPage = async ({ params }: PageProps) => {
           {similarPlugins.map((sp) => (
             <div 
               key={sp.id} 
-              className="border p-4 rounded-md shadow-sm transition hover:shadow-md hover:bg-blue-50"
+              className="border p-4 rounded-md shadow-sm transition hover:shadow-md hover:bg-secondary dark:hover:bg-secondary"
             >
               <h4 className="font-bold text-lg mb-1">{sp.name}</h4>
               <p className="text-sm mb-2">
