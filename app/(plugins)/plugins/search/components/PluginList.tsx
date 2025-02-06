@@ -14,16 +14,17 @@ export const PluginList = ({
 }: PluginsListProps) => {
   return (
     <div>
-      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-4 md:px-6">
         {items.map((item) => (
           <PluginCard
             key={item.id}
             id={item.id}
             slug={item.slug || item.id}
-            name={item.name} 
-            imageUrl={item.image || 'placeholder.svg'}
+            name={item.name}
+            price={item.price || 0}
+            imageUrl={item.image || '/placeholder.svg'}
             description={item.description}
-            type={item.pluginType?.name || 'No Type'} // Handle possibly undefined category
+            type={item.pluginType?.name || 'No Type'}
           />
         ))}
       </div>

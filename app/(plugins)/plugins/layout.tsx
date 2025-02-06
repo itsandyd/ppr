@@ -9,20 +9,22 @@ const PluginsLayout = ({
 }) => {
   return ( 
     <SidebarProvider>
-      <div className="h-full">
+      <div className="h-full relative flex">
         {/* Mobile Menu Button - Only visible on mobile */}
         <div className="md:hidden fixed top-4 left-4 z-50">
           <PluginSidebar />
         </div>
 
         {/* Desktop Sidebar */}
-        <div className="hidden md:block fixed inset-y-0 left-0 z-40">
+        <div className="hidden md:flex fixed inset-y-0 left-0 z-40 w-60">
           <PluginSidebar />
         </div>
 
         {/* Main Content */}
-        <main className="h-full bg-[#313338] md:pl-[240px] transition-all duration-300 md:sidebar-adjusted">
-          {children}
+        <main className="flex-1 h-full bg-[#313338] md:ml-60">
+          <div className="max-w-5xl mx-auto w-full">
+            {children}
+          </div>
         </main>
       </div>
     </SidebarProvider>

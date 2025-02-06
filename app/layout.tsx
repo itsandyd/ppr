@@ -37,10 +37,10 @@ export default function RootLayout({
             <SocketProvider>
               <ToasterProvider />
               <ModalProvider />
-              <SpeedInsights />
-              <Analytics />
               <QueryProvider>{children}</QueryProvider>
             </SocketProvider>
+            <SpeedInsights />
+            <Analytics />
           </ThemeProvider>
         </body>
       </html>

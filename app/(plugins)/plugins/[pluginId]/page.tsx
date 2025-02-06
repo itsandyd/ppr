@@ -15,6 +15,7 @@ import { getPlugin } from '@/actions/get-plugin-by-id';
 import Image from 'next/image';
 import { PluginPurchaseButton } from './components/PluginPurchaseButton';
 import { PluginEditButton } from './components/PluginEditButton';
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PageProps {
   params: { 
@@ -92,6 +93,19 @@ export async function generateMetadata(
   }
 }
 
+export function PluginPageSkeleton() {
+  return (
+    <div className="pt-12 max-w-4xl mx-auto">
+      <Skeleton className="h-[400px] w-full rounded-lg" />
+      <div className="mt-6 space-y-4">
+        <Skeleton className="h-8 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-4 w-1/3" />
+      </div>
+    </div>
+  );
+}
+
 const PluginPage = async ({ params }: PageProps) => {
   const plugin = await db.plugin.findFirst({
     where: {
@@ -99,6 +113,10 @@ const PluginPage = async ({ params }: PageProps) => {
         { id: params.pluginId },
         { slug: params.pluginId }
       ]
+    },
+    include: {
+      pluginType: true,
+      category: true
     }
   });
 
@@ -106,33 +124,35 @@ const PluginPage = async ({ params }: PageProps) => {
     return redirect("/plugins");
   }
 
-  return ( 
-    <div className='pt-12'>
-      <div className="group pt-12 transition overflow-hidden border rounded-lg p-3 mx-auto max-w-4xl">
-        <div className="flex justify-center items-center p-4">
-          <Image 
-            src={plugin?.image || 'placeholder.svg'}
-            alt={plugin?.name || 'Plugin Name'}
-            width={500}
-            height={500}
-            className="object-cover rounded-md"
-          />
-        </div>
-        <div className="flex flex-col pt-2">
-          <div className="p-4 flex flex-col md:flex-row items-center justify-between">
-            <h2 className="text-lg md:text-base font-bold mb-2">{plugin?.name}</h2>
-            <PluginPurchaseButton 
-              pluginId={plugin.id}
-              price={plugin.price || 0}
-              pricingType={plugin.pricingType}
-              optInFormUrl={plugin.optInFormUrl || ''}
-              purchaseUrl={plugin.purchaseUrl || ''}
+  return (
+    <div className="pt-12 max-w-4xl mx-auto px-4">
+      <div className='pt-12'>
+        <div className="group pt-12 transition overflow-hidden border rounded-lg p-3 mx-auto max-w-4xl">
+          <div className="flex justify-center items-center p-4">
+            <Image 
+              src={plugin?.image || 'placeholder.svg'}
+              alt={plugin?.name || 'Plugin Name'}
+              width={500}
+              height={500}
+              className="object-cover rounded-md"
             />
-            {plugin.userId && <PluginEditButton pluginId={plugin.id} />}
           </div>
-          <Separator />
-          <div>
-            <Preview value={plugin?.description!}/>
+          <div className="flex flex-col pt-2">
+            <div className="p-4 flex flex-col md:flex-row items-center justify-between">
+              <h2 className="text-lg md:text-base font-bold mb-2">{plugin?.name}</h2>
+              <PluginPurchaseButton 
+                pluginId={plugin.id}
+                price={plugin.price || 0}
+                pricingType={plugin.pricingType}
+                optInFormUrl={plugin.optInFormUrl || ''}
+                purchaseUrl={plugin.purchaseUrl || ''}
+              />
+              {plugin.userId && <PluginEditButton pluginId={plugin.id} />}
+            </div>
+            <Separator />
+            <div>
+              <Preview value={plugin?.description!}/>
+            </div>
           </div>
         </div>
       </div>
