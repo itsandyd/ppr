@@ -21,7 +21,7 @@ const PluginsLayout = ({
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 h-full bg-[#313338] md:ml-60">
+        <main className="flex-1 h-full bg-background text-foreground dark:bg-background dark:text-foreground transition-colors md:ml-60">
           <div className="max-w-5xl mx-auto w-full">
             {children}
           </div>

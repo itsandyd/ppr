@@ -10,7 +10,7 @@ export const PluginNavbar = () => {
     return ( 
         // border-b 
         <div className={cn(
-            "p-4 border-b h-full flex items-center shadow-sm bg-white dark:bg-[#313338] transition-all duration-300",
+            "p-4 border-b h-full flex items-center shadow-sm bg-card text-card-foreground dark:bg-card dark:text-card-foreground transition-all duration-300",
             isCollapsed ? "md:pl-[70px]" : "md:pl-[240px]"
         )}>
             {/* <CourseMobileSidebar /> */}

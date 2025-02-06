@@ -73,7 +73,7 @@ const PluginsPage = async ({
 
   if (!effects) {
     return (
-      <div className="flex items-center justify-center h-full text-white">
+      <div className="flex items-center justify-center h-full text-foreground dark:text-foreground">
         <h1>No plugins found</h1>
       </div>
     );

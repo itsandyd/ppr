@@ -23,7 +23,7 @@ export const PluginSidebar = () => {
             <Menu className="h-5 w-5" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="p-0 w-72 bg-[#2A2D31] border-r-0">
+        <SheetContent side="left" className="p-0 w-72 bg-card text-card-foreground dark:bg-card dark:text-card-foreground border-r-0">
           <div className="h-full flex flex-col overflow-y-auto">
             <div className="p-4 border-b border-gray-800">
               <Link href="/plugins">
@@ -39,7 +39,7 @@ export const PluginSidebar = () => {
 
       {/* Desktop Sidebar */}
       <div className={cn(
-        "hidden md:flex h-full bg-[#2A2D31] border-r border-gray-800 flex-col overflow-y-auto transition-all duration-300",
+        "hidden md:flex h-full bg-card text-card-foreground dark:bg-card dark:text-card-foreground border-r border-gray-800 flex-col overflow-y-auto transition-all duration-300",
         isCollapsed ? "w-[70px]" : "w-[240px]"
       )}>
         <div className="p-4 flex justify-between items-center border-b border-gray-800">
