@@ -9,6 +9,7 @@ import { getFreePlugins } from "@/actions/get-free-plugins";
 import { PluginSearchInput } from "@/components/plugins/PluginSearchInput";
 import { PluginCategories } from "../search/components/categories";
 import { PluginTypes } from "../search/components/types";
+import { PluginHero } from '../components/PluginHero';
 
 // import { InfoCard } from "./components/InfoCard";
 
@@ -91,6 +92,7 @@ const FreePluginsPage = async ({
   return (
     <div className="p-6 space-y-4">
     {/* <PluginSearchInput /> */}
+    <PluginHero />
     <PluginTypes
       items={types}
       />

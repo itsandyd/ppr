@@ -15,6 +15,7 @@ import { getPlugin } from '@/actions/get-plugin-by-id';
 import Image from 'next/image';
 import { PluginPurchaseButton } from './components/PluginPurchaseButton';
 import { PluginEditButton } from './components/PluginEditButton';
+import { PluginHero } from '../components/PluginHero';
 
 interface PageProps {
   params: { 
@@ -121,68 +122,70 @@ const PluginPage = async ({ params }: PageProps) => {
   // <<< NEW CODE ENDS >>>
 
   return (
-    <div className="pt-12 max-w-4xl mx-auto px-4 min-h-screen bg-background text-foreground dark:bg-background dark:text-foreground transition-colors">
-      <div className='pt-12'>
-        <div className="group pt-12 transition overflow-hidden border rounded-lg mx-auto max-w-4xl bg-card text-card-foreground dark:bg-card dark:text-card-foreground shadow-xl">
-          <div className="p-3">
-            <div className="flex justify-center items-center p-4">
-              <Image 
-                src={plugin?.image || 'placeholder.svg'}
-                alt={plugin?.name || 'Plugin Name'}
-                width={500}
-                height={500}
-                className="object-cover rounded-md shadow-lg"
-              />
-            </div>
-            <div className="flex flex-col pt-2">
-              <div className="p-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-                <h2 className="text-lg md:text-xl font-bold">{plugin?.name}</h2>
-                <PluginPurchaseButton 
-                  pluginId={plugin.id}
-                  price={plugin.price || 0}
-                  pricingType={plugin.pricingType}
-                  optInFormUrl={plugin.optInFormUrl || ''}
-                  purchaseUrl={plugin.purchaseUrl || ''}
+    <>
+      <div className="pt-12 max-w-4xl mx-auto px-4 min-h-screen bg-background text-foreground dark:bg-background dark:text-foreground transition-colors">
+        <div className='pt-12'>
+          <div className="group pt-12 transition overflow-hidden border rounded-lg mx-auto max-w-4xl bg-card text-card-foreground dark:bg-card dark:text-card-foreground shadow-xl">
+            <div className="p-3">
+              <div className="flex justify-center items-center p-4">
+                <Image 
+                  src={plugin?.image || 'placeholder.svg'}
+                  alt={plugin?.name || 'Plugin Name'}
+                  width={500}
+                  height={500}
+                  className="object-cover rounded-md shadow-lg"
                 />
-                {plugin.userId && <PluginEditButton pluginId={plugin.id} />}
               </div>
-              <Separator className="mt-2 mb-4" />
-              <div className="px-4 pb-4">
-                <Preview value={plugin?.description!}/>
+              <div className="flex flex-col pt-2">
+                <div className="p-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+                  <h2 className="text-lg md:text-xl font-bold">{plugin?.name}</h2>
+                  <PluginPurchaseButton 
+                    pluginId={plugin.id}
+                    price={plugin.price || 0}
+                    pricingType={plugin.pricingType}
+                    optInFormUrl={plugin.optInFormUrl || ''}
+                    purchaseUrl={plugin.purchaseUrl || ''}
+                  />
+                  {plugin.userId && <PluginEditButton pluginId={plugin.id} />}
+                </div>
+                <Separator className="mt-2 mb-4" />
+                <div className="px-4 pb-4">
+                  <Preview value={plugin?.description!}/>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="mt-12">
-        <h3 className="text-xl font-semibold mb-4">
-          Similar {plugin.category?.name || 'Audio'} Plugins
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {similarPlugins.length === 0 && (
-            <p>No similar plugins found.</p>
-          )}
-          {similarPlugins.map((sp) => (
-            <div 
-              key={sp.id} 
-              className="border p-4 rounded-md shadow-sm transition hover:shadow-md hover:bg-secondary dark:hover:bg-secondary"
-            >
-              <h4 className="font-bold text-lg mb-1">{sp.name}</h4>
-              <p className="text-sm mb-2">
-                {sp.description?.slice(0, 100)}...
-              </p>
-              <a 
-                href={`/plugins/${sp.slug}`} 
-                className="inline-block text-blue-500 hover:underline"
+        <div className="mt-12">
+          <h3 className="text-xl font-semibold mb-4">
+            Similar {plugin.category?.name || 'Audio'} Plugins
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {similarPlugins.length === 0 && (
+              <p>No similar plugins found.</p>
+            )}
+            {similarPlugins.map((sp) => (
+              <div 
+                key={sp.id} 
+                className="border p-4 rounded-md shadow-sm transition hover:shadow-md hover:bg-secondary dark:hover:bg-secondary"
               >
-                View Details
-              </a>
-            </div>
-          ))}
+                <h4 className="font-bold text-lg mb-1">{sp.name}</h4>
+                <p className="text-sm mb-2">
+                  {sp.description?.slice(0, 100)}...
+                </p>
+                <a 
+                  href={`/plugins/${sp.slug}`} 
+                  className="inline-block text-blue-500 hover:underline"
+                >
+                  View Details
+                </a>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

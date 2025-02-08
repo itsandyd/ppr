@@ -1,0 +1,25 @@
+# Allow all web crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://app.pauseplayrepeat.com/sitemap.xml
+
+# Allow crawling of all content
+Allow: /plugins/
+Allow: /plugins/free/
+Allow: /plugins/search/
+Allow: /(site)/
+Allow: /api/
+
+# Ensure static assets are crawlable
+Allow: /*.js$
+Allow: /*.css$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.ico$
+
+# Crawl-delay to be nice to servers (optional)
+Crawl-delay: 1 
