@@ -42,17 +42,28 @@ export const CourseSidebar = async ({
             {/* Mobile Sheet */}
             <Sheet>
                 <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon" className="md:hidden fixed left-4 top-4 text-white">
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="md:hidden fixed left-4 top-4 text-foreground"
+                    >
                         <Menu className="h-5 w-5" />
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="p-0 w-72 bg-card text-card-foreground dark:bg-card dark:text-card-foreground border-r-0">
+                <SheetContent 
+                    side="left" 
+                    className="p-0 w-72 bg-card border-r-0"
+                >
                     <div className="h-full flex flex-col overflow-y-auto">
-                        <div className="p-6 flex flex-col gap-y-2 border-b border-gray-800">
-                            <h1 className="text-xl font-semibold text-white line-clamp-2">{course.title}</h1>
+                        <div className="p-6 flex flex-col gap-y-2 border-b">
+                            <h1 className="text-xl font-semibold text-card-foreground line-clamp-2">
+                                {course.title}
+                            </h1>
                             {purchase && (
                                 <div className="mt-2">
-                                    <p className="text-sm text-gray-400">Progress: {progressCount}%</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        Progress: {progressCount}%
+                                    </p>
                                 </div>
                             )}
                         </div>
@@ -74,13 +85,17 @@ export const CourseSidebar = async ({
 
             {/* Desktop Sidebar */}
             <div className={cn(
-                "hidden md:flex h-full w-60 bg-card text-card-foreground dark:bg-card dark:text-card-foreground border-r border-gray-800 flex-col overflow-y-auto transition-all duration-300"
+                "hidden md:flex h-full w-60 bg-card border-r flex-col overflow-y-auto transition-all duration-300"
             )}>
-                <div className="p-6 flex flex-col gap-y-2 border-b border-gray-800">
-                    <h1 className="text-xl font-semibold text-white line-clamp-2">{course.title}</h1>
+                <div className="p-6 flex flex-col gap-y-2 border-b">
+                    <h1 className="text-xl font-semibold text-card-foreground line-clamp-2">
+                        {course.title}
+                    </h1>
                     {purchase && (
                         <div className="mt-2">
-                            <p className="text-sm text-gray-400">Progress: {progressCount}%</p>
+                            <p className="text-sm text-muted-foreground">
+                                Progress: {progressCount}%
+                            </p>
                         </div>
                     )}
                 </div>
