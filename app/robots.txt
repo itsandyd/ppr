@@ -9,6 +9,10 @@ Sitemap: https://app.pauseplayrepeat.com/sitemap.xml
 Allow: /plugins/
 Allow: /plugins/free/
 Allow: /plugins/search/
+Allow: /academy/
+Allow: /academy/courses/
+Allow: /academy/search/
+Allow: /academy/dashboard/
 Allow: /(site)/
 Allow: /api/
 

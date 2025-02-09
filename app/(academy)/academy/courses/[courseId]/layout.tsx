@@ -8,11 +8,9 @@ import { CourseNavbar } from "./components/course-navbar";
 const CourseLayout = async ({
     children,
     params,
-    theme,
 }: {
     children: React.ReactNode;
     params: { courseId: string };
-    theme: 'light' | 'dark'; // add this line
 }) => {
 
     const { userId } = auth();
@@ -55,7 +53,6 @@ const CourseLayout = async ({
         <div className="h-full">
           <div className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-50">
             <CourseNavbar
-                theme={theme} 
                 course={course}
                 progressCount={progressCount} 
             />

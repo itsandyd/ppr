@@ -85,7 +85,7 @@ export const LandingHero = () => {
         </div>
 
         {/* Hero Image */}
-        <div className="mt-16 relative">
+        {/* <div className="mt-16 relative">
           <div className="aspect-video max-w-5xl mx-auto rounded-lg overflow-hidden border border-muted">
             <Image
               src="/hero-dashboard.jpg"
@@ -96,7 +96,7 @@ export const LandingHero = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

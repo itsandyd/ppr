@@ -45,7 +45,7 @@ const LandingPage = () => {
       >
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-            {[
+            {/* {[
               { src: "/logos/ableton.svg", alt: "Ableton" },
               { src: "/logos/logic.svg", alt: "Logic Pro" },
               { src: "/logos/fl-studio.svg", alt: "FL Studio" },
@@ -63,7 +63,7 @@ const LandingPage = () => {
                   className="object-contain opacity-50 hover:opacity-100 transition-opacity duration-300"
                 />
               </motion.div>
-            ))}
+            ))} */}
           </div>
         </div>
       </motion.div>
@@ -132,7 +132,7 @@ const LandingPage = () => {
           {/* Music Production */}
           <Card className="group p-6 hover:shadow-xl transition-all duration-300 border border-muted/20 bg-muted/5 backdrop-blur-sm hover:bg-muted/10">
             <div className="relative h-40 mb-6 rounded-lg overflow-hidden">
-              <Image src="/features/studio.jpg" alt="Music Studio" fill className="object-cover group-hover:scale-105 transition duration-300" />
+              {/* <Image src="/features/studio.jpg" alt="Music Studio" fill className="object-cover group-hover:scale-105 transition duration-300" /> */}
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
             </div>
             <Music2 className="w-12 h-12 text-sky-400 mb-4" />
@@ -148,7 +148,7 @@ const LandingPage = () => {
           {/* AI Assistant */}
           <Card className="group p-6 hover:shadow-xl transition-all duration-300 border border-muted/20 bg-muted/5 backdrop-blur-sm hover:bg-muted/10">
             <div className="relative h-40 mb-6 rounded-lg overflow-hidden">
-              <Image src="/features/ai.jpg" alt="AI Assistant" fill className="object-cover group-hover:scale-105 transition duration-300" />
+              {/* <Image src="/features/ai.jpg" alt="AI Assistant" fill className="object-cover group-hover:scale-105 transition duration-300" /> */}
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
             </div>
             <Bot className="w-12 h-12 text-purple-400 mb-4" />
@@ -164,7 +164,7 @@ const LandingPage = () => {
           {/* Academy */}
           <Card className="group p-6 hover:shadow-xl transition-all duration-300 border border-muted/20 bg-muted/5 backdrop-blur-sm hover:bg-muted/10">
             <div className="relative h-40 mb-6 rounded-lg overflow-hidden">
-              <Image src="/features/academy.jpg" alt="Academy" fill className="object-cover group-hover:scale-105 transition duration-300" />
+              {/* <Image src="/features/academy.jpg" alt="Academy" fill className="object-cover group-hover:scale-105 transition duration-300" /> */}
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
             </div>
             <GraduationCap className="w-12 h-12 text-pink-400 mb-4" />
@@ -180,7 +180,7 @@ const LandingPage = () => {
           {/* Community */}
           <Card className="group p-6 hover:shadow-xl transition-all duration-300 border border-muted/20 bg-muted/5 backdrop-blur-sm hover:bg-muted/10">
             <div className="relative h-40 mb-6 rounded-lg overflow-hidden">
-              <Image src="/features/community.jpg" alt="Community" fill className="object-cover group-hover:scale-105 transition duration-300" />
+              {/* <Image src="/features/community.jpg" alt="Community" fill className="object-cover group-hover:scale-105 transition duration-300" /> */}
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
             </div>
             <Users className="w-12 h-12 text-sky-400 mb-4" />
@@ -196,7 +196,7 @@ const LandingPage = () => {
           {/* Coaching */}
           <Card className="group p-6 hover:shadow-xl transition-all duration-300 border border-muted/20 bg-muted/5 backdrop-blur-sm hover:bg-muted/10">
             <div className="relative h-40 mb-6 rounded-lg overflow-hidden">
-              <Image src="/features/coaching.jpg" alt="Coaching" fill className="object-cover group-hover:scale-105 transition duration-300" />
+              {/* <Image src="/features/coaching.jpg" alt="Coaching" fill className="object-cover group-hover:scale-105 transition duration-300" /> */}
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
             </div>
             <Headphones className="w-12 h-12 text-purple-400 mb-4" />
@@ -212,7 +212,7 @@ const LandingPage = () => {
           {/* PromoPulse */}
           <Card className="group p-6 hover:shadow-xl transition-all duration-300 border border-muted/20 bg-muted/5 backdrop-blur-sm hover:bg-muted/10">
             <div className="relative h-40 mb-6 rounded-lg overflow-hidden">
-              <Image src="/features/promo.jpg" alt="PromoPulse" fill className="object-cover group-hover:scale-105 transition duration-300" />
+              {/* <Image src="/features/promo.jpg" alt="PromoPulse" fill className="object-cover group-hover:scale-105 transition duration-300" /> */}
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
             </div>
             <Radio className="w-12 h-12 text-pink-400 mb-4" />
@@ -243,12 +243,12 @@ const LandingPage = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-muted">
-                  <Image
+                  {/* <Image
                     src="/features/studio.jpg"
                     alt="Music Studio"
                     fill
                     className="object-cover"
-                  />
+                  /> */}
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-background/20" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="text-2xl font-bold mb-2">Professional Music Studio</h3>
@@ -308,12 +308,12 @@ const LandingPage = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-muted">
-                  <Image
+                  {/* <Image
                     src="/features/ai.jpg"
                     alt="AI Assistant"
                     fill
                     className="object-cover"
-                  />
+                  /> */}
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-background/20" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="text-2xl font-bold mb-2">AI-Powered Creation</h3>
@@ -373,12 +373,12 @@ const LandingPage = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-muted">
-                  <Image
+                  {/* <Image
                     src="/features/academy.jpg"
                     alt="Academy"
                     fill
                     className="object-cover"
-                  />
+                  /> */}
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-background/20" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="text-2xl font-bold mb-2">Expert-Led Training</h3>
@@ -438,12 +438,12 @@ const LandingPage = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-muted">
-                  <Image
+                  {/* <Image
                     src="/features/promo.jpg"
                     alt="PromoPulse"
                     fill
                     className="object-cover"
-                  />
+                  /> */}
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-background/20" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="text-2xl font-bold mb-2">Marketing Automation</h3>

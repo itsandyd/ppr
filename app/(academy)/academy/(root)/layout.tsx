@@ -7,15 +7,22 @@ const DashboardLayout = ({
   children: React.ReactNode;
 }) => {
   return ( 
-    <div className="h-full">
-      <div className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-50">
-        <CourseNavbar />
-      </div>
-      <div className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50">
+    <div className="h-full relative flex">
+      {/* Mobile Menu Button - Only visible on mobile */}
+      <div className="md:hidden fixed top-4 left-4 z-50">
         <CourseDashboardSidebar />
       </div>
-      <main className="md:pl-56 pt-[80px] h-full">
-        {children}
+
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex fixed inset-y-0 left-0 z-40 w-60">
+        <CourseDashboardSidebar />
+      </div>
+
+      {/* Main Content */}
+      <main className="flex-1 h-full bg-background text-foreground dark:bg-background dark:text-foreground transition-colors md:ml-60">
+        <div className="max-w-5xl mx-auto w-full">
+          {children}
+        </div>
       </main>
     </div>
    );
