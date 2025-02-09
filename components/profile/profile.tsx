@@ -3,6 +3,7 @@
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
 import { CardContent, Card, CardTitle, CardHeader } from "@/components/ui/card"
 import { UserButton, auth, useUser } from "@clerk/nextjs"
+import { Loader2 } from "lucide-react"
 import { FaTruckLoading } from "react-icons/fa"
 import { MdLocalDining } from "react-icons/md"
 import { TbFidgetSpinner } from "react-icons/tb"
@@ -13,8 +14,8 @@ export const Profile = () => {
 
   if (!user) {
     return (
-      <div className="items-center justify-center">
-       <MdLocalDining className="animate-spin"/>
+      <div className="flex items-center justify-center min-h-screen">
+       <Loader2 className="h-24 w-24 animate-spin"/>
     </div>
     )
   }

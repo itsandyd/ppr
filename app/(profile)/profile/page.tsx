@@ -8,17 +8,17 @@ import { Profile } from "@/components/profile/profile";
 
 
 const LandingPage = async () => {
-  // const profile = await initialProfile();
+  const profile = await initialProfile();
 
-  // const server = await db.server.findFirst({
-  //   where: {
-  //     members: {
-  //       some: {
-  //         profileId: profile.id,
-  //       },
-  //     },
-  //   },
-  // });
+  const server = await db.server.findFirst({
+    where: {
+      members: {
+        some: {
+          profileId: profile.id,
+        },
+      },
+    },
+  });
 
   return (
     <div className="h-full ">
