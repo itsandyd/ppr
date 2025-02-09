@@ -48,8 +48,8 @@ export const CourseSidebar = async ({
                 </SheetTrigger>
                 <SheetContent side="left" className="p-0 w-72 bg-card text-card-foreground dark:bg-card dark:text-card-foreground border-r-0">
                     <div className="h-full flex flex-col overflow-y-auto">
-                        <div className="p-4 border-b border-gray-800">
-                            <h1 className="text-xl font-semibold text-white">{course.title}</h1>
+                        <div className="p-6 flex flex-col gap-y-2 border-b border-gray-800">
+                            <h1 className="text-xl font-semibold text-white line-clamp-2">{course.title}</h1>
                             {purchase && (
                                 <div className="mt-2">
                                     <p className="text-sm text-gray-400">Progress: {progressCount}%</p>
@@ -76,14 +76,14 @@ export const CourseSidebar = async ({
             <div className={cn(
                 "hidden md:flex h-full w-60 bg-card text-card-foreground dark:bg-card dark:text-card-foreground border-r border-gray-800 flex-col overflow-y-auto transition-all duration-300"
             )}>
-                <div className="p-4 flex items-center border-b border-gray-800">
-                    <h1 className="text-xl font-semibold text-white whitespace-nowrap">{course.title}</h1>
+                <div className="p-6 flex flex-col gap-y-2 border-b border-gray-800">
+                    <h1 className="text-xl font-semibold text-white line-clamp-2">{course.title}</h1>
+                    {purchase && (
+                        <div className="mt-2">
+                            <p className="text-sm text-gray-400">Progress: {progressCount}%</p>
+                        </div>
+                    )}
                 </div>
-                {purchase && (
-                    <div className="p-4 border-b border-gray-800">
-                        <p className="text-sm text-gray-400">Progress: {progressCount}%</p>
-                    </div>
-                )}
                 <div className="flex flex-col w-full py-2">
                     {course.courseChapter.map((chapter) => (
                         <CourseSidebarItem
