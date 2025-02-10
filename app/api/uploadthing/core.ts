@@ -5,9 +5,9 @@ import { createUploadthing, type FileRouter } from "uploadthing/next";
 const f = createUploadthing();
  
 const handleAuth = () => {
-    const userId = auth();
+    const { userId } = auth();
     if (!userId) throw new Error("Unauthorized");
-    return { userId: userId };
+    return { userId };
 }
  
 // FileRouter for your app, can contain multiple FileRoutes
@@ -45,7 +45,7 @@ export const ourFileRouter = {
     storageUpload: f(["text", "image", "video", "audio", "pdf"])
         .middleware(() => handleAuth())
         .onUploadComplete(() => {}),
-        subaccountLogo: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
+    subaccountLogo: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
         .middleware(() => handleAuth())
         .onUploadComplete(() => {}),
     avatar: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
@@ -56,6 +56,12 @@ export const ourFileRouter = {
         .onUploadComplete(() => {}),
     media: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
     .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
+    songImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+        .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
+    playlistImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+        .middleware(() => handleAuth())
         .onUploadComplete(() => {}),
 } satisfies FileRouter;
  

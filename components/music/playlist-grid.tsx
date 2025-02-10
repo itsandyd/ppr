@@ -15,6 +15,7 @@ interface PlaylistGridProps {
     name: string;
     description: string | null;
     songs: any[];
+    slug: string | null;
   }[];
 }
 
@@ -48,7 +49,7 @@ export const PlaylistGrid = ({
           <Card
             key={playlist.id}
             className="group cursor-pointer transition overflow-hidden border rounded-lg"
-            onClick={() => router.push(`/music/playlists/${playlist.id}`)}
+            onClick={() => router.push(`/music/playlists/${playlist.slug || playlist.id}`)}
           >
             <CardContent className="p-0">
               <div className="relative aspect-square bg-muted">

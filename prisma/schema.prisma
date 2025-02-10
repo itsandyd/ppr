@@ -1114,13 +1114,24 @@ model ChapterEmbedding {
 }
 
 model Playlist {
-  id        String   @id @default(uuid())
-  name      String
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  songs     Song[]
-  User      User     @relation(fields: [userId], references: [id])
+  id                   String         @id @default(uuid())
+  name                 String
+  slug                 String?        @unique
+  description          String?        @db.Text
+  genre                String?
+  mood                 String?
+  isPublic             Boolean        @default(false)
+  userId               String
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  contactEmail         String?        @db.Text
+  submissionEnabled    Boolean        @default(false)
+  submissionGuidelines String?        @db.Text
+  platform             MusicPlatform?
+  imagePath            String?        @db.Text
+  url                  String?        @db.Text
+  songs                Song[]
+  User                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([createdAt])

@@ -27,7 +27,8 @@ export default async function PlaylistsPage() {
     id: playlist.id.toString(),
     name: playlist.name,
     description: null,
-    songs: playlist.songs
+    songs: playlist.songs,
+    slug: playlist.slug
   })));
 
   return (
