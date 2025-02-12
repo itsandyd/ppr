@@ -8,42 +8,47 @@ export async function POST(req: Request) {
     const { userId } = auth();
     const body = await req.json();
 
-    const { title, artist, platform, url, imagePath } = body;
+    const { 
+      title,
+      author,
+      platform,
+      url,
+    } = body;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!title || !artist) {
-      return new NextResponse("Missing required fields", { status: 400 });
+    if (!title) {
+      return new NextResponse("Title is required", { status: 400 });
     }
 
-    // Check if platform+url is provided
-    if (!(platform && url)) {
-      return new NextResponse("Platform and URL must be provided", { status: 400 });
+    if (!author) {
+      return new NextResponse("Author is required", { status: 400 });
     }
 
-    // If platform is provided, validate it
-    if (platform && !Object.values(MusicPlatform).includes(platform)) {
-      return new NextResponse("Invalid platform", { status: 400 });
+    if (!platform || !Object.values(MusicPlatform).includes(platform as MusicPlatform)) {
+      return new NextResponse("Valid platform is required", { status: 400 });
+    }
+
+    if (!url) {
+      return new NextResponse("URL is required", { status: 400 });
     }
 
     const song = await db.song.create({
       data: {
         title,
-        artist,
-        platform: platform || null,
-        url: url || null,
-        imagePath: imagePath || null,
+        artist: author,
         userId,
-        duration: 0  // Add a default duration since it's required
+        platform: platform as MusicPlatform,
+        url,
       }
     });
 
     return NextResponse.json(song);
   } catch (error) {
-    console.log('[SONGS_POST]', error);
-    return new NextResponse("Internal error", { status: 500 });
+    console.log("[SONGS]", error);
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }
 

@@ -87,18 +87,23 @@ export const SubmitMusicForm = () => {
         throw new Error("Failed to create song");
       }
 
+      const song = await response.json();
+
       toast({
-        title: "Success!",
+        title: "Success! 🎉",
         description: "Your song has been submitted successfully.",
+        variant: "default",
       });
 
-      router.push("/music/songs");
+      router.push("/music/dashboard");
       router.refresh();
     } catch (error) {
       console.error(error);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Something went wrong",
+        description: error instanceof Error 
+          ? error.message 
+          : "There was a problem creating your song. Please try again.",
         variant: "destructive",
       });
     } finally {
