@@ -87,6 +87,11 @@ export const LandingNavbar = () => {
                 Music
             </Button>
         </Link>
+        <Link href="/freebies">
+            <Button variant="ghost" className="rounded-full">
+                Freebies
+            </Button>
+        </Link>
         <Link href="https://discord.gg/pauseplayrepeat">
             <Button variant="ghost" className="rounded-full">
                 Community
