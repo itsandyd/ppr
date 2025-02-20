@@ -20,8 +20,10 @@ export const LandingNavbar = () => {
 
   return (
     <>
-    <nav className="p-4 bg-transparent flex items-center justify-between z-10">
-    <LandingMobileNavbar />
+    <nav className="p-4 bg-transparent flex items-center justify-between z-10 relative">
+      <div className="md:hidden">
+        <LandingMobileNavbar />
+      </div>
       {/* <Link href="/" className="flex items-center"> */}
         {/* <div className="relative h-8 w-8 mr-4">
           <Image fill alt="Logo" src="/ppr.svg" />
@@ -32,11 +34,11 @@ export const LandingNavbar = () => {
         width={50} // Desired width
         height={100} // Desired height
       /> */}
-      {/* <h1 className={cn("text-2xl font-bold p-2", font.className)}>
+        {/* <h1 className={cn("text-2xl font-bold p-2", font.className)}>
           PausePlayRepeat.com
         </h1>
       </Link> */}
-       <div className="flex items-center gap-x-2">
+       <div className="hidden md:flex items-center gap-x-2">
         <Link href="/sounds">
             <Button variant="ghost" className="rounded-full">
                 Sounds
@@ -98,16 +100,16 @@ export const LandingNavbar = () => {
             </Button>
       </Link>
       </div>
-      <div className="flex items-center gap-x-2">
+      <div className="flex items-center gap-x-2 ml-auto">
       {isSignedIn ? (
-    <Link href="/profile">
-        <Button variant="default" className="rounded-full">
+    <Link href="/profile" className="hidden sm:block">
+        <Button variant="default" className="rounded-full text-sm">
             View Profile
         </Button>
     </Link>
 ) : (
-    <Link href="/sign-up">
-        <Button variant="default" className="rounded-full">
+    <Link href="/sign-up" className="hidden sm:block">
+        <Button variant="default" className="rounded-full text-sm">
             Get Started
         </Button>
     </Link>

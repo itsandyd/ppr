@@ -25,6 +25,14 @@ import { Editor } from "@/components/editor";
 import { Preview } from "@/components/courses/preview";
 
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 interface ChapterDescriptionFormProps {
   initialData: CourseChapter;
@@ -44,6 +52,9 @@ export const ChapterDescriptionForm = ({
   chapterId
 }: ChapterDescriptionFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [enhancedText, setEnhancedText] = useState("");
+  const [isEnhancing, setIsEnhancing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -69,20 +80,68 @@ export const ChapterDescriptionForm = ({
     }
   }
 
+  const handleEnhance = async () => {
+    setIsEnhancing(true);
+    const originalDescription = form.getValues("description");
+    // Simulate Tavily Search and ChatGPT integration
+    const enhanced = originalDescription + " [Enhanced by Tavily & ChatGPT]";
+    setEnhancedText(enhanced);
+    setIsEnhancing(false);
+    toast.success("Description enhanced with AI");
+  };
+
   return (
     <div className="mt-6 border rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Chapter description
-        <Button onClick={toggleEdit} variant="ghost">
-          {isEditing ? (
-            <>Cancel</>
-          ) : (
-            <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit chapter
-            </>
-          )}
-        </Button>
+        <span>Chapter description</span>
+        <div className="flex gap-2">
+          <Button onClick={toggleEdit} variant="ghost">
+            {isEditing ? (
+              "Cancel"
+            ) : (
+              <>
+                <Pencil className="h-4 w-4 mr-2" />
+                Edit chapter
+              </>
+            )}
+          </Button>
+          <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">Enhance with AI</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Enhance description with AI</DialogTitle>
+                <DialogDescription>
+                  Enhance your description using AI.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="mt-4">
+                <div>
+                  <h4 className="font-medium">Original Text</h4>
+                  <p className="text-sm">{form.getValues("description")}</p>
+                </div>
+                {enhancedText && (
+                  <div className="mt-4">
+                    <h4 className="font-medium">Enhanced Text</h4>
+                    <p className="text-sm">{enhancedText}</p>
+                  </div>
+                )}
+              </div>
+              <div className="mt-4 flex items-center gap-2">
+                <Button onClick={handleEnhance} disabled={isEnhancing}>
+                  {isEnhancing ? "Enhancing..." : "Enhance"}
+                </Button>
+                {enhancedText && (
+                  <Button variant="outline" onClick={() => { form.setValue("description", enhancedText); setDialogOpen(false); }}>
+                    Accept Enhancement
+                  </Button>
+                )}
+                <Button variant="ghost" onClick={() => setDialogOpen(false)}>Close</Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
       {!isEditing && (
         <div className={cn("text-sm mt-2", !initialData.description && " italic"

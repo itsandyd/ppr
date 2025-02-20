@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Montserrat } from 'next/font/google'
-import { BookIcon, Code, ComputerIcon, ImageIcon, LayoutDashboard, MessageSquare, Music, Settings, UserIcon, VideoIcon } from "lucide-react";
+import { BookIcon, Code, ComputerIcon, ImageIcon, LayoutDashboard, MessageSquare, Music, Settings, UserIcon, VideoIcon, Gift, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -15,46 +15,46 @@ const poppins = Montserrat ({ weight: '600', subsets: ['latin'] });
 const routes = [
     {
       label: 'Sounds',
-      icon: Music, // Example icon, replace with actual icons as needed
-      href: 'https://sounds.pauseplayrepeat.com',
+      icon: Music,
+      href: '/sounds',
     },
     {
       label: 'Plugins',
-      icon: BsSoundwave, // Example icon
+      icon: BsSoundwave,
       href: '/plugins',
     },
     {
       label: 'Academy',
-      icon: BookIcon, // Example icon
+      icon: BookIcon,
       href: '/academy',
-    },    {
-      label: 'Coaching',
-      icon: GiTeacher, // Example icon
-      href: '/coaching/browse',
-    },
-    {
-      label: 'Community',
-      icon: UserIcon, // Example icon
-      href: 'https://discord.gg/pauseplayrepeat',
-    },
-    {
-      label: 'Music',
-      icon: Music, // Reusing the Music icon for demonstration
-      href: 'https://music.pauseplayrepeat.com',
     },
     {
       label: 'AI',
-      icon: ComputerIcon, // Example icon
-      href: '/ai/dashboard',
+      icon: ComputerIcon,
+      href: '/ai',
     },
-  ];
+    {
+      label: 'Music',
+      icon: Music,
+      href: '/music',
+    },
+    {
+      label: 'Freebies',
+      icon: Gift,
+      href: '/freebies',
+    },
+    {
+      label: 'Community',
+      icon: Users,
+      href: 'https://discord.gg/pauseplayrepeat',
+    },
+];
 
-export const LandingMobileSidebar = ({
-}) => {
+export const LandingMobileSidebar = () => {
   const pathname = usePathname();
 
   return (
-    <div className="space-y-4 py-4 flex flex-col h-full">
+    <div className="space-y-4 py-4 flex flex-col h-full bg-background">
       <div className="px-3 py-2 flex-1">
         <div className="space-y-1">
           {routes.map((route) => (
@@ -62,12 +62,15 @@ export const LandingMobileSidebar = ({
               key={route.href} 
               href={route.href}
               className={cn(
-                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-black hover:bg-white/10 rounded-lg transition",
-                pathname === route.href ? "text-white bg-white/10" : "text-zinc-400",
+                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer rounded-lg transition",
+                "hover:bg-accent hover:text-accent-foreground",
+                pathname === route.href 
+                  ? "bg-accent text-accent-foreground" 
+                  : "text-muted-foreground"
               )}
             >
-              <div className="flex items-center flex-1">
-                {/* <route.icon className={cn("h-5 w-5 mr-3", route.color)} /> */}
+              <div className="flex items-center gap-x-3 flex-1">
+                <route.icon className="h-5 w-5" />
                 {route.label}
               </div>
             </Link>

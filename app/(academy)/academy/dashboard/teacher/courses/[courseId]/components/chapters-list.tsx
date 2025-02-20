@@ -8,6 +8,16 @@ import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea
 import { cn } from "@/lib/utils";
 import { Grid, Grip, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import toast from "react-hot-toast";
 
 interface ChaptersListProps {
     items: CourseChapter[];
@@ -23,6 +33,10 @@ export const ChaptersList = ({
 
     const [isMounted, setIsMounted] = useState(false);
     const [chapters, setChapters] = useState(items);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [enhancedText, setEnhancedText] = useState("");
+    const [isEnhancing, setIsEnhancing] = useState(false);
+    const [selectedChapter, setSelectedChapter] = useState<CourseChapter | null>(null);
 
     useEffect(() => {
         setIsMounted(true);
@@ -59,66 +73,150 @@ export const ChaptersList = ({
       }
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="chapters">
-            {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                {chapters.map((chapter, index) => (
-                  <Draggable 
-                    key={chapter.id} 
-                    draggableId={chapter.id} 
-                    index={index}
-                  >
-                    {(provided) => (
-                      <div
-                        className={cn(
-                          "flex items-center gap-x-2 rounded-md mb-4 text-sm",
-                          chapter.isPublished && ""
-                        )}
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
+        <>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="chapters">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {chapters.map((chapter, index) => (
+                      <Draggable 
+                        key={chapter.id} 
+                        draggableId={chapter.id} 
+                        index={index}
                       >
-                        <div
-                          className={cn(
-                            "px-2 py-3 border-r rounded-l-md transition",
-                            chapter.isPublished && ""
-                          )}
-                          {...provided.dragHandleProps}
-                        >
-                          <Grip
-                            className="h-5 w-5"
-                          />
-                        </div>
-                        {chapter.title}
-                        <div className="ml-auto pr-2 flex items-center gap-x-2">
-                          {chapter.isFree && (
-                            <Badge>
-                              Free
-                            </Badge>
-                          )}
-                          <Badge
+                        {(provided) => (
+                          <div
                             className={cn(
-                              "bg-[#99d8f5]",
-                              // chapter.isPublished && "bg-[#ED0F69]"
+                              "flex items-center gap-x-2 rounded-md mb-4 text-sm",
+                              chapter.isPublished && ""
                             )}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
                           >
-                            {chapter.isPublished ? "Published" : "Draft"}
-                          </Badge>
-                          <Pencil
-                            onClick={() => onEdit(chapter.id)}
-                            className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-      )
-                            }
+                            <div
+                              className={cn(
+                                "px-2 py-3 border-r rounded-l-md transition",
+                                chapter.isPublished && ""
+                              )}
+                              {...provided.dragHandleProps}
+                            >
+                              <Grip
+                                className="h-5 w-5"
+                              />
+                            </div>
+                            {chapter.title}
+                            <div className="ml-auto pr-2 flex items-center gap-x-2">
+                              {chapter.isFree && (
+                                <Badge>
+                                  Free
+                                </Badge>
+                              )}
+                              <Badge
+                                className={cn(
+                                  "bg-[#99d8f5]",
+                                  // chapter.isPublished && "bg-[#ED0F69]"
+                                )}
+                              >
+                                {chapter.isPublished ? "Published" : "Draft"}
+                              </Badge>
+                              <Pencil
+                                onClick={() => onEdit(chapter.id)}
+                                className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
+                              />
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-xs ml-2"
+                                onClick={() => {
+                                  setSelectedChapter(chapter);
+                                  setDialogOpen(true);
+                                }}
+                              >
+                                Enhance with AI
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <span />
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Enhance Chapter Title with AI</DialogTitle>
+                  <DialogDescription>
+                    Enhance your chapter title using AI.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="mt-4">
+                  <div>
+                    <h4 className="font-medium">Original Title</h4>
+                    <p className="text-sm">{selectedChapter?.title}</p>
+                  </div>
+                  {enhancedText && (
+                    <div className="mt-4">
+                      <h4 className="font-medium">Enhanced Title</h4>
+                      <p className="text-sm">{enhancedText}</p>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-4 flex items-center gap-2">
+                  <Button
+                    onClick={async () => {
+                      if (selectedChapter) {
+                        setIsEnhancing(true);
+                        // Simulate Tavily Search and ChatGPT integration for chapter title
+                        const enhanced = selectedChapter.title + " [Enhanced by Tavily & ChatGPT]";
+                        setEnhancedText(enhanced);
+                        setIsEnhancing(false);
+                        toast.success("Chapter title enhanced with AI");
+                      }
+                    }}
+                    disabled={isEnhancing}
+                  >
+                    {isEnhancing ? "Enhancing..." : "Enhance"}
+                  </Button>
+                  {enhancedText && (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        if (selectedChapter) {
+                          setChapters(
+                            chapters.map((ch) =>
+                              ch.id === selectedChapter.id ? { ...ch, title: enhancedText } : ch
+                            )
+                          );
+                        }
+                        setDialogOpen(false);
+                        setEnhancedText("");
+                        setSelectedChapter(null);
+                      }}
+                    >
+                      Accept Enhancement
+                    </Button>
+                  )}
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setDialogOpen(false);
+                      setEnhancedText("");
+                      setSelectedChapter(null);
+                    }}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+        </>
+    )
+}
 
 export default ChaptersList;

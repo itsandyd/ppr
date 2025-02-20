@@ -12,6 +12,9 @@ import { AttachmentForm } from "./components/attachment-form";
 import ChaptersForm from "./components/chapters-form";
 import { Actions } from "./components/actions";
 import { Banner } from "@/components/courses/banner";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import EnhanceChaptersButton from "./components/EnhanceChaptersButton";
 
 const CourseIdPage = async ({
     params,
@@ -126,13 +129,19 @@ const CourseIdPage = async ({
                 </div>
                 <div className="space-y-6">
                     <div>
-                        <div className="flex items-center gap-x-2">
-                            <IconBadge
-                                icon={ListChecks}
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-x-2">
+                                <IconBadge
+                                    icon={ListChecks}
+                                />
+                                <h2 className="text-xl font-bold">
+                                    Course chapters
+                                </h2>
+                            </div>
+                            <EnhanceChaptersButton 
+                                courseTitle={course.title}
+                                courseDescription={course.description}
                             />
-                            <h2 className="text-xl font-bold">
-                                Course chapters
-                            </h2>
                         </div>
                         <ChaptersForm 
                             initialData={{...course, chapters: course.courseChapter}}
