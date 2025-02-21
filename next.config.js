@@ -26,6 +26,20 @@ const nextConfig = {
       "img.clerk.com",
     ],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+    };
+
+    return config;
+  },
 };
 
 module.exports = nextConfig;

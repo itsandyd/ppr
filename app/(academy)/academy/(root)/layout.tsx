@@ -1,17 +1,55 @@
+import { ReactNode } from "react";
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
 import { CourseNavbar } from "@/components/courses/navbar";
 import { CourseDashboardSidebar } from "@/components/courses/sidebar";
 import { Course } from "@prisma/client";
 
-const DashboardLayout = ({
-  children,
-  course,
-  progressCount
-}: {
-  children: React.ReactNode;
-  course: Course; // ideally use proper Course type
-  progressCount: number;
-}) => {
-  return ( 
+export const runtime = 'nodejs';
+
+interface LayoutProps {
+  children: ReactNode;
+}
+
+async function getProgress(userId: string, courseId: string): Promise<number> {
+  try {
+    const publishedChapters = await db.courseChapter.findMany({
+      where: {
+        courseId: courseId,
+      },
+    });
+
+    const publishedChapterIds = publishedChapters.map((chapter) => chapter.id);
+
+    const validCompletedChapters = await db.userProgress.count({
+      where: {
+        userId: userId,
+        chapterId: {
+          in: publishedChapterIds,
+        },
+        isCompleted: true,
+      },
+    });
+
+    const progressPercentage =
+      (validCompletedChapters / publishedChapterIds.length) * 100;
+
+    return Math.round(progressPercentage);
+  } catch (error) {
+    console.error("[GET_PROGRESS]", error);
+    return 0;
+  }
+}
+
+export default async function Layout({ children }: LayoutProps) {
+  const { userId } = auth();
+
+  if (!userId) {
+    return redirect("/");
+  }
+
+  return (
     <div className="h-full relative flex">
 
       {/* Desktop Sidebar */}
@@ -27,7 +65,5 @@ const DashboardLayout = ({
         </div>
       </main>
     </div>
-   );
+  );
 }
- 
-export default DashboardLayout;
