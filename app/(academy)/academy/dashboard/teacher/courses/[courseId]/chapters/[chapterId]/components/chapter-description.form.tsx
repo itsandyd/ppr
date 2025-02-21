@@ -125,38 +125,18 @@ export const ChapterDescriptionForm = ({
       <div className="font-medium flex items-center justify-between">
         <span>Chapter content</span>
         <div className="flex gap-2">
-          <Button
-            onClick={handleQuickEnhance}
-            disabled={isEnhancing}
-            variant="ghost"
-            size="sm"
-            className="text-xs"
-          >
-            {isEnhancing ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Wand2 className="h-4 w-4 mr-2" />
-                Quick Generate
-              </>
-            )}
-          </Button>
-          <Button onClick={toggleEdit} variant="ghost">
-            {isEditing ? (
-              "Cancel"
-            ) : (
-              <>
-                <Pencil className="h-4 w-4 mr-2" />
-                Edit content
-              </>
-            )}
+          <Button onClick={toggleEdit} variant="ghost" size="sm">
+            <Pencil className="h-4 w-4" />
           </Button>
           <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline">Advanced Generate</Button>
+              <Button variant="ghost" size="sm" disabled={isEnhancing}>
+                {isEnhancing ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Wand2 className="h-4 w-4" />
+                )}
+              </Button>
             </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[80vh]">
               <DialogHeader>
