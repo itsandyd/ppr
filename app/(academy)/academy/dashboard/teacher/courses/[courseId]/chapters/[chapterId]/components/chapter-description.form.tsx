@@ -121,7 +121,7 @@ export const ChapterDescriptionForm = ({
   return (
     <div className="mt-6 border rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        <span>Chapter description</span>
+        <span>Chapter content</span>
         <div className="flex gap-2">
           <Button
             onClick={handleQuickEnhance}
@@ -133,12 +133,12 @@ export const ChapterDescriptionForm = ({
             {isEnhancing ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Enhancing...
+                Generating...
               </>
             ) : (
               <>
                 <Wand2 className="h-4 w-4 mr-2" />
-                Quick Enhance
+                Quick Generate
               </>
             )}
           </Button>
@@ -148,32 +148,32 @@ export const ChapterDescriptionForm = ({
             ) : (
               <>
                 <Pencil className="h-4 w-4 mr-2" />
-                Edit chapter
+                Edit content
               </>
             )}
           </Button>
           <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline">Advanced Enhance</Button>
+              <Button variant="outline">Advanced Generate</Button>
             </DialogTrigger>
-            <DialogContent className="max-w-3xl max-h-[80vh]">
+            <DialogContent className="max-w-4xl max-h-[80vh]">
               <DialogHeader>
-                <DialogTitle>Enhance Description with AI</DialogTitle>
+                <DialogTitle>Generate Chapter Content with AI</DialogTitle>
                 <DialogDescription>
-                  Our AI will analyze your course context and enhance the chapter description.
+                  Our AI will generate comprehensive course content that can serve as a video script or detailed lesson.
                 </DialogDescription>
               </DialogHeader>
               <div className="mt-4 space-y-4">
                 <div className="space-y-2">
-                  <h4 className="font-medium">Current Description</h4>
-                  <div className="text-sm p-4 bg-muted rounded-lg">
-                    <Preview value={form.getValues("description") || "No description yet"} />
+                  <h4 className="font-medium">Current Content</h4>
+                  <div className="text-sm p-4 bg-muted rounded-lg overflow-y-auto max-h-[200px]">
+                    <Preview value={form.getValues("description") || "No content yet"} />
                   </div>
                 </div>
                 {enhancedText && (
                   <div className="space-y-2">
-                    <h4 className="font-medium">Enhanced Description</h4>
-                    <div className="text-sm p-4 bg-muted rounded-lg">
+                    <h4 className="font-medium">Generated Content</h4>
+                    <div className="text-sm p-4 bg-muted rounded-lg overflow-y-auto max-h-[300px]">
                       <Preview value={enhancedText} />
                     </div>
                   </div>
@@ -188,10 +188,10 @@ export const ChapterDescriptionForm = ({
                   {isEnhancing ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Enhancing...
+                      Generating content...
                     </>
                   ) : (
-                    "Enhance Description"
+                    "Generate Content"
                   )}
                 </Button>
                 {enhancedText && (
@@ -201,11 +201,10 @@ export const ChapterDescriptionForm = ({
                       form.setValue("description", enhancedText);
                       setDialogOpen(false);
                       setEnhancedText("");
-                      // Automatically submit the form with the enhanced description
                       form.handleSubmit(onSubmit)();
                     }}
                   >
-                    Apply Enhancement
+                    Apply Generated Content
                   </Button>
                 )}
                 <Button variant="ghost" onClick={() => setDialogOpen(false)}>
@@ -221,9 +220,11 @@ export const ChapterDescriptionForm = ({
           "text-sm mt-2",
           !initialData.description && "text-slate-500 italic"
         )}>
-          {!initialData.description && "No description"}
+          {!initialData.description && "No content"}
           {initialData.description && (
-            <Preview value={initialData.description} />
+            <div className="prose-sm">
+              <Preview value={initialData.description} />
+            </div>
           )}
         </div>
       )}

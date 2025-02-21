@@ -21,10 +21,10 @@ const initializeTools = () => {
     return {
       searchTool: new TavilySearchResults({
         apiKey: process.env.TAVILY_API_KEY,
-        maxResults: 3
+        maxResults: 5
       }),
       chatModel: new ChatOpenAI({
-        modelName: "gpt-4-turbo-preview",
+        modelName: "gpt-4o",
         temperature: 0.7,
       })
     };
@@ -37,31 +37,46 @@ const initializeTools = () => {
 const { searchTool, chatModel } = initializeTools();
 
 function sanitizeSearchQuery(courseTitle: string, chapterTitle: string, description: string | null): string {
-  const combinedQuery = `${courseTitle} ${chapterTitle} ${description || ''}`.trim();
+  const combinedQuery = `${courseTitle} ${chapterTitle} detailed lecture content tutorial`.trim();
   return combinedQuery.slice(0, 200);
 }
 
 const researchPrompt = PromptTemplate.fromTemplate(`
-You are an expert course creator and educator. Based on the following course context and search results,
-provide a comprehensive and engaging chapter description.
+You are an expert course creator and educator. Based on the following context, create comprehensive course content
+that could serve as a detailed video script or text-based lecture.
 
 Course Context:
 Course Title: {courseTitle}
 Course Description: {courseDescription}
 Chapter Title: {chapterTitle}
-Current Description: {currentDescription}
+Current Content: {currentDescription}
 
 Search Results:
 {searchResults}
 
-Create an enhanced chapter description that:
-1. Aligns with the overall course objectives
-2. Clearly outlines the chapter's learning outcomes
-3. Includes practical examples or applications
-4. Maintains a professional yet engaging tone
-5. Uses markdown formatting for better readability
+Create detailed course content that:
+1. Serves as a complete lecture script/content
+2. Includes:
+   - A brief introduction to the topic
+   - Detailed explanations of key concepts
+   - Practical examples and code snippets where relevant
+   - Step-by-step tutorials or demonstrations
+   - Common pitfalls and best practices
+   - Interactive elements or exercises
+3. Uses proper markdown formatting for:
+   - Headers (##, ###)
+   - Code blocks (\`\`\`)
+   - Lists and bullet points
+   - Important highlights
+4. Maintains a conversational yet educational tone
+5. Includes clear section breaks and logical progression
 
-Keep the description focused, practical, and valuable for students.
+The content should be comprehensive enough to serve as either:
+- A complete video script for recording
+- A detailed text-based lesson
+- A reference material for students
+
+Focus on practical, hands-on learning while maintaining academic rigor.
 `);
 
 export async function POST(
@@ -108,7 +123,7 @@ export async function POST(
               courseDescription,
               chapterTitle,
               currentDescription,
-              searchResults: "No relevant search results found. Generating enhanced description based on provided content.",
+              searchResults: "No relevant search results found. Generating content based on course context and best practices.",
             };
           }
 
@@ -126,7 +141,7 @@ export async function POST(
             courseDescription,
             chapterTitle,
             currentDescription,
-            searchResults: `Unable to perform external research. Generating enhanced description based on the provided context.`,
+            searchResults: `Unable to perform external research. Generating comprehensive content based on course context and educational best practices.`,
           };
         }
       },
@@ -140,7 +155,7 @@ export async function POST(
       courseTitle: course.title,
       courseDescription: course.description || "No description provided",
       chapterTitle: chapter.title,
-      currentDescription: chapter.description || "No description provided",
+      currentDescription: chapter.description || "No content provided",
     });
 
     return NextResponse.json({ enhancedDescription });
