@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Course } from "@prisma/client";
+import { Markdown } from "@/components/markdown";
 
 interface DescriptionFormProps {
   initialData: Course;
@@ -79,10 +80,13 @@ export const DescriptionForm = ({
         </Button>
       </div>
       {!isEditing && (
-        <p className={cn("text-sm mt-2", !initialData.description && " italic"
-        )}>
-          {initialData.description || "No description"}
-        </p>
+        <div className={cn("text-sm mt-2", !initialData.description && "text-slate-500 italic")}>
+          {!initialData.description ? (
+            "No description"
+          ) : (
+            <Markdown value={initialData.description} />
+          )}
+        </div>
       )}
       {isEditing && (
         <Form {...form}>

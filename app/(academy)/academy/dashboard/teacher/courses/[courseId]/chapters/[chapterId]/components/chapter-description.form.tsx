@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { CourseChapter } from "@prisma/client";
 import { Editor } from "@/components/editor";
 import { Preview } from "@/components/courses/preview";
+import { Markdown } from "@/components/markdown";
 import {
   Dialog,
   DialogTrigger,
@@ -51,8 +52,10 @@ export const ChapterDescriptionForm = ({
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [enhancedText, setEnhancedText] = useState("");
   const [isEnhancing, setIsEnhancing] = useState(false);
+  const [isPreview, setIsPreview] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
+  const togglePreview = () => setIsPreview((current) => !current);
 
   const router = useRouter();
 
@@ -101,7 +104,6 @@ export const ChapterDescriptionForm = ({
       const response = await axios.post(`/api/courses/${courseId}/chapters/${chapterId}/enhance`);
       
       if (response.data.enhancedDescription) {
-        // Directly apply the enhancement
         await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, {
           description: response.data.enhancedDescription
         });
@@ -167,14 +169,14 @@ export const ChapterDescriptionForm = ({
                 <div className="space-y-2">
                   <h4 className="font-medium">Current Content</h4>
                   <div className="text-sm p-4 bg-muted rounded-lg overflow-y-auto max-h-[200px]">
-                    <Preview value={form.getValues("description") || "No content yet"} />
+                    <Markdown value={form.getValues("description") || "No content yet"} />
                   </div>
                 </div>
                 {enhancedText && (
                   <div className="space-y-2">
                     <h4 className="font-medium">Generated Content</h4>
                     <div className="text-sm p-4 bg-muted rounded-lg overflow-y-auto max-h-[300px]">
-                      <Preview value={enhancedText} />
+                      <Markdown value={enhancedText} />
                     </div>
                   </div>
                 )}
@@ -223,7 +225,7 @@ export const ChapterDescriptionForm = ({
           {!initialData.description && "No content"}
           {initialData.description && (
             <div className="prose-sm">
-              <Preview value={initialData.description} />
+              <Markdown value={initialData.description} />
             </div>
           )}
         </div>
@@ -240,13 +242,27 @@ export const ChapterDescriptionForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Editor {...field} />
+                    <div className="space-y-4">
+                      <Editor {...field} />
+                      {isPreview && (
+                        <div className="mt-4 border rounded-lg p-4">
+                          <Preview value={field.value} />
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <div className="flex items-center gap-x-2">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={togglePreview}
+              >
+                {isPreview ? "Hide Preview" : "Show Preview"}
+              </Button>
               <Button
                 disabled={!isValid || isSubmitting}
                 type="submit"
