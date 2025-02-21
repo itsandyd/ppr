@@ -54,30 +54,30 @@ Current Content: {currentDescription}
 Search Results:
 {searchResults}
 
-Create detailed course content that:
-1. Serves as a complete lecture script/content
-2. Includes:
-   - A brief introduction to the topic
-   - Detailed explanations of key concepts
-   - Practical examples and code snippets where relevant
-   - Step-by-step tutorials or demonstrations
-   - Common pitfalls and best practices
-   - Interactive elements or exercises
-3. Uses proper markdown formatting for:
-   - Headers (##, ###)
-   - Code blocks (\`\`\`)
-   - Lists and bullet points
-   - Important highlights
-4. Maintains a conversational yet educational tone
-5. Includes clear section breaks and logical progression
+Create a flowing, narrative-style course content structured as follows:
 
-The content should be comprehensive enough to serve as either:
-- A complete video script for recording
-- A detailed text-based lesson
-- A reference material for students
+## Introduction
+Start with an engaging introduction that sets the context and outlines what will be covered.
 
-Focus on practical, hands-on learning while maintaining academic rigor.
-`);
+## Main Content
+Break down the topic into logical sections using clear headers (##). For each section:
+1. Explain core concepts in a conversational tone
+2. Include relevant code examples using proper code blocks (\`\`\`)
+3. Provide real-world applications and examples
+4. Address common challenges and solutions
+
+## Practical Implementation
+Include hands-on examples and step-by-step walkthroughs where appropriate.
+
+## Best Practices & Common Pitfalls
+Discuss important considerations and professional tips.
+
+## Summary
+Conclude with key takeaways and next steps.
+
+Use markdown headers (##) for clear section breaks, and code blocks (\`\`\`) for technical examples.
+Maintain a conversational, engaging tone while ensuring technical accuracy and depth.
+Focus on creating a natural flow that works well both as a video script and as written content.`);
 
 export async function POST(
   req: Request,
@@ -114,7 +114,7 @@ export async function POST(
           const query = sanitizeSearchQuery(courseTitle, chapterTitle, currentDescription);
           console.log("[TAVILY_SEARCH_QUERY]", query);
           
-          const searchResults = await searchTool.call(query);
+          const searchResults = await searchTool.invoke({ input: query });
           
           if (!searchResults || typeof searchResults !== 'string') {
             console.log("[TAVILY_SEARCH_RESULTS_EMPTY]", "No results returned");
