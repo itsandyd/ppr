@@ -9,7 +9,7 @@ export const CourseDashboardSidebar = () => {
     <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
       <div className="p-6">
         <Link href="/">
-            <p className="font-bold">Academy</p>
+          <p className="font-bold">Academy</p>
         </Link>
       </div>
       <div className="flex flex-col w-full">

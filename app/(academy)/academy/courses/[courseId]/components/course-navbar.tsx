@@ -1,3 +1,4 @@
+import React from 'react';
 import { CourseNavbarRoutes } from "@/components/courses/navbar-routes";
 import { Course, CourseChapter, UserProgress } from "@prisma/client";
 import { CourseMobileSidebar } from "./course-mobile-sidebar";
@@ -12,7 +13,7 @@ interface CourseSidebarProps {
     progressCount: number;
 }
 
-export const CourseNavbar = ({
+export const CourseNavbar: React.FC<CourseSidebarProps> = ({
     course,
     progressCount,
 }: CourseSidebarProps) => {

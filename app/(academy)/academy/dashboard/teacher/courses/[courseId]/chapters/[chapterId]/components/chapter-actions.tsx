@@ -32,7 +32,7 @@ export const ChapterActions = ({
 
             toast.success("Chapter deleted successfully");
             router.refresh();
-            router.push(`/courses/teacher/courses/${courseId}/`);
+            router.push(`/academy/dashboard/teacher/courses/${courseId}/`);
         } catch (error) {
             console.log(error)
             toast.error("Something went wrong.")

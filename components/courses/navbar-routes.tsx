@@ -25,7 +25,7 @@ export const CourseNavbarRoutes = () => {
             </div>
         )}
         <div className="flex gap-x-2 ml-auto">
-            {/* <ModeToggle /> */}
+            {/* <ModeToggle />
             {isTeacherPage || isCoursePage ? (
             <Link href="/academy/"> 
                 <Button size="sm" variant="ghost">
@@ -39,7 +39,7 @@ export const CourseNavbarRoutes = () => {
                         Teacher mode
                     </Button>
                 </Link>
-                }
+                } */}
             <UserButton 
                 afterSignOutUrl="/"
             />

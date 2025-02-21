@@ -14,7 +14,8 @@ import { Actions } from "./components/actions";
 import { Banner } from "@/components/courses/banner";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import EnhanceChaptersButton from "./components/EnhanceChaptersButton";
+import EnhanceChaptersButton from "./components/enhance-chapter-button";
+import { AICourseGenerator } from "./components/ai-course-generator";
 
 const CourseIdPage = async ({
     params,
@@ -92,11 +93,18 @@ const CourseIdPage = async ({
                         Complete all the fields {completionText}
                     </span>
                 </div>
-                <Actions
-                    disabled={!isComplete}
-                    courseId={params.courseId}
-                    isPublished={course.isPublished}
-                />
+                <div className="flex items-center gap-x-2">
+                    <AICourseGenerator
+                        courseId={params.courseId}
+                        courseTitle={course.title}
+                        courseDescription={course.description}
+                    />
+                    <Actions
+                        disabled={!isComplete}
+                        courseId={params.courseId}
+                        isPublished={course.isPublished}
+                    />
+                </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
                 <div>

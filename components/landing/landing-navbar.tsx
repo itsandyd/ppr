@@ -102,13 +102,13 @@ export const LandingNavbar = () => {
       </div>
       <div className="flex items-center gap-x-2 ml-auto">
       {isSignedIn ? (
-    <Link href="/profile" className="hidden sm:block">
+    <Link href="/profile">
         <Button variant="default" className="rounded-full text-sm">
             View Profile
         </Button>
     </Link>
 ) : (
-    <Link href="/sign-up" className="hidden sm:block">
+    <Link href="/sign-up">
         <Button variant="default" className="rounded-full text-sm">
             Get Started
         </Button>
