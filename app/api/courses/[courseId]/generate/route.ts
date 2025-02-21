@@ -9,10 +9,13 @@ import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { JsonOutputFunctionsParser } from "langchain/output_parsers";
 
+
 // Disable LangSmith tracing to avoid unauthorized errors
 process.env.LANGCHAIN_TRACING_V2 = "false";
 process.env.LANGCHAIN_ENDPOINT = "";
 process.env.LANGCHAIN_API_KEY = "";
+
+export const maxDuration = 300; 
 
 // Define the schema for course content
 const ChapterSchema = z.object({
