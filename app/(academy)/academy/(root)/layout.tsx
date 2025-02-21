@@ -1,5 +1,6 @@
 import { CourseNavbar } from "@/components/courses/navbar";
 import { CourseDashboardSidebar } from "@/components/courses/sidebar";
+import { Course } from "@prisma/client";
 
 const DashboardLayout = ({
   children,
@@ -7,7 +8,7 @@ const DashboardLayout = ({
   progressCount
 }: {
   children: React.ReactNode;
-  course: any; // ideally use proper Course type
+  course: Course; // ideally use proper Course type
   progressCount: number;
 }) => {
   return ( 
