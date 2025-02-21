@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Pencil } from "lucide-react";
+import { Pencil, Loader2, Wand2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -16,15 +16,11 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import { Course, CourseChapter } from "@prisma/client";
+import { CourseChapter } from "@prisma/client";
 import { Editor } from "@/components/editor";
 import { Preview } from "@/components/courses/preview";
-
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import {
   Dialog,
   DialogTrigger,
@@ -38,7 +34,7 @@ interface ChapterDescriptionFormProps {
   initialData: CourseChapter;
   courseId: string;
   chapterId: string;
-};
+}
 
 const formSchema = z.object({
   description: z.string().min(1, {
@@ -81,13 +77,45 @@ export const ChapterDescriptionForm = ({
   }
 
   const handleEnhance = async () => {
-    setIsEnhancing(true);
-    const originalDescription = form.getValues("description");
-    // Simulate Tavily Search and ChatGPT integration
-    const enhanced = originalDescription + " [Enhanced by Tavily & ChatGPT]";
-    setEnhancedText(enhanced);
-    setIsEnhancing(false);
-    toast.success("Description enhanced with AI");
+    try {
+      setIsEnhancing(true);
+      const response = await axios.post(`/api/courses/${courseId}/chapters/${chapterId}/enhance`);
+      
+      if (response.data.enhancedDescription) {
+        setEnhancedText(response.data.enhancedDescription);
+        toast.success("Description enhanced with AI");
+      } else {
+        throw new Error("Failed to enhance description");
+      }
+    } catch (error) {
+      console.error("[ENHANCE_ERROR]", error);
+      toast.error("Failed to enhance description");
+    } finally {
+      setIsEnhancing(false);
+    }
+  };
+
+  const handleQuickEnhance = async () => {
+    try {
+      setIsEnhancing(true);
+      const response = await axios.post(`/api/courses/${courseId}/chapters/${chapterId}/enhance`);
+      
+      if (response.data.enhancedDescription) {
+        // Directly apply the enhancement
+        await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, {
+          description: response.data.enhancedDescription
+        });
+        toast.success("Description enhanced and applied");
+        router.refresh();
+      } else {
+        throw new Error("Failed to enhance description");
+      }
+    } catch (error) {
+      console.error("[QUICK_ENHANCE_ERROR]", error);
+      toast.error("Failed to enhance description");
+    } finally {
+      setIsEnhancing(false);
+    }
   };
 
   return (
@@ -95,6 +123,25 @@ export const ChapterDescriptionForm = ({
       <div className="font-medium flex items-center justify-between">
         <span>Chapter description</span>
         <div className="flex gap-2">
+          <Button
+            onClick={handleQuickEnhance}
+            disabled={isEnhancing}
+            variant="ghost"
+            size="sm"
+            className="text-xs"
+          >
+            {isEnhancing ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Enhancing...
+              </>
+            ) : (
+              <>
+                <Wand2 className="h-4 w-4 mr-2" />
+                Quick Enhance
+              </>
+            )}
+          </Button>
           <Button onClick={toggleEdit} variant="ghost">
             {isEditing ? (
               "Cancel"
@@ -107,51 +154,76 @@ export const ChapterDescriptionForm = ({
           </Button>
           <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline">Enhance with AI</Button>
+              <Button variant="outline">Advanced Enhance</Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-3xl max-h-[80vh]">
               <DialogHeader>
-                <DialogTitle>Enhance description with AI</DialogTitle>
+                <DialogTitle>Enhance Description with AI</DialogTitle>
                 <DialogDescription>
-                  Enhance your description using AI.
+                  Our AI will analyze your course context and enhance the chapter description.
                 </DialogDescription>
               </DialogHeader>
-              <div className="mt-4">
-                <div>
-                  <h4 className="font-medium">Original Text</h4>
-                  <p className="text-sm">{form.getValues("description")}</p>
+              <div className="mt-4 space-y-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium">Current Description</h4>
+                  <div className="text-sm p-4 bg-muted rounded-lg">
+                    <Preview value={form.getValues("description") || "No description yet"} />
+                  </div>
                 </div>
                 {enhancedText && (
-                  <div className="mt-4">
-                    <h4 className="font-medium">Enhanced Text</h4>
-                    <p className="text-sm">{enhancedText}</p>
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Enhanced Description</h4>
+                    <div className="text-sm p-4 bg-muted rounded-lg">
+                      <Preview value={enhancedText} />
+                    </div>
                   </div>
                 )}
               </div>
-              <div className="mt-4 flex items-center gap-2">
-                <Button onClick={handleEnhance} disabled={isEnhancing}>
-                  {isEnhancing ? "Enhancing..." : "Enhance"}
+              <div className="flex items-center gap-2 mt-4">
+                <Button 
+                  onClick={handleEnhance} 
+                  disabled={isEnhancing}
+                  className="flex items-center"
+                >
+                  {isEnhancing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Enhancing...
+                    </>
+                  ) : (
+                    "Enhance Description"
+                  )}
                 </Button>
                 {enhancedText && (
-                  <Button variant="outline" onClick={() => { form.setValue("description", enhancedText); setDialogOpen(false); }}>
-                    Accept Enhancement
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      form.setValue("description", enhancedText);
+                      setDialogOpen(false);
+                      setEnhancedText("");
+                      // Automatically submit the form with the enhanced description
+                      form.handleSubmit(onSubmit)();
+                    }}
+                  >
+                    Apply Enhancement
                   </Button>
                 )}
-                <Button variant="ghost" onClick={() => setDialogOpen(false)}>Close</Button>
+                <Button variant="ghost" onClick={() => setDialogOpen(false)}>
+                  Close
+                </Button>
               </div>
             </DialogContent>
           </Dialog>
         </div>
       </div>
       {!isEditing && (
-        <div className={cn("text-sm mt-2", !initialData.description && " italic"
+        <div className={cn(
+          "text-sm mt-2",
+          !initialData.description && "text-slate-500 italic"
         )}>
           {!initialData.description && "No description"}
           {initialData.description && (
-            <Preview
-                onChange={() => {}}
-              value={initialData.description}
-            />
+            <Preview value={initialData.description} />
           )}
         </div>
       )}
@@ -167,9 +239,7 @@ export const ChapterDescriptionForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Editor 
-                        {...field}
-                    />
+                    <Editor {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
