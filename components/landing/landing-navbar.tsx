@@ -108,9 +108,9 @@ export const LandingNavbar = () => {
         </Button>
     </Link>
 ) : (
-    <Link href="/sign-up">
+    <Link href="/sign-in">
         <Button variant="default" className="rounded-full text-sm">
-            Get Started
+            Login
         </Button>
     </Link>
 )}
