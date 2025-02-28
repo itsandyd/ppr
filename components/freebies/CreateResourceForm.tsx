@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -18,6 +18,7 @@ import { UploadFileResponse } from "uploadthing/client"
 export default function CreateResourceForm() {
   const router = useRouter()
   const { toast } = useToast()
+  const mountCountRef = useRef(0)
   const [resourceData, setResourceData] = useState({
     title: "",
     description: "",
@@ -30,6 +31,12 @@ export default function CreateResourceForm() {
   const [isUploading, setIsUploading] = useState(false)
   const [isImageUploading, setIsImageUploading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Helper to prevent form submission
+  const preventFormSubmit = (e: React.MouseEvent | React.FormEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -63,6 +70,19 @@ export default function CreateResourceForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Debug info to identify unexpected submissions
+    console.log("Submit triggered by:", e.type, "event from target:", (e.target as HTMLElement).tagName)
+    
+    // Add a stack trace to see how this function was called
+    console.log("Call stack:", new Error().stack)
+    
+    // Prevent duplicate submissions
+    if (isSubmitting) {
+      console.log("Submission already in progress")
+      return
+    }
+    
     if (!resourceData.fileUrl) {
       toast({
         variant: "destructive",
@@ -108,11 +128,9 @@ export default function CreateResourceForm() {
         description: `Your resource "${resourceData.title}" has been created and is now available.`,
       })
       
-      // Redirect to resource listing page after a short delay
-      setTimeout(() => {
-        router.push('/freebies/resources')
-        router.refresh() // Force a refresh to ensure the new resource appears
-      }, 1500)
+      // Redirect to resource listing page immediately
+      router.push('/freebies/resources')
+      router.refresh() // Force a refresh to ensure the new resource appears
     } catch (error) {
       console.error("Error creating resource:", error)
       toast({
@@ -120,11 +138,21 @@ export default function CreateResourceForm() {
         title: "Error",
         description: error instanceof Error ? error.message : "There was a problem creating your resource.",
       })
-    } finally {
+      // Reset submitting state on error so user can try again
       setIsSubmitting(false)
     }
   }
 
+  // Debug mounting and component lifecycle
+  useEffect(() => {
+    mountCountRef.current += 1
+    console.log(`CreateResourceForm mounted (count: ${mountCountRef.current})`)
+    
+    return () => {
+      console.log(`CreateResourceForm unmounted (count: ${mountCountRef.current})`)
+    }
+  }, [])
+  
   // Debug the requirements state to help diagnose issues
   useEffect(() => {
     console.log("Current requirements:", followGateRequirements)
@@ -132,7 +160,10 @@ export default function CreateResourceForm() {
   }, [followGateRequirements])
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={(e) => {
+      e.preventDefault(); // Prevent normal form submission
+      handleSubmit(e);
+    }}>
       <Card className="bg-gray-900 border-gray-800">
         <CardContent className="space-y-4 pt-6">
           <div>
@@ -191,17 +222,20 @@ export default function CreateResourceForm() {
                 }}
                 onClientUploadComplete={(res) => {
                   setIsImageUploading(false)
-                  if (res?.[0]) {
-                    setResourceData(prev => ({
-                      ...prev,
-                      imageUrl: res[0].url,
-                      imageName: res[0].name
-                    }))
-                    toast({
-                      title: "Image Upload Successful",
-                      description: "Your image has been uploaded successfully.",
-                    })
-                  }
+                  // Add setTimeout to avoid any race conditions
+                  setTimeout(() => {
+                    if (res?.[0]) {
+                      setResourceData(prev => ({
+                        ...prev,
+                        imageUrl: res[0].url,
+                        imageName: res[0].name
+                      }))
+                      toast({
+                        title: "Image Upload Successful",
+                        description: "Your image has been uploaded successfully.",
+                      })
+                    }
+                  }, 0)
                 }}
                 onUploadError={(error: Error) => {
                   setIsImageUploading(false)
@@ -249,27 +283,30 @@ export default function CreateResourceForm() {
                 }}
                 onClientUploadComplete={(res) => {
                   setIsUploading(false)
-                  if (res?.[0]) {
-                    // Double-check that it's a ZIP file by checking the extension
-                    if (!res[0].name.toLowerCase().endsWith('.zip')) {
+                  // Add setTimeout to avoid any race conditions
+                  setTimeout(() => {
+                    if (res?.[0]) {
+                      // Double-check that it's a ZIP file by checking the extension
+                      if (!res[0].name.toLowerCase().endsWith('.zip')) {
+                        toast({
+                          variant: "destructive",
+                          title: "Invalid File Type",
+                          description: "Only ZIP files are allowed.",
+                        });
+                        return;
+                      }
+                      
+                      setResourceData(prev => ({
+                        ...prev,
+                        fileUrl: res[0].url,
+                        fileName: res[0].name
+                      }))
                       toast({
-                        variant: "destructive",
-                        title: "Invalid File Type",
-                        description: "Only ZIP files are allowed.",
-                      });
-                      return;
+                        title: "Upload Successful",
+                        description: "Your zip file has been uploaded successfully.",
+                      })
                     }
-                    
-                    setResourceData(prev => ({
-                      ...prev,
-                      fileUrl: res[0].url,
-                      fileName: res[0].name
-                    }))
-                    toast({
-                      title: "Upload Successful",
-                      description: "Your zip file has been uploaded successfully.",
-                    })
-                  }
+                  }, 0)
                 }}
                 onUploadError={(error: Error) => {
                   setIsUploading(false)
@@ -294,9 +331,10 @@ export default function CreateResourceForm() {
         </CardContent>
         <CardFooter>
           <Button 
-            type="submit" 
+            type="button"
             className="w-full" 
             disabled={isUploading || isImageUploading || isSubmitting}
+            onClick={handleSubmit}
           >
             {isSubmitting ? "Creating Resource..." : "Create Resource"}
           </Button>

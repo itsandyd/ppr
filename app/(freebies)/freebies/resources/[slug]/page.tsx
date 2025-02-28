@@ -78,11 +78,11 @@ export default function ResourceDetailPage() {
       )}
       
       {resource && (
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col lg:flex-row gap-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left side - Resource image */}
-            <div className="lg:w-1/2">
-              <div className="relative w-full h-[300px] lg:h-[400px] rounded-lg overflow-hidden">
+            <div className="w-full">
+              <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-lg">
                 <Image 
                   src={resource.imageUrl || "/placeholder.svg"} 
                   alt={resource.title}
@@ -94,7 +94,7 @@ export default function ResourceDetailPage() {
             </div>
             
             {/* Right side - Resource details and download functionality */}
-            <div className="lg:w-1/2">
+            <div className="w-full">
               <ResourceView resource={resource} />
             </div>
           </div>

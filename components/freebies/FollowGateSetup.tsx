@@ -66,7 +66,7 @@ export default function FollowGateSetup({ requirements, setRequirements }: Follo
               ? "Lead Gen: User info required"
               : `${req.platform}: ${req.accountUrl}`}
           </span>
-          <Button variant="destructive" size="sm" onClick={() => handleRemoveRequirement(index)}>
+          <Button variant="destructive" size="sm" type="button" onClick={() => handleRemoveRequirement(index)}>
             Remove
           </Button>
         </div>
@@ -112,7 +112,7 @@ export default function FollowGateSetup({ requirements, setRequirements }: Follo
             />
           </div>
         )}
-        <Button onClick={handleAddRequirement}>Add</Button>
+        <Button type="button" onClick={handleAddRequirement}>Add</Button>
       </div>
       
       {showEmailPreview && !hasLeadGen && (

@@ -31,6 +31,9 @@ export default function RootLayout({
               <Button variant="ghost" asChild>
                 <Link href="/freebies/create-resource">Create Resource</Link>
               </Button>
+              <Button variant="ghost" asChild>
+                <Link href="/freebies/leads">View Leads</Link>
+              </Button>
             </div>
           </nav>
         </header>

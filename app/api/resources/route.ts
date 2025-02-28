@@ -2,6 +2,10 @@ import { NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs"
 import { db } from "@/lib/db"
 
+// Simple request throttling with a Map to store recent requests
+const recentRequests = new Map<string, number>();
+const THROTTLE_WINDOW_MS = 2000; // 2 seconds window
+
 // Helper function to generate a slug from a title
 function generateSlug(title: string): string {
   return title
@@ -23,6 +27,31 @@ export async function POST(request: Request) {
         { error: "Unauthorized" },
         { status: 401 }
       )
+    }
+    
+    // Check if this user has recently made a request
+    const lastRequestTime = recentRequests.get(userId);
+    const now = Date.now();
+    
+    if (lastRequestTime && (now - lastRequestTime) < THROTTLE_WINDOW_MS) {
+      console.log(`Throttled request from user ${userId} - too many requests`);
+      return NextResponse.json(
+        { error: "Please wait before creating another resource" },
+        { status: 429 }  // Too Many Requests
+      );
+    }
+    
+    // Set the last request time
+    recentRequests.set(userId, now);
+    
+    // Clean up old entries periodically (optional)
+    if (recentRequests.size > 100) {
+      const cutoff = now - THROTTLE_WINDOW_MS;
+      Array.from(recentRequests.entries()).forEach(([key, timestamp]) => {
+        if (timestamp < cutoff) {
+          recentRequests.delete(key);
+        }
+      });
     }
     
     const body = await request.json()

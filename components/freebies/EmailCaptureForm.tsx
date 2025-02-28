@@ -1,28 +1,27 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 
-type EmailCaptureFormProps = {
-  resourceId?: string
-  onComplete?: (email: string) => void
-  isPreview?: boolean
+interface EmailCaptureFormProps {
+  resourceId?: string;
+  onComplete?: (email: string) => void;
+  isPreview?: boolean;
 }
 
-export default function EmailCaptureForm({ 
-  resourceId, 
-  onComplete,
-  isPreview = false 
-}: EmailCaptureFormProps) {
+export default function EmailCaptureForm({ resourceId, onComplete, isPreview = false }: EmailCaptureFormProps) {
   const { toast } = useToast()
-  const [email, setEmail] = useState("")
-  const [name, setName] = useState("")
-  const [loading, setLoading] = useState(false)
-
+  const [formData, setFormData] = useState({ name: "", email: "" })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -33,23 +32,47 @@ export default function EmailCaptureForm({
       })
       return
     }
-
-    if (!resourceId) {
+    
+    if (!resourceId || !onComplete) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Resource ID is required.",
+        title: "Configuration Error",
+        description: "This form is not properly configured.",
       })
       return
     }
-
-    setLoading(true)
+    
+    if (!formData.name || !formData.email) {
+      toast({
+        variant: "destructive",
+        title: "Required fields",
+        description: "Please provide both name and email.",
+      })
+      return
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        variant: "destructive",
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+      })
+      return
+    }
+    
+    setIsSubmitting(true)
     
     try {
-      const response = await fetch('/api/lead-generation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name, resourceId }),
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resourceId,
+          name: formData.name,
+          email: formData.email
+        })
       })
       
       const data = await response.json()
@@ -59,58 +82,53 @@ export default function EmailCaptureForm({
       }
       
       toast({
-        title: "Success!",
-        description: "Your information has been submitted successfully.",
+        title: "Thank you!",
+        description: "You now have access to this resource.",
       })
       
       if (onComplete) {
-        onComplete(email)
+        onComplete(formData.email)
       }
     } catch (error) {
       console.error("Error submitting lead:", error)
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "There was a problem submitting your information.",
+        description: error instanceof Error ? error.message : "Failed to submit your information",
       })
     } finally {
-      setLoading(false)
+      setIsSubmitting(false)
     }
   }
-
+  
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Enter your information to access this resource</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Your Name</Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="email">Email Address</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email address"
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Submitting..." : "Get Access"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="name">Your Name</Label>
+        <Input
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="John Doe"
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="email">Email Address</Label>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="you@example.com"
+          required
+        />
+      </div>
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
+        {isSubmitting ? "Submitting..." : "Get Access"}
+      </Button>
+    </form>
   )
 } 
