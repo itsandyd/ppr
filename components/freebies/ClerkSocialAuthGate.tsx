@@ -149,6 +149,16 @@ export default function ClerkSocialAuthGate({
       `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
     );
     
+    if (!popup) {
+      toast({
+        title: "Popup Blocked",
+        description: "Please allow popups for this site and try again.",
+        variant: "destructive",
+      });
+      setAuthenticating(null);
+      return;
+    }
+    
     toast({
       title: popupTitle,
       description: `Please ${action === 'follow' ? 
@@ -158,36 +168,43 @@ export default function ClerkSocialAuthGate({
 
     // Set up a check to see when popup is closed
     const checkPopupInterval = setInterval(() => {
-      if (popup?.closed) {
+      try {
+        // This will throw an error if the popup is closed
+        if (popup.closed) {
+          clearInterval(checkPopupInterval);
+          
+          // Use setTimeout to give a brief pause before showing the confirmation dialog
+          setTimeout(() => {
+            // Auto-verify in ToneDen-style (since we can't actually verify the follow action)
+            // This simulates ToneDen's behavior where it assumes you've completed the action
+            toast({
+              title: "Verifying action...",
+              description: `Processing your ${actionVerb} action for ${username}`,
+            });
+            
+            // Find the requirement and verify the action
+            const requirement = requirements.find(req => req.platform === platform);
+            if (requirement) {
+              verifyAction(platform, requirement.action || 'follow', requirement.username || '', true);
+            }
+          }, 800);
+        }
+      } catch (e) {
+        // If we get an error, the popup is likely closed
         clearInterval(checkPopupInterval);
         
-        // Ask user to confirm they've completed the action instead of auto-verifying
-        const didComplete = window.confirm(
-          `Did you ${actionVerb} ${username} on ${platform.charAt(0).toUpperCase() + platform.slice(1)}?\n\n` +
-          `Click OK if you completed this action, or Cancel if you didn't.`
-        );
-        
-        if (didComplete) {
+        // Handle similarly to the closed case
+        setTimeout(() => {
           toast({
-            title: "Verifying...",
-            description: `Thanks for confirming! Completing verification...`,
+            title: "Verifying action...",
+            description: `Processing your ${actionVerb} action for ${username}`,
           });
           
-          // Find the requirement and verify the action (with simplified auth)
           const requirement = requirements.find(req => req.platform === platform);
           if (requirement) {
-            // Short delay to allow for API calls on the platform side to complete
-            setTimeout(() => {
-              verifyAction(platform, requirement.action || 'follow', requirement.username || '', true);
-            }, 1000);
+            verifyAction(platform, requirement.action || 'follow', requirement.username || '', true);
           }
-        } else {
-          toast({
-            title: "Action not completed",
-            description: `You'll need to complete this action to access the resource.`,
-            variant: "destructive",
-          });
-        }
+        }, 800);
       }
     }, 1000);
   };
@@ -260,7 +277,19 @@ export default function ClerkSocialAuthGate({
         // Mark this requirement as completed
         setCompletedRequirements(prev => {
           if (!prev.includes(platform)) {
-            return [...prev, platform];
+            const newCompleted = [...prev, platform];
+            console.log("Updated completed platforms:", newCompleted);
+            
+            // If all requirements are completed, call onComplete
+            const allCompleted = requirements
+              .filter(req => req.platform !== "leadgen")
+              .every(req => newCompleted.includes(req.platform));
+              
+            if (allCompleted) {
+              setTimeout(() => onComplete(), 1000);
+            }
+            
+            return newCompleted;
           }
           return prev;
         });

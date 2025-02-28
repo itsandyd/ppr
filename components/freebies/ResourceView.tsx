@@ -77,23 +77,36 @@ export default function ResourceView({ resource }: { resource: Resource }) {
   // Auto-check for completed requirements when state changes
   useEffect(() => {
     if (accessState === 'email-completed') {
-      // Periodically check if social requirements are completed
-      const checkInterval = setInterval(async () => {
-        const allCompleted = await checkSocialRequirementsStatus()
-        
+      // Initial check immediately
+      checkSocialRequirementsStatus().then(allCompleted => {
         if (allCompleted) {
-          clearInterval(checkInterval)
-          setAccessState('full')
+          setAccessState('full');
           toast({
             title: "All Requirements Completed",
             description: "You can now download this resource.",
-          })
+          });
+          return; // No need to set up interval if already completed
         }
-      }, 3000) // Check every 3 seconds
+      });
       
-      return () => clearInterval(checkInterval)
+      // Periodically check if social requirements are completed - more frequently to be responsive
+      const checkInterval = setInterval(async () => {
+        console.log("Checking social requirements status...");
+        const allCompleted = await checkSocialRequirementsStatus();
+        
+        if (allCompleted) {
+          clearInterval(checkInterval);
+          setAccessState('full');
+          toast({
+            title: "All Requirements Completed",
+            description: "You can now download this resource.",
+          });
+        }
+      }, 2000); // Check every 2 seconds instead of 3
+      
+      return () => clearInterval(checkInterval);
     }
-  }, [accessState, resource.id, toast])
+  }, [accessState, resource.id, toast]);
 
   // Initial check for completed requirements
   useEffect(() => {
