@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Instagram, Twitter, Facebook, Youtube, Twitch, Mail } from "lucide-react"
 import { SiSoundcloud } from "react-icons/si"
+import EmailCaptureForm from "./EmailCaptureForm"
 
 export type Requirement = {
   platform: string
@@ -28,6 +29,7 @@ const platformOptions = [
 
 export default function FollowGateSetup({ requirements, setRequirements }: FollowGateSetupProps) {
   const [newRequirement, setNewRequirement] = useState<Requirement>({ platform: "", accountUrl: "" })
+  const [showEmailPreview, setShowEmailPreview] = useState(false)
 
   const handleAddRequirement = () => {
     if (newRequirement.platform === "leadgen") {
@@ -50,6 +52,9 @@ export default function FollowGateSetup({ requirements, setRequirements }: Follo
     return <Icon className={className} />
   }
 
+  // Check if lead gen is already in requirements
+  const hasLeadGen = requirements.some(req => req.platform === "leadgen")
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">Follow Gate Requirements</h3>
@@ -71,17 +76,25 @@ export default function FollowGateSetup({ requirements, setRequirements }: Follo
           <Label htmlFor="platform">Platform</Label>
           <Select
             value={newRequirement.platform}
-            onValueChange={(value) => setNewRequirement({ ...newRequirement, platform: value, accountUrl: "" })}
+            onValueChange={(value) => {
+              setNewRequirement({ ...newRequirement, platform: value, accountUrl: "" })
+              setShowEmailPreview(value === "leadgen")
+            }}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select platform" />
             </SelectTrigger>
             <SelectContent>
               {platformOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem 
+                  key={option.value} 
+                  value={option.value}
+                  disabled={option.value === "leadgen" && hasLeadGen}
+                >
                   <div className="flex items-center">
                     <option.icon className="w-4 h-4 mr-2" />
                     {option.label}
+                    {option.value === "leadgen" && hasLeadGen && " (already added)"}
                   </div>
                 </SelectItem>
               ))}
@@ -101,6 +114,20 @@ export default function FollowGateSetup({ requirements, setRequirements }: Follo
         )}
         <Button onClick={handleAddRequirement}>Add</Button>
       </div>
+      
+      {showEmailPreview && !hasLeadGen && (
+        <div className="mt-4">
+          <h4 className="text-md font-medium mb-2">Email Capture Preview:</h4>
+          <EmailCaptureForm isPreview={true} />
+        </div>
+      )}
+      
+      {hasLeadGen && (
+        <div className="mt-4 p-4 bg-gray-800 rounded-md">
+          <p className="text-md font-medium">Email capture is enabled for this resource.</p>
+          <p className="text-sm text-gray-400">Users will need to provide their name and email to access this resource.</p>
+        </div>
+      )}
     </div>
   )
 }

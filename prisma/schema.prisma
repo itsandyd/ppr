@@ -1136,3 +1136,36 @@ model Playlist {
   @@index([userId])
   @@index([createdAt])
 }
+
+model Resource {
+  id                     String         @id @default(uuid())
+  title                  String
+  slug                   String         @unique
+  description            String         @db.Text
+  fileName               String
+  fileUrl                String         @db.Text
+  imageUrl               String?        @db.Text
+  requiresLeadGen        Boolean        @default(false)
+  followGateRequirements Json?          @db.Json
+  downloads              Int            @default(0)
+  type                   String?
+  userId                 String
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  leads                  ResourceLead[]
+
+  @@index([userId])
+}
+
+model ResourceLead {
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  resourceId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@index([resourceId])
+  @@index([email])
+}

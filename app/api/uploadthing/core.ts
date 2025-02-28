@@ -12,6 +12,9 @@ const handleAuth = () => {
  
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
+    imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 1 }})
+        .middleware(() => handleAuth()) 
+        .onUploadComplete(() => {}),
     serverImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 }})
         .middleware(() => handleAuth()) 
         .onUploadComplete(() => {}),
@@ -42,7 +45,7 @@ export const ourFileRouter = {
     musicFile: f({ audio: { maxFileSize: "128MB", maxFileCount: 1 }})
         .middleware(() => handleAuth())
         .onUploadComplete(() => {}),
-    storageUpload: f(["text", "image", "video", "audio", "pdf"])
+    storageUpload: f(["text", "image", "video", "audio", "pdf", "blob"])
         .middleware(() => handleAuth())
         .onUploadComplete(() => {}),
     subaccountLogo: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
