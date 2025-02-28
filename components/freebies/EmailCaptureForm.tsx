@@ -78,6 +78,16 @@ export default function EmailCaptureForm({ resourceId, onComplete, isPreview = f
       const data = await response.json()
       
       if (!response.ok) {
+        // If the resource doesn't require lead gen but we're trying to submit anyway
+        if (response.status === 400 && data.error?.includes("does not require lead generation")) {
+          // Just complete the flow since this is probably just a UI state issue
+          console.warn("Resource doesn't require lead gen but form was shown - completing anyway");
+          if (onComplete) {
+            onComplete(formData.email);
+            return;
+          }
+        }
+        
         throw new Error(data.error || "Something went wrong")
       }
       

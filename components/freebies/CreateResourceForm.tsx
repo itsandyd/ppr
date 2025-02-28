@@ -95,8 +95,8 @@ export default function CreateResourceForm() {
     setIsSubmitting(true)
 
     try {
-      // Check if Lead Gen requirement exists
-      const requiresLeadGen = followGateRequirements.some(req => req.platform === "leadgen")
+      // Check if Lead Gen requirement exists or if there are any follow gate requirements
+      const requiresLeadGen = followGateRequirements.length > 0
       
       // Log the data being sent to verify it's correct
       console.log("Submitting data:", {
@@ -326,7 +326,7 @@ export default function CreateResourceForm() {
               Set up requirements for users to access this resource. If you select Lead Gen, 
               users will need to provide their email address.
             </p>
-            <FollowGateSetup requirements={followGateRequirements} setRequirements={setFollowGateRequirements} />
+            <FollowGateSetup value={followGateRequirements} onChange={setFollowGateRequirements} />
           </div>
         </CardContent>
         <CardFooter>

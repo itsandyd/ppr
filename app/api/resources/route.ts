@@ -98,7 +98,7 @@ export async function POST(request: Request) {
         fileUrl,
         fileName,
         followGateRequirements: followGateRequirements || [],
-        requiresLeadGen: !!requiresLeadGen,
+        requiresLeadGen: !!requiresLeadGen || (followGateRequirements && followGateRequirements.length > 0),
         imageUrl,
         userId,
         type: fileName.endsWith('.zip') ? 'ZIP Archive' : 'Resource',

@@ -6,8 +6,39 @@ import { NextRequest, NextResponse } from 'next/server'
 // Please edit this to allow other routes to be public as needed.
 // See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
 export default authMiddleware({
-  publicRoutes: ["/api/webhook/clerk", "/api/webhook/stripe"],
-  ignoredRoutes: ["/api/webhook/clerk", "/api/webhook/stripe"],
+  publicRoutes: [
+    // API routes that need to be public
+    "/api/webhook/clerk", 
+    "/api/webhook/stripe",
+    "/api/clerk/callback",
+    "/api/verify-social-action",
+    "/api/resources",
+    "/api/resources/:path*",
+    "/api/leads",
+    "/api/uploadthing",
+    "/api/:path*",
+    
+    // Public pages
+    "/",
+    "/sounds",
+    "/plugins/:path*",
+    "/academy",
+    "/coaching",
+    "/community",
+    "/music",
+    "/spotify",
+    "/ai/",
+    "/freebies",
+    "/freebies/:path*",
+    "/lib/agency/queries",
+    "/site"
+  ],
+  ignoredRoutes: [
+    "/api/webhook/clerk", 
+    "/api/webhook/stripe",
+    "/api/clerk/callback",
+    "/api/verify-social-action"
+  ],
   async beforeAuth(auth, req) {},
   async afterAuth(auth, req) {
     //rewrite for domains
