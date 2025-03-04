@@ -1,98 +1,251 @@
-import { getChapter } from '@/actions/get-chapter';
-import { Banner } from '@/components/courses/banner';
-import { CourseCard } from '@/components/courses/course-card';
-import { CourseNavbar } from '@/components/courses/navbar';
-import { db } from '@/lib/db';
+import type { Metadata, ResolvingMetadata } from 'next'
+import { redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs';
-import { redirect, useRouter } from 'next/navigation';
-import react from 'react';
-
-
-import { Separator } from '@/components/ui/separator';
-import { Preview } from '@/components/courses/preview';
-import { getPlugins } from '@/actions/get-plugins';
-import { getPlugin } from '@/actions/get-plugin-by-id';
+import { db } from '@/lib/db';
 import Image from 'next/image';
-import { getSounds } from '@/actions/get-sounds';
-import { getSoundsById } from '@/actions/get-sounds-by-id';
+import Link from 'next/link';
+import { formatDistanceToNow } from 'date-fns';
+
+import { Preview } from '@/components/courses/preview';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Download, ExternalLink, Info, Tag, Calendar, User } from 'lucide-react';
 import { SoundsPurchaseButton } from '@/components/sounds/SoundsIdPage/SoundsPurchaseButton';
 
-const PluginIdPage = async ({
-  params
-}: {
-  params: { soundsId: string }
-}) => {
-  const { userId } = auth();
-  
-  if (!userId) {
-    null;
-  } 
+interface PageProps {
+  params: { 
+    soundsId: string;
+  }
+}
 
-  const {
-    sounds
-  } = await getSoundsById({
-    soundsId: params.soundsId
+export async function generateMetadata(
+  { params }: PageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const sound = await db.sounds.findUnique({
+    where: {
+      id: params.soundsId
+    },
+    include: {
+      category: true
+    }
   });
 
-  if (!sounds) {
-    // Example: Redirect to a not found page or display a message
+  if (!sound) {
+    return {
+      title: 'Sound Not Found | PausePlayRepeat',
+      description: 'The requested sound pack could not be found. Browse our collection of other sound packs for music production.',
+      alternates: {
+        canonical: '/sounds',
+      }
+    }
+  }
+
+  const previousImages = (await parent).openGraph?.images || []
+  const pricingType = (sound.price ?? 0) > 0 ? 'Paid' : 'Free';
+  const priceInfo = (sound.price ?? 0) > 0 ? `Price: $${sound.price}` : 'Free Download';
+  const categoryName = sound.category?.name || 'Audio';
+ 
+  return {
+    title: `${sound.name} — ${pricingType} ${categoryName} Sound Pack | PausePlayRepeat`,
+    description: `${sound.description || `${sound.name} - Professional sound pack for music production`}. ${priceInfo}. Find more ${categoryName} sounds at PausePlayRepeat.`,
+    keywords: [
+      sound.name,
+      categoryName,
+      pricingType + ' sounds',
+      'sound pack',
+      'audio samples',
+      'music production',
+      sound.pricingType || '',
+      'DAW tools'
+    ].filter(Boolean),
+    openGraph: {
+      title: `${sound.name} — ${pricingType} ${categoryName} Sound Pack`,
+      description: sound.description || `${sound.name} - Professional sound pack for music production`,
+      type: 'website',
+      images: [...(sound.image ? [{ 
+        url: sound.image,
+        alt: `${sound.name} - ${pricingType} Sound Pack`
+      }] : []), ...previousImages],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${sound.name} — ${pricingType} ${categoryName} Sound Pack`,
+      description: sound.description || `${sound.name} - Professional sound pack for music production`,
+    },
+    alternates: {
+      canonical: '/sounds',
+    }
+  }
+}
+
+const SoundPage = async ({ params }: PageProps) => {
+  const { userId } = auth();
+  
+  const sound = await db.sounds.findUnique({
+    where: {
+      id: params.soundsId
+    },
+    include: {
+      category: true
+    }
+  });
+
+  if (!sound) {
     return redirect("/sounds");
   }
 
-//   if (!chapter || !course) {
-//     return redirect("/")
-//   }
+  const similarSounds = await db.sounds.findMany({
+    where: {
+      categoryId: sound.categoryId || undefined,
+      NOT: { id: sound.id }
+    },
+    take: 3,
+    include: {
+      category: true
+    }
+  });
 
+  return (
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Navigation */}
+        <div className="py-6">
+          <Link 
+            href="/sounds" 
+            className="text-sm text-zinc-400 hover:text-white transition-colors"
+          >
+            ← Back to Sounds
+          </Link>
+        </div>
 
-//   const isLocked = !chapter.isFree && !purchase;
-//   const completeOnEnd = !!purchase && !userProgress?.isCompleted;
-
-
-    return ( 
-        <div className='pt-12'>
-            {/* {userProgress?.isCompleted && (
-            <Banner 
-                variant="success"
-                label="You have completed this chapter."
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pb-12">
+          {/* Left Column - Image */}
+          <div className="relative aspect-square bg-zinc-900 rounded-lg overflow-hidden">
+            <Image 
+              src={sound?.image || '/placeholder.svg'}
+              alt={sound?.name || 'Sound Pack Image'}
+              fill
+              className="object-cover"
+              priority
             />
-            )}
-            {isLocked && (
-                <Banner 
-                    variant="warning"
-                    label="This chapter is locked."
-                />
-            )} */}
-            
-<div className="group pt-12 transition overflow-hidden border rounded-lg p-3 mx-auto max-w-4xl">
-    <div className="flex justify-center items-center p-4">
-        <Image 
-            src={sounds?.image || 'placeholder.svg'}
-            alt={sounds?.name || 'Plugin Name'}
-            width={500}
-            height={500}
-            className="object-cover rounded-md"
-        />
+          </div>
+
+          {/* Right Column - Sound Info */}
+          <div className="space-y-8">
+            {/* Header Info */}
+            <div className="space-y-4">
+              {sound.category && (
+                <Badge variant="outline" className="bg-transparent border-zinc-700 text-zinc-400">
+                  {sound.category.name}
+                </Badge>
+              )}
+              <h1 className="text-3xl font-bold text-white">{sound.name}</h1>
+              {sound.author && (
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <User className="h-4 w-4" />
+                  <span>By {sound.author}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Sound Details Card */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardHeader className="border-b border-zinc-800 pb-4">
+                <h2 className="text-lg font-semibold text-white">Sound Pack Details</h2>
+              </CardHeader>
+              <CardContent className="pt-4 space-y-4">
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <Tag className="h-4 w-4" />
+                  <span>Type: {sound.pricingType}</span>
+                </div>
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <Calendar className="h-4 w-4" />
+                  <span>Added {formatDistanceToNow(new Date(sound.createdAt))} ago</span>
+                </div>
+                {sound.purchaseUrl && (
+                  <div className="flex items-center gap-2">
+                    <ExternalLink className="h-4 w-4 text-zinc-400" />
+                    <a 
+                      href={sound.purchaseUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      Official Website
+                    </a>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-4">
+              <SoundsPurchaseButton 
+                pluginId={sound.id}
+                price={sound.price || 0}
+                pricingType={sound.pricingType}
+                optInFormUrl={sound.optInFormUrl || ''}
+                purchaseUrl={sound.purchaseUrl || ''}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Description Section */}
+        <div className="py-12">
+          <Card className="bg-zinc-900 border-zinc-800">
+            <CardHeader className="border-b border-zinc-800">
+              <h2 className="text-xl font-semibold text-white">About {sound.name}</h2>
+            </CardHeader>
+            <CardContent className="prose prose-invert max-w-none pt-6">
+              <Preview value={sound?.description || ''} />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Similar Sounds Section */}
+        {similarSounds.length > 0 && (
+          <div className="pb-12">
+            <h2 className="text-xl font-semibold text-white mb-6">Similar Sound Packs</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {similarSounds.map((ss) => (
+                <Link href={`/sounds/${ss.id}`} key={ss.id}>
+                  <Card className="bg-zinc-900 border-zinc-800 h-full hover:bg-zinc-800/50 transition-colors">
+                    <CardHeader className="space-y-3">
+                      <div className="aspect-video relative rounded overflow-hidden bg-zinc-800">
+                        <Image
+                          src={ss.image || '/placeholder.svg'}
+                          alt={ss.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="font-semibold text-white line-clamp-1">{ss.name}</h3>
+                        {ss.category && (
+                          <Badge variant="outline" className="bg-transparent border-zinc-700 text-zinc-400 text-xs">
+                            {ss.category.name}
+                          </Badge>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-zinc-400 line-clamp-2">
+                        {ss.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-    <div className="flex flex-col pt-2">
-        <div className="p-4 flex flex-col md:flex-row items-center justify-between">
-          <h2 className="text-lg md:text-base font-bold mb-2">{sounds?.name}</h2>
-            <SoundsPurchaseButton 
-                pluginId={params.soundsId}
-                price={sounds.price || 0} // Ensure there's a default or conditional rendering based on the existence of price
-                pricingType={sounds.pricingType}
-                optInFormUrl={sounds.optInFormUrl || ''}
-                purchaseUrl={sounds.purchaseUrl || ''}
-            />
-            {/* {userId === sounds.userId && <PluginEditButton pluginId={params.soundsId} />} */}
-        </div>
-        <Separator />
-        <div>
-            <Preview value={sounds?.description!}/>
-        </div>
-    </div>
-</div>
-        </div>
-     );
+  );
 }
 
-export default PluginIdPage;
+export default SoundPage;
