@@ -1,14 +1,17 @@
 import type { Metadata, ResolvingMetadata } from 'next'
-import { redirect, useRouter } from "next/navigation";
-import { CheckCircle, Clock } from "lucide-react";
+import { redirect } from "next/navigation";
+import { Filter } from "lucide-react";
 
-import { getPlugins } from "@/actions/get-plugins";
 import { db } from "@/lib/db";
 import { PluginList } from "./search/components/PluginList";
 import { PluginTypes } from "./search/components/types";
 import { PluginCategories } from "./search/components/categories";
 import { getFreePlugins } from "@/actions/get-free-plugins";
 import { PluginHero } from "./components/PluginHero";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { SearchInput } from "./components/SearchInput";
+import { getPlugins } from '@/actions/get-plugins';
 
 interface SearchPageProps {
   searchParams: {
@@ -71,31 +74,71 @@ const PluginsPage = async ({
     },
   });
 
-  if (!effects) {
-    return (
-      <div className="flex items-center justify-center h-full text-foreground dark:text-foreground">
-        <h1>No plugins found</h1>
-      </div>
-    );
-  }
-
   const instruments = await db.pluginInstrumentCategory.findMany({
     orderBy: {
       name: "asc"
     },
   });
 
-  return (
-    <div className="p-4 md:p-6 space-y-6 text-white">
-      <PluginHero />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  if (!effects || !types || !instruments) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-bold">No plugins found</h1>
+          <p className="text-muted-foreground">Please try again later or contact support.</p>
+        </div>
       </div>
-      <PluginTypes
-        items={types}
-      />
-      {searchParams.typeId === "4d3c10bb-a7a0-43d8-9ac2-79e855e4708a" && <PluginCategories items={effects}/>}
-      {searchParams.typeId === "4d3c10bb-a7a0-43d8-9ac2-79e855e4708a" && <PluginCategories items={effects}/>}
-      <PluginList items={plugins} />
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <PluginHero />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Search and Filter Section */}
+        <div className="flex flex-col md:flex-row gap-4 items-center mb-8">
+          <SearchInput />
+          <Button 
+            variant="outline" 
+            className="w-full md:w-auto bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800"
+          >
+            <Filter className="h-4 w-4 mr-2" />
+            Filters
+          </Button>
+        </div>
+
+        {/* Plugin Types Section */}
+        <section className="space-y-6 mb-12">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold tracking-tight text-white">Plugin Types</h2>
+          </div>
+          <PluginTypes items={types} />
+        </section>
+
+        <Separator className="my-8 bg-zinc-800" />
+
+        {/* Categories Section - Conditional Rendering */}
+        {searchParams.typeId === "4d3c10bb-a7a0-43d8-9ac2-79e855e4708a" && (
+          <section className="space-y-6 mb-12">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold tracking-tight text-white">Effect Categories</h2>
+            </div>
+            <PluginCategories items={effects} />
+          </section>
+        )}
+
+        {/* Plugin List Section */}
+        <section className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold tracking-tight text-white">Available Plugins</h2>
+            <p className="text-zinc-400">
+              {plugins.length} plugin{plugins.length !== 1 ? 's' : ''} found
+            </p>
+          </div>
+          <PluginList items={plugins} />
+        </section>
+      </div>
     </div>
   )
 }

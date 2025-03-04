@@ -10,12 +10,17 @@ import react from 'react';
 
 import { Separator } from '@/components/ui/separator';
 import { Preview } from '@/components/courses/preview';
-import { getPlugins } from '@/actions/get-plugins';
+
 import { getPlugin } from '@/actions/get-plugin-by-id';
 import Image from 'next/image';
 import { PluginPurchaseButton } from './components/PluginPurchaseButton';
 import { PluginEditButton } from './components/PluginEditButton';
 import { PluginHero } from '../components/PluginHero';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Download, ExternalLink, Info, Tag, Calendar, User } from 'lucide-react';
+import Link from 'next/link';
+import { formatDistanceToNow } from 'date-fns';
 
 interface PageProps {
   params: { 
@@ -111,81 +116,157 @@ const PluginPage = async ({ params }: PageProps) => {
     return redirect("/plugins");
   }
 
-  // >>> NEW: Fetch similar plugins from the same category <<<
   const similarPlugins = await db.plugin.findMany({
     where: {
       categoryId: plugin.categoryId || undefined,
       NOT: { id: plugin.id }
     },
-    take: 4
+    take: 3,
+    include: {
+      category: true,
+      pluginType: true
+    }
   });
-  // <<< NEW CODE ENDS >>>
 
   return (
-    <>
-      <div className="pt-12 max-w-4xl mx-auto px-4 min-h-screen bg-background text-foreground dark:bg-background dark:text-foreground transition-colors">
-        <div className='pt-12'>
-          <div className="group pt-12 transition overflow-hidden border rounded-lg mx-auto max-w-4xl bg-card text-card-foreground dark:bg-card dark:text-card-foreground shadow-xl">
-            <div className="p-3">
-              <div className="flex justify-center items-center p-4">
-                <Image 
-                  src={plugin?.image || 'placeholder.svg'}
-                  alt={plugin?.name || 'Plugin Name'}
-                  width={500}
-                  height={500}
-                  className="object-cover rounded-md shadow-lg"
-                />
-              </div>
-              <div className="flex flex-col pt-2">
-                <div className="p-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-                  <h2 className="text-lg md:text-xl font-bold">{plugin?.name}</h2>
-                  <PluginPurchaseButton 
-                    pluginId={plugin.id}
-                    price={plugin.price || 0}
-                    pricingType={plugin.pricingType}
-                    optInFormUrl={plugin.optInFormUrl || ''}
-                    purchaseUrl={plugin.purchaseUrl || ''}
-                  />
-                  {plugin.userId && <PluginEditButton pluginId={plugin.id} />}
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Navigation */}
+        <div className="py-6">
+          <Link 
+            href="/plugins" 
+            className="text-sm text-zinc-400 hover:text-white transition-colors"
+          >
+            ← Back to Plugins
+          </Link>
+        </div>
+
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pb-12">
+          {/* Left Column - Image */}
+          <div className="relative aspect-square bg-zinc-900 rounded-lg overflow-hidden">
+            <Image 
+              src={plugin?.image || '/placeholder.svg'}
+              alt={plugin?.name || 'Plugin Image'}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+
+          {/* Right Column - Plugin Info */}
+          <div className="space-y-8">
+            {/* Header Info */}
+            <div className="space-y-4">
+              {plugin.category && (
+                <Badge variant="outline" className="bg-transparent border-zinc-700 text-zinc-400">
+                  {plugin.category.name}
+                </Badge>
+              )}
+              <h1 className="text-3xl font-bold text-white">{plugin.name}</h1>
+              {plugin.author && (
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <User className="h-4 w-4" />
+                  <span>By {plugin.author}</span>
                 </div>
-                <Separator className="mt-2 mb-4" />
-                <div className="px-4 pb-4">
-                  <Preview value={plugin?.description!}/>
+              )}
+            </div>
+
+            {/* Plugin Details Card */}
+            <Card className="bg-zinc-900 border-zinc-800">
+              <CardHeader className="border-b border-zinc-800 pb-4">
+                <h2 className="text-lg font-semibold text-white">Plugin Details</h2>
+              </CardHeader>
+              <CardContent className="pt-4 space-y-4">
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <Tag className="h-4 w-4" />
+                  <span>Type: {plugin.pricingType}</span>
                 </div>
-              </div>
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <Calendar className="h-4 w-4" />
+                  <span>Added {formatDistanceToNow(new Date(plugin.createdAt))} ago</span>
+                </div>
+                {plugin.purchaseUrl && (
+                  <div className="flex items-center gap-2">
+                    <ExternalLink className="h-4 w-4 text-zinc-400" />
+                    <a 
+                      href={plugin.purchaseUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      Official Website
+                    </a>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-4">
+              <PluginPurchaseButton 
+                pluginId={plugin.id}
+                price={plugin.price || 0}
+                pricingType={plugin.pricingType}
+                optInFormUrl={plugin.optInFormUrl || ''}
+                purchaseUrl={plugin.purchaseUrl || ''}
+              />
+              {plugin.userId && <PluginEditButton pluginId={plugin.id} />}
             </div>
           </div>
         </div>
 
-        <div className="mt-12">
-          <h3 className="text-xl font-semibold mb-4">
-            Similar {plugin.category?.name || 'Audio'} Plugins
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {similarPlugins.length === 0 && (
-              <p>No similar plugins found.</p>
-            )}
-            {similarPlugins.map((sp) => (
-              <div 
-                key={sp.id} 
-                className="border p-4 rounded-md shadow-sm transition hover:shadow-md hover:bg-secondary dark:hover:bg-secondary"
-              >
-                <h4 className="font-bold text-lg mb-1">{sp.name}</h4>
-                <p className="text-sm mb-2">
-                  {sp.description?.slice(0, 100)}...
-                </p>
-                <a 
-                  href={`/plugins/${sp.slug}`} 
-                  className="inline-block text-blue-500 hover:underline"
-                >
-                  View Details
-                </a>
-              </div>
-            ))}
-          </div>
+        {/* Description Section */}
+        <div className="py-12">
+          <Card className="bg-zinc-900 border-zinc-800">
+            <CardHeader className="border-b border-zinc-800">
+              <h2 className="text-xl font-semibold text-white">About {plugin.name}</h2>
+            </CardHeader>
+            <CardContent className="prose prose-invert max-w-none pt-6">
+              <Preview value={plugin?.description || ''} />
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Similar Plugins Section */}
+        {similarPlugins.length > 0 && (
+          <div className="pb-12">
+            <h2 className="text-xl font-semibold text-white mb-6">Similar Plugins</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {similarPlugins.map((sp) => (
+                <Link href={`/plugins/${sp.slug}`} key={sp.id}>
+                  <Card className="bg-zinc-900 border-zinc-800 h-full hover:bg-zinc-800/50 transition-colors">
+                    <CardHeader className="space-y-3">
+                      <div className="aspect-video relative rounded overflow-hidden bg-zinc-800">
+                        <Image
+                          src={sp.image || '/placeholder.svg'}
+                          alt={sp.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="font-semibold text-white line-clamp-1">{sp.name}</h3>
+                        {sp.category && (
+                          <Badge variant="outline" className="bg-transparent border-zinc-700 text-zinc-400 text-xs">
+                            {sp.category.name}
+                          </Badge>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-zinc-400 line-clamp-2">
+                        {sp.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
 

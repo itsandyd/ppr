@@ -459,10 +459,10 @@ export default function ClerkSocialAuthGate({
         <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-md">
           <h3 className="text-sm font-medium text-yellow-500 mb-2">Having trouble?</h3>
           <p className="text-xs text-gray-400 mb-2">
-            If your action isn't being detected, try:
+            If your action isn&apos;t being detected, try:
           </p>
           <ul className="text-xs text-gray-400 list-disc pl-4 space-y-1">
-            <li>Make sure you're logged into the platform</li>
+            <li>Make sure you&apos;re logged into the platform</li>
             <li>Complete the action and close the popup</li>
             <li>If still having issues, use the manual verification option below</li>
           </ul>

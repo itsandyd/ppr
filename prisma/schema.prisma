@@ -316,6 +316,7 @@ model Course {
   courseCategory   CourseCategory?  @relation(fields: [courseCategoryId], references: [id])
   courseChapter    CourseChapter[]
   purchaseCourse   PurchaseCourse[]
+  migrationCodes   MigrationCode[]
 
   @@index([courseCategoryId])
 }
@@ -1168,4 +1169,22 @@ model ResourceLead {
 
   @@index([resourceId])
   @@index([email])
+}
+
+model MigrationCode {
+  id                   String    @id @default(cuid())
+  code                 String    @unique
+  email                String
+  courseId             String
+  originalPurchaseId   String?
+  originalPurchaseDate DateTime?
+  used                 Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+  expiresAt            DateTime?
+
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@index([code])
+  @@index([email])
+  @@index([courseId])
 }
