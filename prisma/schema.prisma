@@ -491,7 +491,7 @@ model PluginCategory {
 model Plugin {
   id           String          @id @default(uuid())
   name         String
-  slug         String
+  slug         String?         @default("")
   author       String?
   description  String?         @db.Text
   image        String?         @db.Text
@@ -523,6 +523,7 @@ model SoundsCategory {
 model Sounds {
   id           String          @id @default(uuid())
   name         String
+  slug         String          @unique @default("")
   author       String?
   description  String?         @db.Text
   image        String?         @db.Text

@@ -2,13 +2,15 @@
   "name": "community",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "setup-vectors": "tsx scripts/setup-vectors.ts"
+    "setup-vectors": "tsx scripts/setup-vectors.ts",
+    "generate-slugs": "tsx --require tsconfig-paths/register scripts/generate-sound-slugs.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.23.4",
@@ -149,6 +151,7 @@
     "postcss-nesting": "^12.1.1",
     "prisma": "^6.3.1",
     "supabase": "^1.75.3",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.19.2"
   }
 }

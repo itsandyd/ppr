@@ -23,9 +23,12 @@ export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const sound = await db.sounds.findUnique({
+  const sound = await db.sounds.findFirst({
     where: {
-      id: params.soundsId
+      OR: [
+        { id: params.soundsId },
+        { slug: params.soundsId }
+      ]
     },
     include: {
       category: true
@@ -83,9 +86,12 @@ export async function generateMetadata(
 const SoundPage = async ({ params }: PageProps) => {
   const { userId } = auth();
   
-  const sound = await db.sounds.findUnique({
+  const sound = await db.sounds.findFirst({
     where: {
-      id: params.soundsId
+      OR: [
+        { id: params.soundsId },
+        { slug: params.soundsId }
+      ]
     },
     include: {
       category: true
@@ -99,7 +105,12 @@ const SoundPage = async ({ params }: PageProps) => {
   const similarSounds = await db.sounds.findMany({
     where: {
       categoryId: sound.categoryId || undefined,
-      NOT: { id: sound.id }
+      NOT: { 
+        OR: [
+          { id: sound.id },
+          { slug: sound.slug }
+        ]
+      }
     },
     take: 3,
     include: {
@@ -212,7 +223,7 @@ const SoundPage = async ({ params }: PageProps) => {
             <h2 className="text-xl font-semibold text-white mb-6">Similar Sound Packs</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {similarSounds.map((ss) => (
-                <Link href={`/sounds/${ss.id}`} key={ss.id}>
+                <Link href={`/sounds/${ss.slug}`} key={ss.id}>
                   <Card className="bg-zinc-900 border-zinc-800 h-full hover:bg-zinc-800/50 transition-colors">
                     <CardHeader className="space-y-3">
                       <div className="aspect-video relative rounded overflow-hidden bg-zinc-800">

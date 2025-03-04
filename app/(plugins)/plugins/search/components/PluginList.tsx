@@ -19,7 +19,7 @@ export const PluginList = ({
           <PluginCard
             key={item.id}
             id={item.id}
-            slug={item.slug}
+            slug={item.slug ?? ""}
             name={item.name}
             price={item.price || 0}
             imageUrl={item.image || '/placeholder.svg'}

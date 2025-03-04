@@ -6,7 +6,7 @@ import { formatPrice } from "@/lib/format";
 
 interface PluginCardProps {
     id: string;
-    slug: string;
+    slug: string | null;
     name: string;
     imageUrl: string;
     description: string | null;
