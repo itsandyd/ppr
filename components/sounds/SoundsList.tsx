@@ -19,6 +19,7 @@ export const SoundsList = ({
           <SoundsCard
             key={item.id}
             id={item.id}
+            slug={item.slug}
             name={item.name} 
             imageUrl={item.image || 'placeholder.svg' as string} // Assuming 'image' is the correct field for the plugin's image URL
             description={item.description}

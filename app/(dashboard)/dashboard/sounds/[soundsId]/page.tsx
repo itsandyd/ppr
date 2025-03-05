@@ -32,8 +32,20 @@ const SoundsIdPage = async ({
         },
     });
 
+    // If not found by ID, try by slug
     if (!sounds) {
-        return redirect("/");
+        const soundsBySlug = await db.sounds.findFirst({
+            where: {
+                slug: params.soundsId,
+                userId,
+            },
+        });
+        
+        if (!soundsBySlug) {
+            return redirect("/");
+        }
+        
+        return redirect(`/dashboard/sounds/${soundsBySlug.id}`);
     }
 
     const categories = await db.soundsCategory.findMany({
