@@ -23,12 +23,9 @@ export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const sound = await db.sounds.findFirst({
+  const sound = await db.sounds.findUnique({
     where: {
-      OR: [
-        { id: params.soundsId },
-        { slug: params.soundsId }
-      ]
+      slug: params.soundsId
     },
     include: {
       category: true
@@ -86,12 +83,9 @@ export async function generateMetadata(
 const SoundPage = async ({ params }: PageProps) => {
   const { userId } = auth();
   
-  const sound = await db.sounds.findFirst({
+  const sound = await db.sounds.findUnique({
     where: {
-      OR: [
-        { id: params.soundsId },
-        { slug: params.soundsId }
-      ]
+      slug: params.soundsId
     },
     include: {
       category: true
@@ -105,11 +99,8 @@ const SoundPage = async ({ params }: PageProps) => {
   const similarSounds = await db.sounds.findMany({
     where: {
       categoryId: sound.categoryId || undefined,
-      NOT: { 
-        OR: [
-          { id: sound.id },
-          { slug: sound.slug }
-        ]
+      NOT: {
+        slug: sound.slug
       }
     },
     take: 3,
