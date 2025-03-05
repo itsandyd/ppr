@@ -29,11 +29,11 @@ export const SoundsCard = ({
             <div className="relative w-full aspect-video rounded-md overflow-hidden">
                 <Image fill className="object-cover" src={imageUrl} alt={name}/>
             </div>
-            <div className="flex flex-col pt-2">
+            <div className="flex flex-col p-4"> 
                 <div className="text-lg md:text-base font-medium">
                     {name}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground mt-1">
                     {category}
                 </p>
                 {/* <p className="text-sm text-muted-foreground mt-2">
