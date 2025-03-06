@@ -27,7 +27,7 @@ export const SearchInput = () => {
   }, [debouncedValue, router, searchParams]);
 
   return (
-    <form className="relative flex-1" onSubmit={(e) => e.preventDefault()}>
+    <form className="relative flex-1 w-full" onSubmit={(e) => e.preventDefault()}>
       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
       <Input 
         placeholder="Search plugins..." 

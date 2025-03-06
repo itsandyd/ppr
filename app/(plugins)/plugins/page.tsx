@@ -99,30 +99,30 @@ const PluginsPage = async ({
         {/* Search and Filter Section */}
         <div className="flex flex-col md:flex-row gap-4 items-center mb-8">
           <SearchInput />
-          <Button 
+          {/* <Button 
             variant="outline" 
-            className="w-full md:w-auto bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800"
+            className="w-full md:w-auto dark:bg-zinc-900 dark:border-zinc-800 dark:text-white dark:hover:bg-zinc-800 bg-gray-100 border-gray-200 text-gray-900 hover:bg-gray-200"
           >
             <Filter className="h-4 w-4 mr-2" />
             Filters
-          </Button>
+          </Button> */}
         </div>
 
         {/* Plugin Types Section */}
         <section className="space-y-6 mb-12">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold tracking-tight text-white">Plugin Types</h2>
+            <h2 className="text-2xl font-bold tracking-tight dark:text-white text-gray-900">Plugin Types</h2>
           </div>
           <PluginTypes items={types} />
         </section>
 
-        <Separator className="my-8 bg-zinc-800" />
+        <Separator className="my-8 dark:bg-zinc-800 bg-gray-200" />
 
         {/* Categories Section - Conditional Rendering */}
         {searchParams.typeId === "4d3c10bb-a7a0-43d8-9ac2-79e855e4708a" && (
           <section className="space-y-6 mb-12">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold tracking-tight text-white">Effect Categories</h2>
+              <h2 className="text-2xl font-bold tracking-tight dark:text-white text-gray-900">Effect Categories</h2>
             </div>
             <PluginCategories items={effects} />
           </section>
@@ -131,8 +131,8 @@ const PluginsPage = async ({
         {/* Plugin List Section */}
         <section className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold tracking-tight text-white">Available Plugins</h2>
-            <p className="text-zinc-400">
+            <h2 className="text-2xl font-bold tracking-tight dark:text-white text-gray-900">Available Plugins</h2>
+            <p className="dark:text-zinc-400 text-gray-500">
               {plugins.length} plugin{plugins.length !== 1 ? 's' : ''} found
             </p>
           </div>

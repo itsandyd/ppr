@@ -132,7 +132,7 @@ const PluginPage = async ({ params }: PageProps) => {
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Navigation */}
-        <div className="py-6">
+        <div className="pt-6 pb-6">
           <Link 
             href="/plugins" 
             className="text-sm text-zinc-400 hover:text-white transition-colors"

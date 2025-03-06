@@ -12,43 +12,16 @@ import { cn } from "@/lib/utils"
 
 export const PluginSidebar = () => {
   return (
-    <>
-      {/* Mobile Sheet */}
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="md:hidden fixed left-4 top-4 text-white">
-            <Menu className="h-5 w-5" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="p-0 w-72 bg-card text-card-foreground dark:bg-card dark:text-card-foreground border-r-0">
-          <div className="h-full flex flex-col overflow-y-auto">
-            <div className="p-4 border-b border-gray-800">
-              <Link href="/plugins">
-                <p className="text-xl font-semibold text-white">Plugins</p>
-              </Link>
-            </div>
-            <div className="flex flex-col w-full">
-              <PluginSidebarRoutes />
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      {/* Desktop Sidebar */}
-      <div 
-        className={cn(
-          "hidden md:flex h-full w-60 bg-card text-card-foreground dark:bg-card dark:text-card-foreground border-r border-gray-800 flex-col overflow-y-auto transition-all duration-300"
-        )}
-      >
-        <div className="p-4 flex items-center border-b border-gray-800">
-          <Link href="/plugins">
-            <p className="text-xl font-semibold text-white whitespace-nowrap">Plugins</p>
-          </Link>
-        </div>
-        <div className="flex flex-col w-full py-2">
-          <PluginSidebarRoutes />
-        </div>
+    // Desktop Sidebar Only
+    <div className="h-full w-full bg-white dark:bg-card text-gray-900 dark:text-card-foreground border-r border-gray-200 dark:border-gray-800 flex flex-col overflow-y-auto theme-transition">
+      <div className="h-[65px] px-4 flex items-center border-b border-gray-200 dark:border-gray-800 theme-transition">
+        <Link href="/plugins">
+          <p className="text-xl font-semibold text-gray-900 dark:text-white whitespace-nowrap theme-transition">Plugins</p>
+        </Link>
       </div>
-    </>
+      <div className="flex flex-col w-full py-2">
+        <PluginSidebarRoutes />
+      </div>
+    </div>
   )
 }
