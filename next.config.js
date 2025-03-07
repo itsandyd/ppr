@@ -6,6 +6,7 @@ const nextConfig = {
   output: "standalone",
   experimental: {
     serverActions: true,
+    runtime: "nodejs",
   },
   staticPageGenerationTimeout: 300,
   images: {

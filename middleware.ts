@@ -84,5 +84,12 @@ export default authMiddleware({
 
 export const config = {
   matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  unstable_allowDynamic: [
+    // Allow dynamic imports from node_modules
+    '/node_modules/@clerk/nextjs/**',
+    '/node_modules/@supabase/**',
+    '/node_modules/scheduler/**',
+    '/node_modules/react-dom/**',
+  ],
   runtime: 'nodejs',
 }
