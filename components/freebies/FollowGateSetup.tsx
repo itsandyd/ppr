@@ -37,103 +37,103 @@ export default function FollowGateSetup({ value, onChange, isPreview = false }: 
     action: "follow"
   })
 
-  const platformOptions = [
-    { 
-      value: "instagram", 
-      label: "Instagram", 
-      icon: (props: any) => <Instagram {...props} />,
-      actions: ["follow", "like"]
-    },
-    { 
-      value: "twitter", 
-      label: "Twitter",
-      icon: (props: any) => <Twitter {...props} />,
-      actions: ["follow", "like"]
-    },
-    { 
-      value: "facebook", 
-      label: "Facebook",
-      icon: (props: any) => <Facebook {...props} />,
-      actions: ["follow", "like"]
-    },
-    { 
-      value: "youtube", 
-      label: "YouTube",
-      icon: (props: any) => <Youtube {...props} />,
-      actions: ["subscribe"]
-    },
-    { 
-      value: "twitch", 
-      label: "Twitch",
-      icon: (props: any) => <Twitch {...props} />,
-      actions: ["follow", "subscribe"]
-    },
-    { 
-      value: "soundcloud", 
-      label: "SoundCloud",
-      icon: (props: any) => <SiSoundcloud {...props} />,
-      actions: ["follow", "like"]
-    },
-    { 
-      value: "spotify", 
-      label: "Spotify",
-      icon: (props: any) => <SiSpotify {...props} />,
-      actions: ["follow"]
-    },
-    { 
-      value: "leadgen", 
-      label: "Email Capture",
-      icon: (props: any) => <Mail {...props} />,
-      actions: []
-    }
-  ]
+  // const platformOptions = [
+  //   { 
+  //     value: "instagram", 
+  //     label: "Instagram", 
+  //     icon: (props: any) => <Instagram {...props} />,
+  //     actions: ["follow", "like"]
+  //   },
+  //   { 
+  //     value: "twitter", 
+  //     label: "Twitter",
+  //     icon: (props: any) => <Twitter {...props} />,
+  //     actions: ["follow", "like"]
+  //   },
+  //   { 
+  //     value: "facebook", 
+  //     label: "Facebook",
+  //     icon: (props: any) => <Facebook {...props} />,
+  //     actions: ["follow", "like"]
+  //   },
+  //   { 
+  //     value: "youtube", 
+  //     label: "YouTube",
+  //     icon: (props: any) => <Youtube {...props} />,
+  //     actions: ["subscribe"]
+  //   },
+  //   { 
+  //     value: "twitch", 
+  //     label: "Twitch",
+  //     icon: (props: any) => <Twitch {...props} />,
+  //     actions: ["follow", "subscribe"]
+  //   },
+  //   { 
+  //     value: "soundcloud", 
+  //     label: "SoundCloud",
+  //     icon: (props: any) => <SiSoundcloud {...props} />,
+  //     actions: ["follow", "like"]
+  //   },
+  //   { 
+  //     value: "spotify", 
+  //     label: "Spotify",
+  //     icon: (props: any) => <SiSpotify {...props} />,
+  //     actions: ["follow"]
+  //   },
+  //   { 
+  //     value: "leadgen", 
+  //     label: "Email Capture",
+  //     icon: (props: any) => <Mail {...props} />,
+  //     actions: []
+  //   }
+  // ]
 
-  // Helper to find the platform config by value
-  const getPlatformConfig = (platformValue: string) => {
-    return platformOptions.find(p => p.value === platformValue)
-  }
+  // // Helper to find the platform config by value
+  // const getPlatformConfig = (platformValue: string) => {
+  //   return platformOptions.find(p => p.value === platformValue)
+  // }
 
-  const handlePlatformChange = (platform: string) => {
-    const platformConfig = getPlatformConfig(platform)
-    setNewRequirement({
-      ...newRequirement,
-      platform,
-      action: platformConfig?.actions?.[0] || "follow"
-    })
-  }
+  // const handlePlatformChange = (platform: string) => {
+  //   const platformConfig = getPlatformConfig(platform)
+  //   setNewRequirement({
+  //     ...newRequirement,
+  //     platform,
+  //     action: platformConfig?.actions?.[0] || "follow"
+  //   })
+  // }
 
-  const handleActionChange = (action: string) => {
-    setNewRequirement({
-      ...newRequirement,
-      action
-    })
-  }
+  // const handleActionChange = (action: string) => {
+  //   setNewRequirement({
+  //     ...newRequirement,
+  //     action
+  //   })
+  // }
 
-  const handleAddRequirement = () => {
-    if (newRequirement.platform && 
-        ((newRequirement.platform === "leadgen") || 
-         (newRequirement.username && newRequirement.action))) {
-      const updatedRequirements = [...requirements, newRequirement]
-      setRequirements(updatedRequirements)
-      onChange(updatedRequirements)
+  // const handleAddRequirement = () => {
+  //   if (newRequirement.platform && 
+  //       ((newRequirement.platform === "leadgen") || 
+  //        (newRequirement.username && newRequirement.action))) {
+  //     const updatedRequirements = [...requirements, newRequirement]
+  //     setRequirements(updatedRequirements)
+  //     onChange(updatedRequirements)
 
-      // Reset new requirement form completely
-      setNewRequirement({
-        platform: "", // Reset platform so the user can select a different one
-        accountUrl: "",
-        username: "",
-        action: "follow" // Default action for the next requirement
-      })
-    }
-  }
+  //     // Reset new requirement form completely
+  //     setNewRequirement({
+  //       platform: "", // Reset platform so the user can select a different one
+  //       accountUrl: "",
+  //       username: "",
+  //       action: "follow" // Default action for the next requirement
+  //     })
+  //   }
+  // }
 
-  const handleRemoveRequirement = (index: number) => {
-    const updatedRequirements = requirements.filter((_, i) => i !== index)
-    setRequirements(updatedRequirements)
-    onChange(updatedRequirements)
-  }
+  // const handleRemoveRequirement = (index: number) => {
+  //   const updatedRequirements = requirements.filter((_, i) => i !== index)
+  //   setRequirements(updatedRequirements)
+  //   onChange(updatedRequirements)
+  // }
 
-  const hasEmailRequirement = requirements.some(req => req.platform === "leadgen")
+  // const hasEmailRequirement = requirements.some(req => req.platform === "leadgen")
 
   return (
     <div className="space-y-4">
@@ -156,7 +156,7 @@ export default function FollowGateSetup({ value, onChange, isPreview = false }: 
       
       <div className="space-y-4">
         {/* Email capture is always required */}
-        {!hasEmailRequirement && (
+        {/* {!hasEmailRequirement && (
           <div className="p-3 border rounded-md flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Mail className="h-5 w-5" />
@@ -167,31 +167,31 @@ export default function FollowGateSetup({ value, onChange, isPreview = false }: 
             </div>
             <Badge variant="outline">Required</Badge>
           </div>
-        )}
+        )} */}
         
         {/* Display existing requirements */}
         {requirements.map((req, index) => {
-          const platform = getPlatformConfig(req.platform)
-          const IconComponent = platform?.icon || ((props: any) => <X {...props} />)
+          // const platform = getPlatformConfig(req.platform)
+          // const IconComponent = platform?.icon || ((props: any) => <X {...props} />)
           
           if (req.platform === "leadgen") {
             return (
               <div key={index} className="p-3 border rounded-md flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <IconComponent className="h-5 w-5" />
+                  {/* <IconComponent className="h-5 w-5" /> */}
                   <div>
                     <p>Email Capture</p>
                     <p className="text-sm text-gray-400">Always required</p>
                   </div>
                 </div>
-                <Button 
+                {/* <Button 
                   variant="destructive" 
                   size="sm" 
                   type="button"
                   onClick={() => handleRemoveRequirement(index)}
                 >
                   Remove
-                </Button>
+                </Button> */}
               </div>
             )
           }
@@ -199,7 +199,7 @@ export default function FollowGateSetup({ value, onChange, isPreview = false }: 
           return (
             <div key={index} className="p-3 border rounded-md flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <IconComponent className="h-5 w-5" />
+                {/* <IconComponent className="h-5 w-5" />
                 <div>
                   <p>{platform?.label || req.platform}</p>
                   <p className="text-sm text-gray-400">
@@ -207,16 +207,16 @@ export default function FollowGateSetup({ value, onChange, isPreview = false }: 
                     {req.action === "like" && "Like"} 
                     {req.action === "subscribe" && "Subscribe to"} {req.username}
                   </p>
-                </div>
+                </div> */}
               </div>
-              <Button 
+              {/* <Button 
                 variant="destructive" 
                 size="sm" 
                 type="button"
                 onClick={() => handleRemoveRequirement(index)}
               >
                 Remove
-              </Button>
+              </Button> */}
             </div>
           )
         })}
@@ -227,7 +227,7 @@ export default function FollowGateSetup({ value, onChange, isPreview = false }: 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="platform">Platform</Label>
-            <Select
+            {/* <Select
               value={newRequirement.platform}
               onValueChange={handlePlatformChange}
             >
@@ -244,7 +244,7 @@ export default function FollowGateSetup({ value, onChange, isPreview = false }: 
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </Select> */}
           </div>
           
           {newRequirement.platform && newRequirement.platform !== "leadgen" && (
@@ -252,19 +252,19 @@ export default function FollowGateSetup({ value, onChange, isPreview = false }: 
               <Label htmlFor="action">Required Action</Label>
               <Select
                 value={newRequirement.action}
-                onValueChange={handleActionChange}
+                // onValueChange={handleActionChange}
               >
                 <SelectTrigger id="action">
                   <SelectValue placeholder="Select action" />
                 </SelectTrigger>
                 <SelectContent>
-                  {getPlatformConfig(newRequirement.platform)?.actions.map((action) => (
+                  {/* {getPlatformConfig(newRequirement.platform)?.actions.map((action) => (
                     <SelectItem key={action} value={action}>
                       {action === "follow" && (newRequirement.platform === "youtube" ? "Subscribe to" : "Follow")}
                       {action === "like" && "Like"}
                       {action === "subscribe" && "Subscribe to"}
                     </SelectItem>
-                  ))}
+                  ))} */}
                 </SelectContent>
               </Select>
             </div>
@@ -283,7 +283,7 @@ export default function FollowGateSetup({ value, onChange, isPreview = false }: 
           </div>
         )}
         
-        <Button 
+        {/* <Button 
           type="button" 
           onClick={handleAddRequirement}
           disabled={
@@ -292,7 +292,7 @@ export default function FollowGateSetup({ value, onChange, isPreview = false }: 
           }
         >
           Add
-        </Button>
+        </Button> */}
       </div>
     </div>
   )
