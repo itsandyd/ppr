@@ -14,7 +14,7 @@ export const CourseNavbar = () => {
             "bg-white dark:bg-card",
             "text-gray-900 dark:text-card-foreground",
             "border-gray-200 dark:border-gray-800",
-            "theme-transition"
+            "transition-colors duration-200"
         )}>
             <div className="flex items-center">
                 <CourseMobileSidebar />

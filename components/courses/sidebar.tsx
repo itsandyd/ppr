@@ -12,9 +12,9 @@ export const CourseDashboardSidebar = () => {
       "bg-white dark:bg-card",
       "text-gray-900 dark:text-card-foreground",
       "border-gray-200 dark:border-gray-800",
-      "theme-transition"
+      "transition-colors duration-200"
     )}>
-      <div className="h-[65px] px-6 flex items-center border-b border-gray-200 dark:border-gray-800 theme-transition">
+      <div className="h-[65px] px-6 flex items-center border-b border-gray-200 dark:border-gray-800 transition-colors duration-200">
         <Link href="/">
           <p className="text-xl font-semibold text-gray-900 dark:text-white">Academy</p>
         </Link>

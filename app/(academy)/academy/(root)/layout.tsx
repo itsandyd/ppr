@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { CourseNavbar } from "@/components/courses/navbar";
 import { CourseDashboardSidebar } from "@/components/courses/sidebar";
 import { Course } from "@prisma/client";
+
 interface LayoutProps {
   children: ReactNode;
 }
@@ -41,15 +42,8 @@ async function getProgress(userId: string, courseId: string): Promise<number> {
 
 export default async function Layout({ children }: LayoutProps) {
 
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect("/");
-  }
-
   return (
     <div className="h-full relative flex">
-
       {/* Desktop Sidebar */}
       <div className="hidden md:flex fixed inset-y-0 left-0 z-40 w-72">
         <CourseDashboardSidebar />
