@@ -91,5 +91,5 @@ export const config = {
     '/node_modules/scheduler/**',
     '/node_modules/react-dom/**',
   ],
-  runtime: 'nodejs',
+  // runtime: 'nodejs',
 }

@@ -5,9 +5,6 @@ import { db } from "@/lib/db";
 import { CourseNavbar } from "@/components/courses/navbar";
 import { CourseDashboardSidebar } from "@/components/courses/sidebar";
 import { Course } from "@prisma/client";
-
-export const runtime = 'nodejs';
-
 interface LayoutProps {
   children: ReactNode;
 }
