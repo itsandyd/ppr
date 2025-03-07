@@ -3,78 +3,93 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Search, Library, Plus, Menu } from "lucide-react";
+import { UserButton, useAuth } from "@clerk/nextjs";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ModeToggle } from "../community/mode-toggle";
+import { MusicMobileSidebar } from "./mobile-sidebar";
 
 export function MusicNavbar() {
   const pathname = usePathname();
+  const { isSignedIn } = useAuth();
 
   const routes = [
     {
-      icon: Home,
       label: "Home",
+      href: "/music",
+    },
+    {
+      label: "Dashboard",
       href: "/music/dashboard",
     },
     {
-      icon: Search,
-      label: "Search",
-      href: "/music/search",
+      label: "Songs",
+      href: "/music/songs",
     },
     {
-      icon: Library,
-      label: "Your Library",
-      href: "/music/library",
-    },
-    {
-      icon: Plus,
-      label: "Create Playlist",
-      href: "/music/playlists/create",
+      label: "Playlists",
+      href: "/music/playlists",
     },
   ];
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4">
-      <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
-        {routes.map((route) => (
-          <Link
-            key={route.href}
-            href={route.href}
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              pathname === route.href ? 'text-primary' : 'text-muted-foreground'
-            }`}
-          >
-            <route.icon className="h-4 w-4 mr-2" />
-            {route.label}
-          </Link>
-        ))}
+    <nav className="p-4 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 flex items-center justify-between z-10 relative">
+      <div className="flex items-center gap-2">
+        <div className="md:hidden">
+          <MusicMobileSidebar />
+        </div>
+        {/* <Link href="/music" className="font-semibold text-xl mr-4">
+          PausePlayRepeat
+        </Link> */}
+        {/* <div className="hidden md:flex items-center gap-x-2">
+          {routes.map((route) => (
+            <Link 
+              key={route.href} 
+              href={route.href}
+            >
+              <Button 
+                variant="ghost" 
+                className={cn(
+                  "rounded-full", 
+                  pathname === route.href 
+                    ? "bg-black/10 dark:bg-white/10" 
+                    : "hover:bg-black/5 dark:hover:bg-white/5"
+                )}
+              >
+                {route.label}
+              </Button>
+            </Link>
+          ))}
+        </div> */}
       </div>
       
-      {/* Mobile Menu */}
-      <div className="md:hidden">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm">
-              <Menu className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {routes.map((route) => (
-              <DropdownMenuItem key={route.href} asChild>
-                <Link href={route.href} className="flex items-center">
-                  <route.icon className="h-4 w-4 mr-2" />
-                  {route.label}
-                </Link>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="flex items-center gap-x-2">
+        {isSignedIn ? (
+          <>
+            <Link href="/profile">
+              <Button variant="ghost" className="rounded-full">
+                Profile
+              </Button>
+            </Link>
+            <ModeToggle />
+            <UserButton afterSignOutUrl="/" />
+          </>
+        ) : (
+          <>
+            <Link href="/sign-up">
+              <Button variant="ghost" className="rounded-full">
+                Sign up
+              </Button>
+            </Link>
+            <Link href="/sign-in">
+              <Button className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 rounded-full">
+                Log in
+              </Button>
+            </Link>
+            <ModeToggle />
+          </>
+        )}
       </div>
     </nav>
   );

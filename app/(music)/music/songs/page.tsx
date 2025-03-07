@@ -5,6 +5,7 @@ import { SidebarNav } from "@/components/music/sidebar-nav";
 import { SiteHeader } from "@/components/music/site-header";
 import { SongGrid } from "@/components/music/song-grid";
 import { db } from "@/lib/db";
+import { cn } from "@/lib/utils";
 
 export default async function SongsPage() {
   const { userId } = auth();
@@ -23,18 +24,18 @@ export default async function SongsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white flex">
       <SidebarNav />
       <main className="flex-1">
         <SiteHeader />
         <div className="p-6">
           <div
-            className="rounded-xl p-8 mb-8"
-            style={{
-              background: "linear-gradient(to bottom, rgba(176, 216, 243, 0.2) 0%, rgba(0,0,0,1) 100%)",
-            }}
+            className={cn(
+              "rounded-xl p-6 md:p-8 mb-6 md:mb-8",
+              "bg-gradient-to-b from-blue-50 to-white dark:from-blue-900/20 dark:to-black"
+            )}
           >
-            <h1 className="text-3xl font-bold">Your Music</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Your Music</h1>
           </div>
 
           <SongGrid data={songs} />

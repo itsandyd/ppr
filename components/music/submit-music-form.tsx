@@ -112,10 +112,15 @@ export const SubmitMusicForm = () => {
   };
 
   return (
-    <Card className="p-6">
+    <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="title">Song Title</Label>
+          <Label 
+            htmlFor="title" 
+            className="text-gray-900 dark:text-white"
+          >
+            Song Title
+          </Label>
           <Input
             id="title"
             placeholder="Enter song title"
@@ -123,11 +128,17 @@ export const SubmitMusicForm = () => {
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             disabled={loading}
             required
+            className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="author">Artist Name</Label>
+          <Label 
+            htmlFor="author" 
+            className="text-gray-900 dark:text-white"
+          >
+            Artist Name
+          </Label>
           <Input
             id="author"
             placeholder="Enter artist name"
@@ -135,11 +146,12 @@ export const SubmitMusicForm = () => {
             onChange={(e) => setFormData({ ...formData, author: e.target.value })}
             disabled={loading}
             required
+            className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
           />
         </div>
 
         <div className="space-y-2">
-          <Label>Platform</Label>
+          <Label className="text-gray-900 dark:text-white">Platform</Label>
           <Select
             value={formData.platform}
             onValueChange={(value: keyof typeof PLATFORMS) => 
@@ -147,10 +159,10 @@ export const SubmitMusicForm = () => {
             }
             required
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
               <SelectValue placeholder="Select a platform" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
               {Object.entries(PLATFORMS).map(([key, { name }]) => (
                 <SelectItem key={key} value={key}>
                   {name}
@@ -161,7 +173,12 @@ export const SubmitMusicForm = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="url">Song URL</Label>
+          <Label 
+            htmlFor="url" 
+            className="text-gray-900 dark:text-white"
+          >
+            Song URL
+          </Label>
           <Input
             id="url"
             placeholder={formData.platform ? PLATFORMS[formData.platform as keyof typeof PLATFORMS].example : "Select a platform first"}
@@ -169,19 +186,20 @@ export const SubmitMusicForm = () => {
             onChange={(e) => setFormData({ ...formData, url: e.target.value })}
             disabled={loading || !formData.platform}
             required
+            className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
           />
         </div>
 
         <Button
           type="submit"
           size="lg"
-          className="w-full"
+          className="w-full bg-black text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
           disabled={loading}
         >
-          <Music className="h-4 w-4 mr-2" />
-          {loading ? "Submitting..." : "Submit Song"}
+          <Music className="mr-2 h-5 w-5" />
+          Submit Song
         </Button>
       </form>
-    </Card>
+    </div>
   );
 }; 
