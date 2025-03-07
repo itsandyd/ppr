@@ -34,161 +34,161 @@ export default function ResourceView({ resource }: { resource: Resource }) {
   const [checkingRequirements, setCheckingRequirements] = useState(false)
   
   // Check if social requirements are completed - used for ToneDen-like auto-progression
-  const checkSocialRequirementsStatus = async () => {
-    if (!resource.followGateRequirements || resource.followGateRequirements.length === 0) {
-      return true // No requirements to check
-    }
+  // const checkSocialRequirementsStatus = async () => {
+  //   if (!resource.followGateRequirements || resource.followGateRequirements.length === 0) {
+  //     return true // No requirements to check
+  //   }
 
-    try {
-      setCheckingRequirements(true)
+  //   try {
+  //     setCheckingRequirements(true)
       
-      const response = await fetch(`/api/verify-social-action?resourceId=${resource.id}`)
-      if (!response.ok) {
-        throw new Error('Failed to fetch requirements status')
-      }
+  //     const response = await fetch(`/api/verify-social-action?resourceId=${resource.id}`)
+  //     if (!response.ok) {
+  //       throw new Error('Failed to fetch requirements status')
+  //     }
       
-      const data = await response.json()
-      console.log('Checking social requirements status:', data)
+  //     const data = await response.json()
+  //     console.log('Checking social requirements status:', data)
       
-      // Check if all required platforms are completed
-      const requiredPlatforms = resource.followGateRequirements
-        .filter(req => req.platform !== "leadgen")
-        .map(req => req.platform)
+  //     // Check if all required platforms are completed
+  //     const requiredPlatforms = resource.followGateRequirements
+  //       .filter(req => req.platform !== "leadgen")
+  //       .map(req => req.platform)
 
-      const allCompleted = requiredPlatforms.every(platform => 
-        data.completedPlatforms?.includes(platform)
-      )
+  //     const allCompleted = requiredPlatforms.every(platform => 
+  //       data.completedPlatforms?.includes(platform)
+  //     )
       
-      console.log('Social requirements check:', {
-        requiredPlatforms,
-        completedPlatforms: data.completedPlatforms,
-        allCompleted
-      })
+  //     console.log('Social requirements check:', {
+  //       requiredPlatforms,
+  //       completedPlatforms: data.completedPlatforms,
+  //       allCompleted
+  //     })
       
-      return allCompleted
-    } catch (error) {
-      console.error('Error checking social requirements:', error)
-      return false
-    } finally {
-      setCheckingRequirements(false)
-    }
-  }
+  //     return allCompleted
+  //   } catch (error) {
+  //     console.error('Error checking social requirements:', error)
+  //     return false
+  //   } finally {
+  //     setCheckingRequirements(false)
+  //   }
+  // }
 
   // Auto-check for completed requirements when state changes
-  useEffect(() => {
-    if (accessState === 'email-completed') {
-      // Initial check immediately
-      checkSocialRequirementsStatus().then(allCompleted => {
-        if (allCompleted) {
-          setAccessState('full');
-          toast({
-            title: "All Requirements Completed",
-            description: "You can now download this resource.",
-          });
-          return; // No need to set up interval if already completed
-        }
-      });
+  // useEffect(() => {
+  //   if (accessState === 'email-completed') {
+  //     // Initial check immediately
+  //     checkSocialRequirementsStatus().then(allCompleted => {
+  //       if (allCompleted) {
+  //         setAccessState('full');
+  //         toast({
+  //           title: "All Requirements Completed",
+  //           description: "You can now download this resource.",
+  //         });
+  //         return; // No need to set up interval if already completed
+  //       }
+  //     });
       
-      // Periodically check if social requirements are completed - more frequently to be responsive
-      const checkInterval = setInterval(async () => {
-        console.log("Checking social requirements status...");
-        const allCompleted = await checkSocialRequirementsStatus();
+  //     // Periodically check if social requirements are completed - more frequently to be responsive
+  //     const checkInterval = setInterval(async () => {
+  //       console.log("Checking social requirements status...");
+  //       const allCompleted = await checkSocialRequirementsStatus();
         
-        if (allCompleted) {
-          clearInterval(checkInterval);
-          setAccessState('full');
-          toast({
-            title: "All Requirements Completed",
-            description: "You can now download this resource.",
-          });
-        }
-      }, 2000); // Check every 2 seconds instead of 3
+  //       if (allCompleted) {
+  //         clearInterval(checkInterval);
+  //         setAccessState('full');
+  //         toast({
+  //           title: "All Requirements Completed",
+  //           description: "You can now download this resource.",
+  //         });
+  //       }
+  //     }, 2000); // Check every 2 seconds instead of 3
       
-      return () => clearInterval(checkInterval);
-    }
-  }, [accessState, resource.id, toast]);
+  //     return () => clearInterval(checkInterval);
+  //   }
+  // }, [accessState, resource.id, toast]);
 
-  // Initial check for completed requirements
-  useEffect(() => {
-    // Check if we need to handle email + social or just social
-    const checkInitialState = async () => {
-      // If no lead gen required, check if we can skip straight to full access
-      if (!resource.requiresLeadGen) {
-        const socialCompleted = await checkSocialRequirementsStatus()
-        if (socialCompleted) {
-          setAccessState('full')
-        } else if (resource.followGateRequirements && resource.followGateRequirements.length > 0) {
-          setAccessState('email-completed') // Skip to social auth directly
-        }
-      }
-    }
+  // // Initial check for completed requirements
+  // useEffect(() => {
+  //   // Check if we need to handle email + social or just social
+  //   const checkInitialState = async () => {
+  //     // If no lead gen required, check if we can skip straight to full access
+  //     if (!resource.requiresLeadGen) {
+  //       const socialCompleted = await checkSocialRequirementsStatus()
+  //       if (socialCompleted) {
+  //         setAccessState('full')
+  //       } else if (resource.followGateRequirements && resource.followGateRequirements.length > 0) {
+  //         setAccessState('email-completed') // Skip to social auth directly
+  //       }
+  //     }
+  //   }
     
-    checkInitialState()
-  }, [resource.id])
+  //   checkInitialState()
+  // }, [resource.id])
 
-  const handleEmailCaptureComplete = (email: string) => {
-    if (resource.followGateRequirements && resource.followGateRequirements.length > 0) {
-      setAccessState('email-completed')
-      toast({
-        title: "Email Verified",
-        description: "Please complete the social requirements to access this resource.",
-      })
+  // const handleEmailCaptureComplete = (email: string) => {
+  //   if (resource.followGateRequirements && resource.followGateRequirements.length > 0) {
+  //     setAccessState('email-completed')
+  //     toast({
+  //       title: "Email Verified",
+  //       description: "Please complete the social requirements to access this resource.",
+  //     })
       
-      // Check if social requirements are already completed (for ToneDen-like experience)
-      checkSocialRequirementsStatus().then(allCompleted => {
-        if (allCompleted) {
-          setAccessState('full')
-          toast({
-            title: "All Requirements Completed",
-            description: "You can now download this resource.",
-          })
-        }
-      })
-    } else {
-      setAccessState('full')
-      toast({
-        title: "Access Granted",
-        description: "You can now download this resource.",
-      })
-    }
-  }
+  //     // Check if social requirements are already completed (for ToneDen-like experience)
+  //     checkSocialRequirementsStatus().then(allCompleted => {
+  //       if (allCompleted) {
+  //         setAccessState('full')
+  //         toast({
+  //           title: "All Requirements Completed",
+  //           description: "You can now download this resource.",
+  //         })
+  //       }
+  //     })
+  //   } else {
+  //     setAccessState('full')
+  //     toast({
+  //       title: "Access Granted",
+  //       description: "You can now download this resource.",
+  //     })
+  //   }
+  // }
   
-  const handleSocialAuthComplete = () => {
-    setAccessState('full')
-    toast({
-      title: "All Requirements Completed",
-      description: "You can now download this resource.",
-    })
-  }
+  // const handleSocialAuthComplete = () => {
+  //   setAccessState('full')
+  //   toast({
+  //     title: "All Requirements Completed",
+  //     description: "You can now download this resource.",
+  //   })
+  // }
 
-  const handleDownload = async () => {
-    setIsDownloading(true)
+  // const handleDownload = async () => {
+  //   setIsDownloading(true)
     
-    try {
-      // Record the download
-      await fetch(`/api/resources/${resource.slug}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      })
+  //   try {
+  //     // Record the download
+  //     await fetch(`/api/resources/${resource.slug}`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //     })
       
-      // Open the file URL in a new tab
-      window.open(resource.fileUrl, '_blank')
+  //     // Open the file URL in a new tab
+  //     window.open(resource.fileUrl, '_blank')
       
-      toast({
-        title: "Download Started",
-        description: "Your download should begin automatically.",
-      })
-    } catch (error) {
-      console.error("Error downloading resource:", error)
-      toast({
-        variant: "destructive",
-        title: "Download Failed",
-        description: "There was a problem starting your download.",
-      })
-    } finally {
-      setIsDownloading(false)
-    }
-  }
+  //     toast({
+  //       title: "Download Started",
+  //       description: "Your download should begin automatically.",
+  //     })
+  //   } catch (error) {
+  //     console.error("Error downloading resource:", error)
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Download Failed",
+  //       description: "There was a problem starting your download.",
+  //     })
+  //   } finally {
+  //     setIsDownloading(false)
+  //   }
+  // }
 
   return (
     <Card className="max-w-3xl mx-auto">
@@ -211,10 +211,10 @@ export default function ResourceView({ resource }: { resource: Resource }) {
                 To access this resource, please provide your email address below.
               </p>
             </div>
-            <EmailCaptureForm 
+            {/* <EmailCaptureForm 
               resourceId={resource.id} 
               onComplete={handleEmailCaptureComplete} 
-            />
+            /> */}
           </div>
         )}
         
@@ -226,12 +226,12 @@ export default function ResourceView({ resource }: { resource: Resource }) {
                 Checking requirement status...
               </div>
             )}
-            <ClerkSocialAuthGate 
+            {/* <ClerkSocialAuthGate 
               requirements={resource.followGateRequirements}
               onComplete={handleSocialAuthComplete}
               resourceTitle={resource.title}
               resourceId={resource.id}
-            />
+            /> */}
           </div>
         )}
         
@@ -250,7 +250,7 @@ export default function ResourceView({ resource }: { resource: Resource }) {
               )}
             </div>
             <div className="flex justify-center">
-              <Button 
+              {/* <Button 
                 onClick={handleDownload} 
                 size="lg" 
                 className="px-8"
@@ -258,7 +258,7 @@ export default function ResourceView({ resource }: { resource: Resource }) {
               >
                 <Download className="mr-2 h-4 w-4" />
                 {isDownloading ? "Starting Download..." : "Download Now"}
-              </Button>
+              </Button> */}
             </div>
           </div>
         )}

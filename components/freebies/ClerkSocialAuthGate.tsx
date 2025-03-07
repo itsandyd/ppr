@@ -94,45 +94,45 @@ export default function ClerkSocialAuthGate({
     let actionVerb = '';
     
     switch (platform) {
-      case 'instagram':
-        socialUrl = `https://www.instagram.com/${cleanUsername}/`;
-        popupTitle = `Follow ${username} on Instagram`;
-        actionVerb = 'follow';
-        break;
-      case 'twitter':
-        socialUrl = `https://twitter.com/${cleanUsername}`;
-        popupTitle = `Follow ${username} on Twitter`;
-        actionVerb = 'follow';
-        break;
-      case 'youtube':
-        socialUrl = `https://www.youtube.com/${cleanUsername}?sub_confirmation=1`;
-        popupTitle = `Subscribe to ${username} on YouTube`;
-        actionVerb = 'subscribe to';
-        break;
-      case 'facebook':
-        socialUrl = `https://www.facebook.com/${cleanUsername}`;
-        popupTitle = `Follow ${username} on Facebook`;
-        actionVerb = 'follow';
-        break;
-      case 'twitch':
-        socialUrl = `https://www.twitch.tv/${cleanUsername}`;
-        popupTitle = `Follow ${username} on Twitch`;
-        actionVerb = 'follow';
-        break;
-      case 'soundcloud':
-        socialUrl = `https://soundcloud.com/${cleanUsername}`;
-        popupTitle = `Follow ${username} on SoundCloud`;
-        actionVerb = 'follow';
-        break;
-      case 'spotify':
-        socialUrl = `https://open.spotify.com/artist/${cleanUsername}`;
-        popupTitle = `Follow ${username} on Spotify`;
-        actionVerb = 'follow';
-        break;
-      default:
-        socialUrl = `https://${platform}.com/${cleanUsername}`;
-        popupTitle = `Complete action on ${platform}`;
-        actionVerb = 'connect with';
+      // case 'instagram':
+      //   socialUrl = `https://www.instagram.com/${cleanUsername}/`;
+      //   popupTitle = `Follow ${username} on Instagram`;
+      //   actionVerb = 'follow';
+      //   break;
+      // case 'twitter':
+      //   socialUrl = `https://twitter.com/${cleanUsername}`;
+      //   popupTitle = `Follow ${username} on Twitter`;
+      //   actionVerb = 'follow';
+      //   break;
+      // case 'youtube':
+      //   socialUrl = `https://www.youtube.com/${cleanUsername}?sub_confirmation=1`;
+      //   popupTitle = `Subscribe to ${username} on YouTube`;
+      //   actionVerb = 'subscribe to';
+      //   break;
+      // case 'facebook':
+      //   socialUrl = `https://www.facebook.com/${cleanUsername}`;
+      //   popupTitle = `Follow ${username} on Facebook`;
+      //   actionVerb = 'follow';
+      //   break;
+      // case 'twitch':
+      //   socialUrl = `https://www.twitch.tv/${cleanUsername}`;
+      //   popupTitle = `Follow ${username} on Twitch`;
+      //   actionVerb = 'follow';
+      //   break;
+      // case 'soundcloud':
+      //   socialUrl = `https://soundcloud.com/${cleanUsername}`;
+      //   popupTitle = `Follow ${username} on SoundCloud`;
+      //   actionVerb = 'follow';
+      //   break;
+      // case 'spotify':
+      //   socialUrl = `https://open.spotify.com/artist/${cleanUsername}`;
+      //   popupTitle = `Follow ${username} on Spotify`;
+      //   actionVerb = 'follow';
+      //   break;
+      // default:
+      //   socialUrl = `https://${platform}.com/${cleanUsername}`;
+      //   popupTitle = `Complete action on ${platform}`;
+      //   actionVerb = 'connect with';
     }
     
     console.log(`Opening ${platform} ${action} popup for: ${socialUrl}`);
