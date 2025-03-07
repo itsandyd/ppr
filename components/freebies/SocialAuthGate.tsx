@@ -77,78 +77,78 @@ export default function SocialAuthGate({ requirements, onComplete, resourceTitle
       let authUrl = "";
       
       switch (platform) {
-        case "instagram":
-          // Instagram Graph API OAuth URL (using Facebook Login)
-          authUrl = `https://api.instagram.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/instagram`)}&scope=user_profile,user_media&response_type=code&state=${state}`;
-          break;
+        // case "instagram":
+        //   // Instagram Graph API OAuth URL (using Facebook Login)
+        //   authUrl = `https://api.instagram.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/instagram`)}&scope=user_profile,user_media&response_type=code&state=${state}`;
+        //   break;
         
-        case "facebook":
-          // Facebook OAuth URL
-          authUrl = `https://www.facebook.com/v19.0/dialog/oauth?client_id=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/facebook`)}&state=${state}&scope=email,public_profile`;
-          break;
+        // case "facebook":
+        //   // Facebook OAuth URL
+        //   authUrl = `https://www.facebook.com/v19.0/dialog/oauth?client_id=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/facebook`)}&state=${state}&scope=email,public_profile`;
+        //   break;
           
-        case "twitter":
-          // Twitter OAuth URL
-          authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/twitter`)}&scope=tweet.read%20users.read%20follows.read&state=${state}&code_challenge=challenge&code_challenge_method=plain`;
-          break;
+        // case "twitter":
+        //   // Twitter OAuth URL
+        //   authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/twitter`)}&scope=tweet.read%20users.read%20follows.read&state=${state}&code_challenge=challenge&code_challenge_method=plain`;
+        //   break;
           
-        case "youtube":
-          // YouTube/Google OAuth URL
-          authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/google`)}&scope=https://www.googleapis.com/auth/youtube.readonly&response_type=code&state=${state}`;
-          break;
+        // case "youtube":
+        //   // YouTube/Google OAuth URL
+        //   authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/google`)}&scope=https://www.googleapis.com/auth/youtube.readonly&response_type=code&state=${state}`;
+        //   break;
           
-        case "spotify":
-          // Spotify OAuth URL
-          authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/spotify`)}&state=${state}&scope=user-follow-read`;
-          break;
+        // case "spotify":
+        //   // Spotify OAuth URL
+        //   authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/spotify`)}&state=${state}&scope=user-follow-read`;
+        //   break;
         
-        case "twitch":
-          // Twitch OAuth URL
-          authUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/twitch`)}&response_type=code&scope=user:read:follows&state=${state}`;
-          break;
+        // case "twitch":
+        //   // Twitch OAuth URL
+        //   authUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/twitch`)}&response_type=code&scope=user:read:follows&state=${state}`;
+        //   break;
           
-        case "soundcloud":
-          // SoundCloud OAuth URL
-          authUrl = `https://soundcloud.com/connect?client_id=${process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/soundcloud`)}&response_type=code&state=${state}`;
-          break;
+        // case "soundcloud":
+        //   // SoundCloud OAuth URL
+        //   authUrl = `https://soundcloud.com/connect?client_id=${process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${window.location.origin}/api/auth/callback/soundcloud`)}&response_type=code&state=${state}`;
+        //   break;
           
         default:
           throw new Error(`OAuth not configured for platform: ${platform}`);
       }
       
-      // Open the authentication window as a popup
-      const width = 600;
-      const height = 700;
-      const left = window.innerWidth / 2 - width / 2;
-      const top = window.innerHeight / 2 - height / 2;
+      // // Open the authentication window as a popup
+      // const width = 600;
+      // const height = 700;
+      // const left = window.innerWidth / 2 - width / 2;
+      // const top = window.innerHeight / 2 - height / 2;
       
-      const authWindow = window.open(
-        authUrl, 
-        `${platform}Auth`, 
-        `width=${width},height=${height},left=${left},top=${top}`
-      );
+      // const authWindow = window.open(
+      //   authUrl, 
+      //   `${platform}Auth`, 
+      //   `width=${width},height=${height},left=${left},top=${top}`
+      // );
       
-      if (!authWindow) {
-        throw new Error("Popup was blocked. Please allow popups for this site.");
-      }
+      // if (!authWindow) {
+      //   throw new Error("Popup was blocked. Please allow popups for this site.");
+      // }
       
-      // Set up a timer to check if the auth window has been closed without completing auth
-      const popupCheckInterval = setInterval(() => {
-        if (authWindow.closed) {
-          clearInterval(popupCheckInterval);
-          setAuthenticating(null);
+      // // Set up a timer to check if the auth window has been closed without completing auth
+      // const popupCheckInterval = setInterval(() => {
+      //   if (authWindow.closed) {
+      //     clearInterval(popupCheckInterval);
+      //     setAuthenticating(null);
           
-          // Check if the requirement was completed
-          const cookieName = `social_auth_${platform}_${resourceId}`;
-          if (!document.cookie.includes(cookieName)) {
-            toast({
-              variant: "destructive",
-              title: "Authentication Cancelled",
-              description: "You closed the authentication window before completing the process."
-            });
-          }
-        }
-      }, 1000);
+      //     // Check if the requirement was completed
+      //     const cookieName = `social_auth_${platform}_${resourceId}`;
+      //     if (!document.cookie.includes(cookieName)) {
+      //       toast({
+      //         variant: "destructive",
+      //         title: "Authentication Cancelled",
+      //         description: "You closed the authentication window before completing the process."
+      //       });
+      //     }
+      //   }
+      // }, 1000);
       
     } catch (error) {
       console.error("Authentication error:", error);
