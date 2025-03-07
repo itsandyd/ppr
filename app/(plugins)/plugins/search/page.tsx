@@ -1,8 +1,7 @@
-
-
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import type { Metadata, ResolvingMetadata } from 'next'
 
 import { SearchInput } from "@/components/courses/search-input";
 import { getCourses } from "@/actions/get-courses";
@@ -15,19 +14,40 @@ import { useState } from "react";
 
 interface SearchPageProps {
     searchParams: {
-      title: string;
-      categoryId: string;
+      title?: string;
+      categoryId?: string;
+      typeId?: string;
     }
   };
+  
+  export async function generateMetadata(
+    { searchParams }: SearchPageProps,
+    parent: ResolvingMetadata
+  ): Promise<Metadata> {
+    const plugins = await getPlugins({
+      title: searchParams.title || "",
+      categoryId: searchParams.categoryId || "",
+      typeId: searchParams.typeId || "",
+    });
+
+    const previousImages = (await parent).openGraph?.images || []
+  
+    return {
+      title: 'Search Plugins | PausePlayRepeat',
+      description: "Search for VST plugins, DAW tools, and audio effects for music production.",
+      keywords: ['VST plugins', 'search plugins', 'audio production tools', 'free VST', 'paid plugins'],
+      openGraph: {
+        title: 'Search Plugins | PausePlayRepeat',
+        description: "Search for VST plugins, DAW tools, and audio effects for music production.",
+        type: 'website',
+        images: previousImages,
+      },
+    }
+  }
   
   const SearchPage = async ({
     searchParams
   }: SearchPageProps) => {
-    const { userId } = auth();
-  
-    if (!userId) {
-      return redirect("/");
-    }
   
     const categories = await db.pluginCategory.findMany({
       orderBy: {
@@ -43,7 +63,11 @@ interface SearchPageProps {
       );
     }
   
-    const plugins = await getPlugins();
+    const plugins = await getPlugins({
+      title: searchParams.title || "",
+      categoryId: searchParams.categoryId || "",
+      typeId: searchParams.typeId || "",
+    });
         
         return (
             <>

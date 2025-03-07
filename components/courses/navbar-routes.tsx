@@ -40,9 +40,6 @@ export const CourseNavbarRoutes = () => {
                     </Button>
                 </Link>
                 } */}
-            <UserButton 
-                afterSignOutUrl="/"
-            />
         </div>
         </>
     )

@@ -43,22 +43,17 @@ async function getProgress(userId: string, courseId: string): Promise<number> {
 }
 
 export default async function Layout({ children }: LayoutProps) {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect("/");
-  }
 
   return (
     <div className="h-full relative flex">
 
       {/* Desktop Sidebar */}
-      <div className="hidden md:flex fixed inset-y-0 left-0 z-40 w-60">
+      <div className="hidden md:flex fixed inset-y-0 left-0 z-40 w-72">
         <CourseDashboardSidebar />
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 h-full bg-background text-foreground dark:bg-background dark:text-foreground transition-colors md:ml-60">
+      <main className="flex-1 h-full bg-background text-foreground dark:bg-background dark:text-foreground transition-colors md:ml-72">
         <CourseNavbar />
         <div className="max-w-5xl mx-auto w-full">
           {children}
