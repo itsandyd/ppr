@@ -44,6 +44,12 @@ async function getProgress(userId: string, courseId: string): Promise<number> {
 
 export default async function Layout({ children }: LayoutProps) {
 
+  const { userId } = auth();
+
+  if (!userId) {
+    return redirect("/");
+  }
+
   return (
     <div className="h-full relative flex">
 
