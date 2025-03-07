@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs";
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 // This route handles the callback after a user connects a social account
 export async function GET(request: NextRequest) {
   try {

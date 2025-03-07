@@ -1,6 +1,8 @@
 import { auth, currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
 
 import { stripe } from "@/lib/stripe";
 import { absoluteUrl } from "@/lib/utils";

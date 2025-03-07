@@ -4,6 +4,9 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Download, Music, FileAudio } from "lucide-react"
 import type React from "react" // Added import for React
 
+// Force this page to be dynamically rendered
+export const dynamic = 'force-dynamic'
+
 export default function Home() {
   return (
     <div>
