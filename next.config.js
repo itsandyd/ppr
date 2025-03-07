@@ -3,9 +3,11 @@ const nextConfig = {
   env: {
     RESEND_API_KEY: process.env.RESEND_API_KEY,
   },
+  output: "standalone",
   experimental: {
     serverActions: true,
   },
+  staticPageGenerationTimeout: 300,
   images: {
     domains: [
       "uploadthing.com",

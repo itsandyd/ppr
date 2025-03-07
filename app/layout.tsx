@@ -12,6 +12,7 @@ const font = Open_Sans({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "PausePlayRepeat",
   description: "A platform for music production",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://pauseplayrepeat.com"),
 };
 
 export default function RootLayout({
