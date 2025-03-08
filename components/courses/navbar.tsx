@@ -1,3 +1,5 @@
+"use client";
+
 import { CourseMobileSidebar } from "./mobile-sidebar";
 import { CourseNavbarRoutes } from "./navbar-routes";
 import { cn } from "@/lib/utils";
