@@ -20,11 +20,11 @@ export const PluginSidebarRoutes = ({
       icon: Compass,
       href: '/plugins',
     },
-    // {
-    //   label: 'Search',
-    //   icon: Search,
-    //   href: '/plugins/search',
-    // },
+    {
+      label: 'Search',
+      icon: Search,
+      href: '/plugins/search',
+    },
     {
       label: 'Free',
       icon: Download,
