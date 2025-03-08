@@ -1134,7 +1134,7 @@ model Playlist {
   imagePath            String?        @db.Text
   url                  String?        @db.Text
   songs                Song[]
-  User                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([createdAt])

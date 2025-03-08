@@ -56,10 +56,7 @@ export async function POST(
     });
 
     const playlist = await db.playlist.create({
-      data: playlistData,
-      include: {
-        User: true
-      }
+      data: playlistData
     });
 
     return NextResponse.json(playlist);

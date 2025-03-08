@@ -27,9 +27,10 @@ export default async function PlaylistsPage() {
   }).then(playlists => playlists.map(playlist => ({
     id: playlist.id.toString(),
     name: playlist.name,
-    description: null,
+    description: playlist.description,
     songs: playlist.songs,
-    slug: playlist.slug
+    slug: playlist.slug,
+    imagePath: playlist.imagePath || undefined
   })));
 
   return (

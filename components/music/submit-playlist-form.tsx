@@ -14,7 +14,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { slugify } from "@/lib/utils"
 
 export const SubmitPlaylistForm = () => {
   const router = useRouter();
@@ -73,7 +72,6 @@ export const SubmitPlaylistForm = () => {
         },
         body: JSON.stringify({
           name,
-          slug: slugify(name),
           description,
           genre,
           mood,
@@ -94,14 +92,28 @@ export const SubmitPlaylistForm = () => {
 
       const playlist = await response.json();
 
+      // Show success toast
       toast({
         title: "Success! 🎉",
         description: "Your playlist has been created successfully.",
         variant: "default",
       });
 
-      router.push(`/music/playlists/${playlist.slug || playlist.id}`);
-      router.refresh();
+      // Make sure we have a valid slug or ID before redirecting
+      if (playlist && (playlist.slug || playlist.id)) {
+        // Short delay to ensure toast is visible before redirect
+        setTimeout(() => {
+          router.push(`/music/playlists/${playlist.slug || playlist.id}`);
+          router.refresh();
+        }, 1000);
+      } else {
+        console.error("Missing playlist slug or ID for redirection");
+        // Fallback redirection to playlists page
+        setTimeout(() => {
+          router.push('/music/playlists');
+          router.refresh();
+        }, 1000);
+      }
     } catch (error) {
       console.error(error);
       toast({
@@ -193,6 +205,20 @@ export const SubmitPlaylistForm = () => {
                   });
                 }}
               />
+              
+              {imagePath && (
+                <div className="mt-4">
+                  <p className="text-sm text-gray-500 mb-2">Playlist Cover Preview:</p>
+                  <div className="relative w-32 h-32 rounded-md overflow-hidden">
+                    <Image 
+                      src={imagePath}
+                      alt="Playlist cover"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -356,8 +382,7 @@ export const SubmitPlaylistForm = () => {
           className="w-full"
           disabled={loading}
         >
-          <ListMusic className="h-4 w-4 mr-2" />
-          {loading ? "Creating..." : "Create Playlist"}
+          {loading ? "Creating Playlist..." : "Submit Playlist"}
         </Button>
       </form>
     </Card>

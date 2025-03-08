@@ -16,6 +16,7 @@ interface PlaylistGridProps {
     description: string | null;
     songs: any[];
     slug: string | null;
+    imagePath?: string;
   }[];
 }
 
@@ -53,7 +54,14 @@ export const PlaylistGrid = ({
             <Link href={`/music/playlists/${playlist.slug}`}>
               <CardContent className="p-0">
                 <div className="relative aspect-square bg-gray-200 dark:bg-zinc-800">
-                  {playlist.songs[0]?.imagePath ? (
+                  {playlist.imagePath ? (
+                    <Image 
+                      src={playlist.imagePath}
+                      alt={playlist.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : playlist.songs[0]?.imagePath ? (
                     <Image 
                       src={playlist.songs[0].imagePath}
                       alt={playlist.name}
