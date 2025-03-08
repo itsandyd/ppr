@@ -1,16 +1,63 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Download, Music, FileAudio } from "lucide-react"
+import { Download, Music, FileAudio, FileArchive } from "lucide-react"
 import type React from "react" // Added import for React
+import { db } from "@/lib/db"
+import { ResourceCard } from "@/components/freebies/ResourceCard"
+import { Resource } from "@prisma/client"
+import { cn } from "@/lib/utils"
+import { Metadata } from "next"
 
 // Force this page to be dynamically rendered
 export const dynamic = 'force-dynamic'
 
-export default function Home() {
+// Define metadata for this specific page
+export const metadata: Metadata = {
+  title: "Free Music Production Resources & Samples | MusicGate",
+  description: "Download free music production resources, samples, VST plugins, and project files. High-quality tools for music producers using Ableton, FL Studio, Logic Pro and more.",
+  keywords: "free music samples, free VST plugins, music production tools, Ableton resources, FL Studio resources, free project files, music producer tools, free sound packs, music production freebies",
+  openGraph: {
+    title: "Free Music Production Resources & Samples | MusicGate",
+    description: "Download free music production resources, samples, VST plugins, and project files. High-quality tools for music producers using Ableton, FL Studio, Logic Pro and more.",
+    url: "https://app.pauseplayrepeat.com/freebies",
+  },
+  alternates: {
+    canonical: "https://app.pauseplayrepeat.com/freebies"
+  }
+}
+
+// Function to get icon based on file type
+const getIconForResource = (fileName: string) => {
+  const extension = fileName.split('.').pop()?.toLowerCase();
+  
+  if (extension === 'mp3' || extension === 'wav' || extension === 'aiff') {
+    return <FileAudio className="w-4 h-4" />;
+  } else if (extension === 'zip') {
+    return <FileArchive className="w-4 h-4" />;
+  } else {
+    return <Music className="w-4 h-4" />;
+  }
+};
+
+export default async function Home() {
+  // Fetch featured resources (limit to 6 to fill the grid better)
+  const featuredResources = await db.resource.findMany({
+    orderBy: {
+      downloads: 'desc'
+    },
+    take: 6
+  });
+
+  // Transform the resources to match the expected type
+  const formattedResources = featuredResources.map(resource => ({
+    ...resource,
+    type: resource.type || undefined,
+    createdAt: resource.createdAt.toISOString()
+  }));
+
   return (
     <div>
-      <section className="py-20 text-center bg-gradient-to-r from-purple-900 to-blue-900">
+      <section className="py-20 text-center bg-gradient-to-r from-purple-900 to-blue-900 text-white">
         <h1 className="text-5xl font-bold mb-4">Unlock Exclusive Production Resources</h1>
         <p className="text-xl mb-8">
           Get access to premium tools, samples, and project files by following on social media
@@ -22,68 +69,54 @@ export default function Home() {
 
       <section className="container mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold mb-8 text-center">Featured Resources</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <ResourceCard
-            title="Ultimate Mixing Cheat Sheet"
-            description="Unlock the secrets to professional-sounding mixes"
-            downloads={1234}
-            icon={<FileAudio className="w-6 h-6" />}
-            href="/freebies/resource/mixing-cheat-sheet"
-          />
-          <ResourceCard
-            title="Lo-Fi Hip Hop Sample Pack"
-            description="Get that perfect lo-fi vibe with our curated collection"
-            downloads={2345}
-            icon={<Music className="w-6 h-6" />}
-            href="/freebies/resource/lofi-sample-pack"
-          />
-          <ResourceCard
-            title="EDM Drop Project File"
-            description="Dissect and learn from a professionally crafted EDM drop"
-            downloads={3456}
-            icon={<FileAudio className="w-6 h-6" />}
-            href="/freebies/resource/edm-drop-project"
-          />
+        
+        {formattedResources.length > 0 ? (
+          <div className="masonry-grid">
+            {formattedResources.map((resource) => (
+              <div key={resource.id} className="masonry-item">
+                <ResourceCard resource={resource as any} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-10">
+            <p className="text-muted-foreground">No featured resources available yet.</p>
+            <Button className="mt-4" asChild>
+              <Link href="/freebies/create-resource">Create Resource</Link>
+            </Button>
+          </div>
+        )}
+      </section>
+      
+      <section className="container mx-auto px-4 py-8">
+        <div className="grid md:grid-cols-2 gap-8">
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Free Music Production Resources</h2>
+            <p className="mb-4">
+              MusicGate offers a curated collection of free, high-quality resources for music producers of all levels. 
+              From sample packs and VST plugins to project files and presets, we&apos;ve got everything you need to take your 
+              productions to the next level.
+            </p>
+            <p>
+              All resources are carefully vetted to ensure they meet our quality standards. Many are exclusive to MusicGate 
+              and can&apos;t be found anywhere else.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold mb-4">For Music Producers</h2>
+            <p className="mb-4">
+              Whether you&apos;re using Ableton Live, FL Studio, Logic Pro, or any other DAW, our resources are designed to 
+              integrate seamlessly into your workflow. We cover all genres including EDM, hip-hop, lo-fi, trap, house, 
+              and more.
+            </p>
+            <p>
+              Join thousands of music producers who use MusicGate resources in their productions every day. 
+              Create an account to upload your own resources and connect with the community.
+            </p>
+          </div>
         </div>
       </section>
     </div>
-  )
-}
-
-function ResourceCard({
-  title,
-  description,
-  downloads,
-  icon,
-  href,
-}: {
-  title: string
-  description: string
-  downloads: number
-  icon: React.ReactNode
-  href: string
-}) {
-  return (
-    <Card className="bg-gray-900 border-gray-800">
-      <CardContent className="pt-6">
-        <div className="flex items-center mb-4">
-          <div className="mr-4 p-2 bg-blue-600 rounded-full">{icon}</div>
-          <div>
-            <h3 className="font-bold">{title}</h3>
-            <p className="text-sm text-gray-400">{description}</p>
-          </div>
-        </div>
-        <div className="flex items-center text-sm text-gray-400">
-          <Download className="w-4 h-4 mr-1" />
-          {downloads} downloads
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Button className="w-full" asChild>
-          <Link href={href}>Unlock Resource</Link>
-        </Button>
-      </CardFooter>
-    </Card>
   )
 }
 

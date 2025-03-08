@@ -3,6 +3,7 @@ import Image from "next/image"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Download, FileArchive, FileAudio, Lock } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 type Resource = {
   id: string
@@ -32,7 +33,10 @@ export function ResourceCard({ resource }: { resource: Resource }) {
   const downloads = resource.downloads || 0
 
   return (
-    <Card className="bg-gray-900 border-gray-800 overflow-hidden">
+    <Card className={cn(
+      "h-full flex flex-col overflow-hidden",
+      "theme-transition"
+    )}>
       <div className="relative h-48">
         <Image 
           src={imageUrl} 
@@ -47,21 +51,21 @@ export function ResourceCard({ resource }: { resource: Resource }) {
           </div>
         )}
       </div>
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex-grow">
         <div className="flex items-center mb-2">
-          <div className="mr-2 p-2 bg-blue-600 rounded-full">
+          <div className="mr-2 p-2 bg-primary rounded-full text-primary-foreground">
             <FileArchive className="w-4 h-4" />
           </div>
-          <span className="text-sm text-gray-400">{resourceType}</span>
+          <span className="text-sm text-muted-foreground">{resourceType}</span>
         </div>
-        <h3 className="text-xl font-bold mb-2">{resource.title}</h3>
-        <p className="text-gray-400 text-sm mb-4">{resource.description}</p>
-        <div className="flex items-center text-sm text-gray-400">
+        <h3 className="text-xl font-bold mb-2 line-clamp-1">{resource.title}</h3>
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{resource.description}</p>
+        <div className="flex items-center text-sm text-muted-foreground mt-auto">
           <Download className="w-4 h-4 mr-1" />
           {downloads} downloads
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="p-4 pt-0">
         <Button asChild className="w-full">
           <Link href={`/freebies/resources/${resource.slug}`}>Access Resource</Link>
         </Button>

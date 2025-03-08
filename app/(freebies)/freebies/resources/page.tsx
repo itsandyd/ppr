@@ -49,7 +49,7 @@ export default function ResourcesPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-2">Production Resources</h1>
-      <p className="text-gray-400 mb-6">Download helpful resources for your music production journey.</p>
+      <p className="text-muted-foreground mb-6">Download helpful resources for your music production journey.</p>
       
       {loading && (
         <div className="flex justify-center py-10">
@@ -66,7 +66,7 @@ export default function ResourcesPage() {
       {!loading && resources.length === 0 && !error && (
         <div className="text-center py-10">
           <h3 className="text-xl font-medium mb-2">No resources found</h3>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             Be the first to share a resource with the community!
           </p>
           <a 
@@ -79,12 +79,25 @@ export default function ResourcesPage() {
       )}
       
       {resources.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="masonry-grid">
           {resources.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
+            <div key={resource.id} className="masonry-item">
+              <ResourceCard resource={resource} />
+            </div>
           ))}
         </div>
       )}
+      
+      <section className="mt-16">
+        <h2 className="text-2xl font-bold mb-4">Free Resources for Music Producers</h2>
+        <p className="mb-4">
+          Browse our complete collection of free music production resources. All resources are free to download and use in your productions.
+          We regularly update our library with new content, so check back often for the latest additions.
+        </p>
+        <p>
+          Looking for something specific? Create an account to request resources or share your own with the community.
+        </p>
+      </section>
     </div>
   )
 }
