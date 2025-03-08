@@ -2,18 +2,12 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs";
 import { db } from "@/lib/db";
 import { MusicPlatform } from "@prisma/client";
+import { withSongSlug } from "@/lib/utils/auto-slug";
 
 export async function POST(req: Request) {
   try {
     const { userId } = auth();
-    const body = await req.json();
-
-    const { 
-      title,
-      author,
-      platform,
-      url,
-    } = body;
+    const { title, author, platform, url } = await req.json();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -35,14 +29,17 @@ export async function POST(req: Request) {
       return new NextResponse("URL is required", { status: 400 });
     }
 
+    // Prepare song data with auto-generated slug
+    const songData = await withSongSlug({
+      title,
+      artist: author,
+      userId,
+      platform: platform as MusicPlatform,
+      url,
+    });
+
     const song = await db.song.create({
-      data: {
-        title,
-        artist: author,
-        userId,
-        platform: platform as MusicPlatform,
-        url,
-      }
+      data: songData
     });
 
     return NextResponse.json(song);

@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
+import { withPlaylistSlug } from "@/lib/utils/auto-slug";
 
 export async function POST(
   req: Request
@@ -37,22 +38,25 @@ export async function POST(
       return new NextResponse("Contact email is required when submissions are enabled", { status: 400 });
     }
 
+    // Prepare playlist data with auto-generated slug
+    const playlistData = await withPlaylistSlug({
+      userId,
+      name,
+      ...(slug ? { slug } : {}),
+      ...(description ? { description } : {}),
+      ...(genre ? { genre } : {}),
+      ...(mood ? { mood } : {}),
+      isPublic: isPublic || false,
+      ...(contactEmail ? { contactEmail } : {}),
+      submissionEnabled: submissionEnabled || false,
+      ...(submissionGuidelines ? { submissionGuidelines } : {}),
+      ...(platform ? { platform } : {}),
+      ...(imagePath ? { imagePath } : {}),
+      ...(url ? { url } : {})
+    });
+
     const playlist = await db.playlist.create({
-      data: {
-        userId,
-        name,
-        ...(slug ? { slug } : {}),
-        ...(description ? { description } : {}),
-        ...(genre ? { genre } : {}),
-        ...(mood ? { mood } : {}),
-        isPublic: isPublic || false,
-        ...(contactEmail ? { contactEmail } : {}),
-        submissionEnabled: submissionEnabled || false,
-        ...(submissionGuidelines ? { submissionGuidelines } : {}),
-        ...(platform ? { platform } : {}),
-        ...(imagePath ? { imagePath } : {}),
-        ...(url ? { url } : {})
-      },
+      data: playlistData,
       include: {
         User: true
       }
