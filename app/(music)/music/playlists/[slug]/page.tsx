@@ -26,12 +26,14 @@ export default async function PlaylistPage({ params }: { params: { slug: string 
     return (
       <div className="min-h-screen bg-black text-white flex">
         <SidebarNav />
-        <main className="flex-1">
+        <main className="flex-1 overflow-x-hidden">
           <SiteHeader />
-          <div className="p-6">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold">Playlist Not Found</h2>
-              <p className="text-zinc-400 mt-2">The playlist you&apos;re looking for doesn&apos;t exist or has been removed.</p>
+          <div className="p-3 sm:p-4 md:p-6">
+            <div className="text-center py-8">
+              <h2 className="text-xl md:text-2xl font-bold">Playlist Not Found</h2>
+              <p className="text-zinc-400 mt-2 text-sm md:text-base px-4">
+                The playlist you&apos;re looking for doesn&apos;t exist or has been removed.
+              </p>
             </div>
           </div>
         </main>
@@ -42,9 +44,9 @@ export default async function PlaylistPage({ params }: { params: { slug: string 
   return (
     <div className="min-h-screen bg-black text-white flex">
       <SidebarNav />
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-hidden">
         <SiteHeader />
-        <div className="p-6">
+        <div className="p-3 sm:p-4 md:p-6">
           <PlaylistDetails playlist={playlist} />
         </div>
       </main>
