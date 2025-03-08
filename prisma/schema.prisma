@@ -409,7 +409,7 @@ model Song {
   id        String         @id @default(uuid())
   title     String
   artist    String         @default("Unknown Artist")
-  slug      String         @unique @default(uuid())
+  slug      String?        @unique @default(uuid())
   duration  Int            @default(0)
   url       String?
   userId    String
@@ -1119,7 +1119,7 @@ model ChapterEmbedding {
 model Playlist {
   id                   String         @id @default(uuid())
   name                 String
-  slug                 String         @unique @default(uuid())
+  slug                 String?        @unique @default(uuid())
   description          String?        @db.Text
   genre                String?
   mood                 String?
