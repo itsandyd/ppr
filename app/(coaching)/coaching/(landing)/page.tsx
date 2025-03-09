@@ -1,5 +1,3 @@
-
-
 import Container from "@/components/coaching/Container";
 import ListingCard from "@/components/coaching/listings/ListingCard";
 import ClientOnly from "@/components/coaching/ClientOnly";
@@ -31,10 +29,10 @@ const Home = async ({ searchParams }: HomeProps) => {
         <div className="flex flex-col justify-center space-y-4">
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-              Discover the Joy of Sharing Your Gift
+              Transform Your Expertise Into Inspiration
             </h1>
             <p className="max-w-[600px] text-zinc-500 md:text-xl dark:text-zinc-400">
-              You&apos;ve mastered the art of music production. Now, it&apos;s time to inspire others by becoming a coach.
+              Your journey as a music producer has given you unique insights and skills. Now, share that brilliance and empower the next generation of artists while building a rewarding coaching career.
             </p>
           </div>
           <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -64,11 +62,10 @@ const Home = async ({ searchParams }: HomeProps) => {
         <div className="flex flex-col justify-center space-y-4">
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-              Hear from Successful Coach-Producers
+              Success Stories That Inspire
             </h2>
             <p className="max-w-[600px] text-zinc-500 md:text-xl dark:text-zinc-400">
-              Our platform has helped countless music producers turn their passion into a rewarding coaching career.
-              Hear their stories.
+              From bedroom producers to industry mentors, our coaches have transformed their careers while helping others achieve their musical dreams. Discover how they&apos;re making an impact—and how you can too.
             </p>
           </div>
           <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -98,10 +95,10 @@ const Home = async ({ searchParams }: HomeProps) => {
   <div className="flex flex-col justify-center space-y-4">
     <div className="space-y-2">
       <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-        Deepen Your Skills Through Teaching
+        Master Your Craft Through Teaching
       </h2>
       <p className="max-w-[600px] text-zinc-500 md:text-xl dark:text-zinc-400">
-        Teaching is not just about imparting knowledge to others. It&apos;s also a powerful way to deepen your own understanding and skills. Experience the joy of learning while you teach.
+        The most profound way to deepen your own expertise? Share it with others. As you guide students through their creative journey, you&apos;ll discover new perspectives, refine your techniques, and evolve as both a producer and mentor.
       </p>
     </div>
     <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -132,10 +129,10 @@ const Home = async ({ searchParams }: HomeProps) => {
   <div className="flex flex-col justify-center space-y-4">
     <div className="space-y-2">
       <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-        Join a Supportive Community of Coaches
+        Connect With a Global Coaching Community
       </h2>
       <p className="max-w-[600px] text-zinc-500 md:text-xl dark:text-zinc-400">
-        Become part of a diverse and supportive community of coaches. Share your experiences, learn from others, and grow together.
+        Join a vibrant network of passionate music production coaches from around the world. Exchange ideas, collaborate on teaching methods, access exclusive resources, and build meaningful relationships that elevate your coaching practice.
       </p>
     </div>
     <Link
@@ -158,10 +155,10 @@ const Home = async ({ searchParams }: HomeProps) => {
   <div className="flex flex-col justify-center space-y-4">
     <div className="space-y-2">
       <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-        Start Your Coaching Journey
+        Begin Your Coaching Journey Today
       </h2>
       <p className="max-w-[600px] text-zinc-500 md:text-xl dark:text-zinc-400">
-        Signing up as a coach is easy. Follow our simple instructions and start your coaching journey today.
+        Getting started is seamless. Create your profile, showcase your expertise, set your availability, and connect with eager students worldwide. Our platform handles the logistics so you can focus on what matters most—sharing your musical knowledge.
       </p>
     </div>
     <Link
@@ -172,13 +169,55 @@ const Home = async ({ searchParams }: HomeProps) => {
     </Link>
   </div>
 </div>
+
+{/* Discord Section */}
+<div className="mt-12 p-6 bg-indigo-50 rounded-xl border border-indigo-100 dark:bg-indigo-900/20 dark:border-indigo-800/30">
+  <div className="flex flex-col md:flex-row items-center gap-6">
+    <div className="flex-shrink-0">
+      <Image
+        alt="Discord Logo"
+        className="w-16 h-16 md:w-24 md:h-24"
+        height="96"
+        width="96"
+        src="/discord-logo.svg"
+        onError={(e) => {
+          // Fallback if image doesn't exist
+          e.currentTarget.src = "/placeholder.svg";
+        }}
+      />
+    </div>
+    <div className="flex-grow">
+      <h2 className="text-2xl font-bold mb-2 text-indigo-900 dark:text-indigo-200">Coaching Sessions via Discord</h2>
+      <p className="text-indigo-700 dark:text-indigo-300 mb-4">
+        All coaching sessions are conducted through Discord, the leading platform for audio and video communication. When booking a session, you&apos;ll be prompted to add your Discord username to your profile if you haven&apos;t already.
+      </p>
+      <div className="flex flex-wrap gap-4">
+        <Link
+          className="inline-flex h-10 items-center justify-center rounded-md bg-indigo-600 px-6 text-sm font-medium text-white shadow transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+          href="https://discord.com/register"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Create Discord Account
+        </Link>
+        <Link
+          className="inline-flex h-10 items-center justify-center rounded-md border border-indigo-200 bg-white px-6 text-sm font-medium text-indigo-700 shadow-sm transition-colors hover:bg-indigo-50 hover:text-indigo-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500 dark:border-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 dark:hover:bg-indigo-900 dark:hover:text-indigo-200"
+          href="/user-profile"
+        >
+          Update Your Profile
+        </Link>
+      </div>
+    </div>
+  </div>
+</div>
 {/* Footer */}
 <footer className="w-full py-12 bg-gray-800 text-white">
   <div className="container mx-auto px-4">
-    <h2 className="text-3xl font-bold">Contact Us</h2>
-    <p>123 Street, City, State, Country</p>
-    <p>Email: info@example.com</p>
+    <h2 className="text-3xl font-bold">Ready to Transform Lives Through Music?</h2>
+    <p className="mt-4 mb-6">Contact our coach support team to learn more about opportunities and resources</p>
+    <p>Email: coaches@example.com</p>
     <p>Phone: (123) 456-7890</p>
+    <p className="mt-4">© 2023 Music Production Coaching Platform. All rights reserved.</p>
   </div>
 </footer>
 

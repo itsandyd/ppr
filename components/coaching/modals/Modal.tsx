@@ -1,6 +1,7 @@
 "use client";
 
 import { IoMdClose } from "react-icons/io";
+import { X } from "lucide-react";
 import { useState, useEffect, useCallback } from 'react';
 
 import Button from "../Button";
@@ -68,20 +69,29 @@ const Modal: React.FC<ModalProps> = ({
   }
 
   return (
-    <>
+    <div className="fixed inset-0 z-[100] isolate">
       <div
         className="
-          justify-center
-          items-center
-          flex
-          overflow-x-hidden
-          overflow-y-auto
           fixed
           inset-0
-          z-50
+          bg-neutral-800/70
+          dark:bg-black/80
+          backdrop-blur-sm
+        "
+        onClick={handleClose}
+      ></div>
+      <div
+        className="
+          fixed
+          inset-0
+          z-[101]
+          flex
+          items-center
+          justify-center
+          overflow-y-auto
+          overflow-x-hidden
           outline-none
           focus:outline-none
-          bg-neutral-800/70
         "
       >
         <div
@@ -93,10 +103,10 @@ const Modal: React.FC<ModalProps> = ({
             xl:w-2/5 
             my-6 
             mx-auto 
-            h-full 
-            lg:h-auto 
-            md:h-auto
+            h-auto
+            max-h-[90vh]
           "
+          onClick={(e) => e.stopPropagation()}
         >
           {/*content*/}
           <div
@@ -108,9 +118,9 @@ const Modal: React.FC<ModalProps> = ({
               ${showModal ? 'opacity-100' : 'opacity-0'}
             `}
           >
-            <div className="translate h-full lg:h-auto md:h-auto border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <div className="translate border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white dark:bg-neutral-900 outline-none focus:outline-none theme-transition overflow-hidden">
               {/*header*/}
-              <div className="flex items-center p-6 rounded-t justify-center relative border-b-[1px]">
+              <div className="flex items-center justify-center p-6 rounded-t relative border-b-[1px] border-neutral-200 dark:border-neutral-700">
                 <button
                   onClick={handleClose}
                   className="
@@ -119,11 +129,13 @@ const Modal: React.FC<ModalProps> = ({
                     hover:opacity-70 
                     transition 
                     absolute 
-                    left-9"
+                    right-4
+                    dark:text-white
+                  "
                 >
-                  <IoMdClose size={18} />
+                  <X size={20} />
                 </button>
-                <div className="text-lg font-semibold">
+                <div className="text-lg font-semibold text-center dark:text-white">
                   {title}
                 </div>
               </div>
@@ -132,17 +144,22 @@ const Modal: React.FC<ModalProps> = ({
                 relative
                 p-6
                 flex-auto
+                dark:text-neutral-200
+                overflow-auto
+                max-h-[calc(90vh-180px)]
               ">
                 {body}
               </div> 
               {/*footer*/}
-              <div className="flex flex-col gap-2 p-6">
-                <div className="flex flex-row items-center gap-4 w-full">
+              <div className="flex flex-col gap-2 p-6 border-t-[1px] border-neutral-200 dark:border-neutral-700">
+                <div className="flex flex-row items-center gap-4 w-full justify-center">
                   {secondaryAction && secondaryActionLabel && (
                   <Button 
                     disabled={disabled}
                     label={secondaryActionLabel}
                     onClick={handleSecondaryAction}
+                    outline
+                    small
                     />
                     )}
                   <Button 
@@ -157,7 +174,7 @@ const Modal: React.FC<ModalProps> = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

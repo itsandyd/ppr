@@ -16,12 +16,11 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import useRentModal from '@/hooks/useRentModal';
-import ImageUpload from '@/components/ui/image-upload';
-import { FileUpload } from '../file-upload';
 import Image from 'next/image';
-import { ImageIcon, Pencil, PlusCircle } from 'lucide-react';
+import { ImageIcon, Pencil, PlusCircle, X, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-// import Input from '../inputs/Input';
+import { FileUpload } from '../file-upload';
+import { UploadDropzone } from '@/lib/uploadthing';
 
 enum STEPS {
     CATEGORY = 0,
@@ -72,7 +71,6 @@ const RentModal = () => {
         ssr: false,
     }), [location]);
         
-
     const setCustomValue = (id: string, value: any) => {
         setValue(id, value, {
             shouldDirty: true,
@@ -107,9 +105,8 @@ const RentModal = () => {
             toast.error('Something went wrong.')
         }).finally(() => {
             setIsLoading(false);
-        }
-        )
-    }
+        });
+    };
 
     const actionLabel = useMemo(() => {
         if (step === STEPS.PRICE) {
@@ -126,13 +123,17 @@ const RentModal = () => {
     }, [step]);
 
     let bodyContent = (
-        <div className="flex flex-col gap-8">
-            <Heading title="What's your area of expertise?" subtitle="Pick a specialty" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
+        <div className="flex flex-col gap-8 theme-transition">
+            <Heading 
+                title="What's your area of expertise?" 
+                subtitle="Pick a specialty" 
+            />
+            
+            <div className="grid grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto px-1">
                 {categories.map((item) => (
                     <div key={item.label} className="col-span-1">
                         <CategoryInput
-                            onClick={() => setCustomValue('category', item.label)}
+                            onClick={(value) => setCustomValue('category', value)}
                             selected={category === item.label}
                             label={item.label}
                             icon={item.icon}
@@ -145,25 +146,31 @@ const RentModal = () => {
 
     if (step === STEPS.LOCATION) {
         bodyContent = ( 
-        <div className="flex flex-col gap-8"> 
+        <div className="flex flex-col gap-8 theme-transition"> 
             <Heading 
                 title="Where are you from?"
                 subtitle="Enter a location"
             />
-            <CountrySelect
-                value={watch('location')}
-                onChange={(value) => setCustomValue('location', value)}
-            />
-            <Map 
-                center={location?.latlng}
-            />
+            <div className="theme-transition">
+                <CountrySelect
+                    value={watch('location')}
+                    onChange={(value) => setCustomValue('location', value)}
+                />
+            </div>
+            {location && (
+                <div className="h-[35vh] theme-transition">
+                    <Map 
+                        center={location?.latlng}
+                    />
+                </div>
+            )}
         </div>
-        )
+        );
     }
 
     if (step === STEPS.INFO) {
         bodyContent = (
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-8 theme-transition">
                 <Heading
                     title="Introduce Yourself as a Coach"
                     subtitle="Share your expertise and setup"
@@ -174,144 +181,181 @@ const RentModal = () => {
                     value={guestCount}
                     onChange={(value) => setCustomValue('guestCount', value)}
                 />
-                {/* <hr />
-                <Counter 
-                    title="Rooms"
-                    subtitle="How many rooms do you have?"
-                    value={roomCount}
-                    onChange={(value) => setCustomValue('roomCount', value)}
-                />
-                <hr />
-                <Counter 
-                    title="Bathrooms"
-                    subtitle="How many bathrooms do you have?"
-                    value={bathroomCount}
-                    onChange={(value) => setCustomValue('bathroomCount', value)}
-                />   */}
             </div>
-        )
+        );
     }
 
     if (step === STEPS.IMAGES) {
         bodyContent = (
-            <div className="flex flex-col">
-            <Heading
-                title="Add your profile picture"
-                subtitle="This will be your main image"
-            />
-            <div className="font-medium flex items-center justify-between">
-              {/* Profile Picture */}
-              <Button onClick={toggleEdit} variant="ghost">
-                {isEditing && (
-                  <>Cancel</>
+            <div className="flex flex-col gap-6 theme-transition">
+                <Heading
+                    title="Add your profile picture"
+                    subtitle="This will be your main image"
+                />
+                
+                {imageSrc ? (
+                    <div className="flex flex-col gap-4 items-center">
+                        <div className="relative aspect-square w-full max-w-[300px] mx-auto overflow-hidden rounded-full border-2 border-neutral-200 dark:border-neutral-700">
+                            <Image 
+                                alt="Profile picture"
+                                fill
+                                className="object-cover"
+                                src={imageSrc}
+                            />
+                        </div>
+                        <div className="flex gap-2">
+                            <Button 
+                                onClick={() => setCustomValue('imageSrc', '')} 
+                                variant="outline"
+                                className="text-red-500 border-red-500 hover:bg-red-500/10"
+                            >
+                                <X className="h-4 w-4 mr-2" />
+                                Remove
+                            </Button>
+                            <Button 
+                                onClick={toggleEdit}
+                                variant="outline"
+                            >
+                                <Pencil className="h-4 w-4 mr-2" />
+                                Change
+                            </Button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="w-full flex flex-col items-center justify-center">
+                        {isEditing ? (
+                            <div className="w-full max-w-[500px] mx-auto">
+                                <UploadDropzone
+                                    endpoint="coachingImages"
+                                    onClientUploadComplete={(res) => {
+                                        setCustomValue('imageSrc', res?.[0].url);
+                                        toggleEdit();
+                                        toast.success("Profile picture uploaded!");
+                                    }}
+                                    onUploadError={(error: Error) => {
+                                        toast.error(`Upload failed: ${error.message}`);
+                                    }}
+                                    className="dark:border-neutral-700 dark:bg-neutral-800"
+                                />
+                                <div className="text-xs text-muted-foreground mt-4 dark:text-neutral-400 text-center"> 
+                                    Square image recommended for best results
+                                </div>
+                                <Button 
+                                    onClick={toggleEdit} 
+                                    variant="outline"
+                                    className="mt-4 mx-auto"
+                                >
+                                    Cancel
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="text-center">
+                                <div className="mx-auto w-32 h-32 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 border-2 border-dashed border-neutral-300 dark:border-neutral-700">
+                                    <ImageIcon className="h-10 w-10 text-neutral-500 dark:text-neutral-400" />
+                                </div>
+                                <Button 
+                                    onClick={toggleEdit}
+                                    className="bg-[#3B97D8] hover:bg-[#3B97D8]/90"
+                                >
+                                    <Upload className="h-4 w-4 mr-2" />
+                                    Upload profile picture
+                                </Button>
+                            </div>
+                        )}
+                    </div>
                 )}
-                {!isEditing && !imageSrc && (
-                  <>
-                    <PlusCircle className="h-4 w-4 mr-2" />
-                    Add an image
-                  </>
-                )}
-                {isEditing && (
-                  <>
-                    <Pencil className="h-4 w-4 mr-2" />
-                    Edit an image
-                  </>
-                )}
-              </Button>
             </div>
-            {!isEditing && (
-              !imageSrc ? (
-              <div>
-                <ImageIcon className="h-10 w-10 text-slate-500 mr-2" />
-              </div>
-            ) : (
-              <div className="relative aspect-video mt-2">
-                <Image 
-                  alt="upload"
-                  fill
-                  className="object-cover rounded-md"
-                  src={imageSrc}
-                />
-              </div>
-            )
-          )}
-            {isEditing && (
-             <div>
-                <FileUpload 
-                  endpoint="coachingImages"
-                  onChange={(url) =>{
-                    if (url) {
-                      setCustomValue('imageSrc', url);
-                      toggleEdit();
-                    }
-                  }}
-                />
-                <div className="text-xs text-muted-foreground mt-4"> 
-                  16:9 aspect ratio recommended
-                </div>
-             </div>
-            )}
-          </div>
         );
-      }
+    }
 
     if (step === STEPS.DESCRIPTION) {
         bodyContent = (
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6 theme-transition">
                 <Heading
-                    title="Describe yourself to students"
-                    subtitle="Write a description"
-                    />
-                    <Input 
+                    title="Describe your coaching style"
+                    subtitle="Tell potential students what makes your coaching approach unique"
+                />
+                
+                <div className="space-y-2">
+                    <h3 className="font-medium text-white">Coaching profile title</h3>
+                    <Input
                         id="title"
-                        label="Name"
+                        label="Title"
                         disabled={isLoading}
                         register={register}
                         errors={errors}
                         required
+                        placeholder="E.g., Professional Music Producer with 10+ Years Experience"
                     />
-                    {/* <hr /> */}
-                    <Input 
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                        Your title appears in search results and should highlight your expertise.
+                    </p>
+                </div>
+
+                <div className="space-y-2">
+                    <h3 className="font-medium text-white">About your coaching</h3>
+                    <div className="bg-neutral-800 p-4 rounded-md border border-neutral-700">
+                        <p className="text-neutral-300 mb-2">
+                            <span className="font-bold">Pro Tip:</span> A detailed description helps students understand your teaching style and expertise.
+                        </p>
+                        <p className="text-neutral-400 text-sm">
+                            Include your experience, teaching methods, gear/software you specialize in, and any successful students you&apos;ve worked with.
+                        </p>
+                    </div>
+                    <Input
                         id="description"
                         label="Description"
                         disabled={isLoading}
                         register={register}
                         errors={errors}
                         required
+                        isTextArea
+                        rows={6}
+                        placeholder="Share your background, teaching approach, and what makes your coaching style unique..."
                     />
+                </div>
             </div>
-        )};
+        );
+    }
 
     if (step === STEPS.PRICE) {
         bodyContent = (
-            <div className="flex flex-col gap-8">
-                <Heading 
-                    title="Now, set your price"
-                    subtitle="How much do you want to charge per coaching session?"
+            <div className="flex flex-col gap-6 theme-transition">
+                <Heading
+                    title="Set your coaching rate"
+                    subtitle="How much do you charge per hour?"
                 />
-                <Input
-                    id="price"
-                    label="Price"
-                    formatPrice
-                    type="number"
-                    disabled={isLoading}
-                    register={register}
-                    errors={errors}
-                    required
-                />
+                <div className="space-y-2">
+                    <h3 className="font-medium text-white">Hourly rate</h3>
+                    <Input
+                        id="price"
+                        label="Price"
+                        formatPrice 
+                        type="number" 
+                        disabled={isLoading}
+                        register={register}
+                        errors={errors}
+                        required
+                    />
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                        Set a competitive rate based on your experience and expertise.
+                    </p>
+                </div>
             </div>
-        )};
+        );
+    }
 
     return (
         <Modal
-            onClose={rentModal.onClose}
+            title="Register as a Coach"
             isOpen={rentModal.isOpen}
-            onSubmit={handleSubmit(onSubmit)}
-            actionLabel={actionLabel}
-            secondaryActionLabel={secondaryActionLabel}
-            secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
-            title="Register as a coach"
             body={bodyContent}
+            onSubmit={handleSubmit(onSubmit)}
+            secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
+            secondaryActionLabel={secondaryActionLabel}
+            actionLabel={actionLabel}
+            onClose={rentModal.onClose}
+            disabled={isLoading}
         />
     );
 };

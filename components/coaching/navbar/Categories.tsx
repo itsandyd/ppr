@@ -92,27 +92,30 @@ const Categories = () => {
   // }
 
   return (
-    <Container>
-      <div
-        className="
-          pt-4
-          flex 
-          flex-row 
-          items-center 
-          justify-between
-          overflow-x-auto
-        "
-      >
-        {categories.map((item) => (
-          <CategoryBox 
-            key={item.label}
-            label={item.label}
-            icon={item.icon}
-            selected={category === item.label}
-          />
-        ))}
-      </div>
-    </Container>
+    <div className="bg-white dark:bg-neutral-900 theme-transition border-b-[1px] border-neutral-200 dark:border-neutral-700">
+      <Container>
+        <div
+          className="
+            pt-4
+            pb-4
+            flex 
+            flex-row 
+            items-center 
+            justify-between
+            overflow-x-auto
+          "
+        >
+          {categories.map((item) => (
+            <CategoryBox 
+              key={item.label}
+              label={item.label}
+              icon={item.icon}
+              selected={category === item.label}
+            />
+          ))}
+        </div>
+      </Container>
+    </div>
   );
 }
  

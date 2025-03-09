@@ -14,6 +14,7 @@ import MenuItem from "./MenuItem";
 import Avatar from "../Avatar";
 import { SafeUser } from "@/types";
 import useRentModal from "@/hooks/useRentModal";
+import { UserButton } from "@clerk/nextjs";
 
 interface UserMenuProps {
   currentUser?: SafeUser | null
@@ -56,8 +57,11 @@ const UserMenu: React.FC<UserMenuProps> = ({
             px-4 
             rounded-full 
             hover:bg-neutral-100 
+            dark:hover:bg-neutral-800
+            dark:text-white
             transition 
             cursor-pointer
+            theme-transition
           "
         >
           Register as a coach
@@ -70,6 +74,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
           md:px-2
           border-[1px] 
           border-neutral-200 
+          dark:border-neutral-700
           flex 
           flex-row 
           items-center 
@@ -77,12 +82,17 @@ const UserMenu: React.FC<UserMenuProps> = ({
           rounded-full 
           cursor-pointer 
           hover:shadow-md 
+          dark:hover:shadow-neutral-800
+          dark:text-white
+          dark:bg-neutral-900
           transition
+          theme-transition
           "
         >
           <AiOutlineMenu />
           <div className="hidden md:block">
             {/* <Avatar src={currentUser?.image} /> */}
+            <UserButton afterSignOutUrl="/" />
           </div>
         </div>
       </div>
@@ -92,43 +102,49 @@ const UserMenu: React.FC<UserMenuProps> = ({
             absolute 
             rounded-xl 
             shadow-md
+            dark:shadow-gray-800
             w-[40vw]
             md:w-3/4 
             bg-white 
+            dark:bg-neutral-900
             overflow-hidden 
             right-0 
             top-12 
             text-sm
+            border-[1px]
+            border-neutral-200
+            dark:border-neutral-700
+            z-50
           "
         >
           <div className="flex flex-col cursor-pointer">
             {/* {currentUser ? ( */}
               <>
               <MenuItem 
-    label="My Sessions" 
-    onClick={() => router.push('/coaching/sessions')}
-/>
-<MenuItem 
-    label="Favorite Coaches" 
-    onClick={() => router.push('/coaching/favorites')}
-/>
-<MenuItem 
-    label="My Bookings" 
-    onClick={() => router.push('/coaching/bookings')}
-/>
-<MenuItem 
-    label="Learning Materials" 
-    onClick={() => router.push('/coaching/materials')}
-/>
-                <MenuItem 
-                  label="Register as a coach" 
-                  onClick={rentModal.onOpen}
-                />
-                <hr />
-                { /* <MenuItem 
-                  label="Logout" 
-                  onClick={() => signOut()}
-                /> */}
+                label="My Sessions" 
+                onClick={() => router.push('/coaching/sessions')}
+              />
+              <MenuItem 
+                label="Favorite Coaches" 
+                onClick={() => router.push('/coaching/favorites')}
+              />
+              <MenuItem 
+                label="My Bookings" 
+                onClick={() => router.push('/coaching/bookings')}
+              />
+              <MenuItem 
+                label="Learning Materials" 
+                onClick={() => router.push('/coaching/materials')}
+              />
+              <MenuItem 
+                label="Register as a coach" 
+                onClick={rentModal.onOpen}
+              />
+              <hr className="dark:border-neutral-700" />
+              { /* <MenuItem 
+                label="Logout" 
+                onClick={() => signOut()}
+              /> */}
               </>
             {/* ) : ( */}
               <>

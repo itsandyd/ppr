@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { format } from 'date-fns';
 
 import { 
@@ -39,13 +39,26 @@ const ListingCard: React.FC<ListingCardProps> = ({
 }) => {
   const router = useRouter();
   const { getByValue } = useCountries();
+  const [imageError, setImageError] = useState(false);
+  const [shouldUseplaceholder, setShouldUseplaceholder] = useState(!data.imageSrc || data.imageSrc === '');
 
   const location = getByValue(data.locationValue);
+  
+  // Use the same placeholder image approach as ListingHead
+  const placeholderImage = "/images/placeholder.jpg";
+  const displayImage = (shouldUseplaceholder || imageError) ? placeholderImage : data.imageSrc;
+
+  // Check for image availability on component mount
+  useEffect(() => {
+    if (!data.imageSrc || data.imageSrc === '') {
+      setShouldUseplaceholder(true);
+    }
+  }, [data.imageSrc]);
 
   const handleClick = () => {
-    // Log the path to see if it's correct
+    // Log the path and listing ID for debugging
     const path = `/coaching/listings/${data.id}`;
-    console.log(path);
+    console.log('Navigating to listing page:', { id: data.id, path });
 
     router.push(path);
   };
@@ -80,25 +93,98 @@ const ListingCard: React.FC<ListingCardProps> = ({
     return `${format(start, 'PP')} - ${format(end, 'PP')}`;
   }, [reservation]);
 
+  // Create truncated description for the card
+  const truncatedDescription = data.description && data.description.length > 100 
+    ? `${data.description.substring(0, 100)}...` 
+    : data.description;
+
   return (
-    <Card onClick={handleClick}>
-      <CardHeader>
-        <CardTitle>{location?.label}</CardTitle>
+    <Card 
+      onClick={handleClick}
+      className="overflow-hidden hover:shadow-md transition cursor-pointer dark:bg-neutral-800"
+    >
+      <div className="relative w-full h-[220px]">
+        {shouldUseplaceholder || imageError ? (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-200 dark:bg-neutral-800">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-12 w-12 mb-2 text-neutral-400 dark:text-neutral-500"
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={1.5} 
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+              />
+            </svg>
+            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">No Image Available</p>
+          </div>
+        ) : (
+          <Image
+            fill
+            className="object-cover w-full"
+            src={displayImage}
+            alt={data.title}
+            onError={() => setImageError(true)}
+          />
+        )}
+        {userId && (
+          <div className="absolute top-3 right-3 z-10">
+            <HeartButton 
+              listingId={data.id}
+              userId={userId}
+            />
+          </div>
+        )}
+      </div>
+      <CardHeader className="p-4">
+        <CardTitle className="text-lg font-bold">{data.title}</CardTitle>
       </CardHeader>
-      <CardContent>
-        <Image
-          width="200"
-          height="200"
-          className="object-cover h-full w-full group-hover:scale-110 transition"
-          src={data.imageSrc}
-          alt="Listing"
-        />
-        <div className="font-light text-neutral-500">
-          {reservationDate || data.category}
+      <CardContent className="p-4 pt-0">
+        {location && (
+          <div className="text-sm mb-2 flex items-center">
+            <span className="font-medium mr-1">Location:</span> 
+            <span className="text-neutral-500 dark:text-neutral-300">{location.label}</span>
+          </div>
+        )}
+        
+        <div className="text-sm mb-2 flex items-center">
+          <span className="font-medium mr-1">Specialty:</span>
+          <span className="text-neutral-500 dark:text-neutral-300 capitalize">{data.category}</span>
         </div>
-        <div className="flex flex-row items-center gap-1">
-          <div className="font-semibold">
-            $ {price}
+        
+        {/* Coach experience stats */}
+        <div className="flex flex-row gap-2 mt-2 mb-3">
+          <div className="py-1 px-2 bg-neutral-100 dark:bg-neutral-700 rounded-md text-center text-xs">
+            <span className="font-semibold">{data.guestCount}+</span> clients
+          </div>
+          <div className="py-1 px-2 bg-neutral-100 dark:bg-neutral-700 rounded-md text-center text-xs">
+            <span className="font-semibold">{data.roomCount}+</span> years
+          </div>
+        </div>
+        
+        {/* About This Coach - Abbreviated */}
+        {data.description && (
+          <div className="mt-2 mb-3">
+            <h4 className="text-sm font-medium mb-1">About</h4>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-2">
+              {truncatedDescription}
+            </p>
+          </div>
+        )}
+        
+        {reservationDate && (
+          <div className="font-light text-neutral-500 dark:text-neutral-300 mb-2">
+            {reservationDate}
+          </div>
+        )}
+        
+        <div className="flex flex-row items-center gap-1 mt-2">
+          <div className="font-semibold text-lg">
+            ${price}
           </div>
           {!reservation && (
             <div className="font-light">/ hour</div>
@@ -106,7 +192,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
         </div>
       </CardContent>
       {onAction && actionLabel && (
-        <CardFooter>
+        <CardFooter className="p-4 pt-0">
           <Button
             disabled={disabled}
             small

@@ -1,5 +1,3 @@
-
-
 import Container from "@/components/coaching/Container";
 import ListingCard from "@/components/coaching/listings/ListingCard";
 import ClientOnly from "@/components/coaching/ClientOnly";
@@ -15,7 +13,7 @@ const Home = async ({ searchParams }: HomeProps) => {
   const listings = await getListings(searchParams);
 
   const user = auth()
-
+  const userId = user.userId || '';
 
   if (listings.length === 0) {
     return (
@@ -43,9 +41,9 @@ const Home = async ({ searchParams }: HomeProps) => {
         >
           {listings.map((listing: any) => (
             <ListingCard
-
               key={listing.id}
               data={listing}
+              userId={userId}
             />
           ))}
         </div>

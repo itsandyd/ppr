@@ -21,17 +21,24 @@ const CategoryInput: React.FC<CategoryInputProps> = ({
         className={`
             rounded-xl
             border-2
-            p-4
+            p-5
             flex
             flex-col
-            gap-3
+            items-center
+            justify-center
+            gap-4
             hover:border-black
+            dark:hover:border-white
             transition
             cursor-pointer
-            ${selected ? 'border-black' : 'border-neutral-200'}
+            theme-transition
+            ${selected ? 'border-black dark:border-white' : 'border-neutral-200 dark:border-neutral-700'}
+            ${selected ? 'dark:text-white' : 'dark:text-neutral-300'}
+            bg-white
+            dark:bg-neutral-800
         `}>
-            <Icon size={30}/>
-            <div className="font-semibold">
+            <Icon size={24} className="text-neutral-700 dark:text-neutral-300" />
+            <div className="font-medium text-sm">
                 {label}
             </div>
     </div>

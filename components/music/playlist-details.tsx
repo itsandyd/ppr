@@ -1,12 +1,21 @@
 "use client"
 
 import { useState } from "react"
-import { Play, Pause, Clock, MoreHorizontal, ListMusic, Mail, Globe, Lock } from "lucide-react"
+import { Play, Pause, Clock, MoreHorizontal, ListMusic, Mail, Globe, Lock, Share2, Edit, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Image from "next/image"
 import { formatDistanceToNow } from "date-fns"
 import { Card } from "@/components/ui/card"
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface PlaylistDetailsProps {
   playlist: {

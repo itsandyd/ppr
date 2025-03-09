@@ -35,17 +35,16 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body>
+      <body className={font.className}>
         <ClientOnly>
-          {/* <LoginModal /> */}
-          {/* <RegisterModal /> */}
+          {/* Modals should be rendered at the root level, outside any content containers */}
           <SearchModal />
           <RentModal />
           <Navbar />
+          <div className="pt-28 pb-20">
+            {children}
+          </div>
         </ClientOnly>
-        <div>
-          {children}
-        </div>
       </body>
     </html>
   )

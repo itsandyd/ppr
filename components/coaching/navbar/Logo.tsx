@@ -11,7 +11,7 @@ const Logo = () => {
 
   return ( 
     <Link href="/">
-     <h1 className={cn("text-2xl font-bold p-2")}>
+     <h1 className={cn("text-2xl font-bold p-2 dark:text-white theme-transition")}>
           Coaching
         </h1>
     </Link>

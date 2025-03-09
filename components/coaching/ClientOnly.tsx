@@ -12,8 +12,8 @@ const ClientOnly: React.FC<ClientOnlyProps> = ({
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-      setHasMounted(true);
-  }, [])
+    setHasMounted(true);
+  }, []);
 
   if (!hasMounted) return null;
 

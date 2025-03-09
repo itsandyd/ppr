@@ -81,7 +81,7 @@ const SearchModal = () => {
     switch(step) {
         case SEARCH_STEPS.SKILL_LEVEL:
             bodyContent = (
-                <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-8 theme-transition">
                     <Heading
                         title="What's your skill level?"
                         subtitle="Pick a skill level that best represents you."
@@ -92,7 +92,7 @@ const SearchModal = () => {
             break;
         case SEARCH_STEPS.GENRE_STYLE:
             bodyContent = (
-                <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-8 theme-transition">
                     <Heading
                         title="Which genre/style do you prefer?"
                         subtitle="Select your preferred genre or style of music."
@@ -103,7 +103,7 @@ const SearchModal = () => {
             break;
         case SEARCH_STEPS.TOOLS:
             bodyContent = (
-                <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-8 theme-transition">
                     <Heading
                         title="What tools/software do you use?"
                         subtitle="Select the main music production tool or software you use."
