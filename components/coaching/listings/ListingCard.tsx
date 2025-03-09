@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { format } from 'date-fns';
 
 import { 
@@ -10,7 +10,6 @@ import {
   SafeReservation, 
   SafeUser 
 } from "@/types";
-
 
 import Button from "../Button";
 import ClientOnly from "../ClientOnly";
@@ -39,22 +38,13 @@ const ListingCard: React.FC<ListingCardProps> = ({
 }) => {
   const router = useRouter();
   const { getByValue } = useCountries();
-  const [imageError, setImageError] = useState(false);
-  const [shouldUseplaceholder, setShouldUseplaceholder] = useState(!data.imageSrc || data.imageSrc === '');
-
+  
   const location = getByValue(data.locationValue);
   
-  // Use the same placeholder image approach as ListingHead
+  // Check if image is available
+  const hasValidImage = data.imageSrc && data.imageSrc.trim() !== '';
   const placeholderImage = "/images/placeholder.jpg";
-  const displayImage = (shouldUseplaceholder || imageError) ? placeholderImage : data.imageSrc;
-
-  // Check for image availability on component mount
-  useEffect(() => {
-    if (!data.imageSrc || data.imageSrc === '') {
-      setShouldUseplaceholder(true);
-    }
-  }, [data.imageSrc]);
-
+  
   const handleClick = () => {
     // Log the path and listing ID for debugging
     const path = `/coaching/listings/${data.id}`;
@@ -104,7 +94,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
       className="overflow-hidden hover:shadow-md transition cursor-pointer dark:bg-neutral-800"
     >
       <div className="relative w-full h-[220px]">
-        {shouldUseplaceholder || imageError ? (
+        {!hasValidImage ? (
           <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-200 dark:bg-neutral-800">
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
@@ -126,9 +116,9 @@ const ListingCard: React.FC<ListingCardProps> = ({
           <Image
             fill
             className="object-cover w-full"
-            src={displayImage}
+            src={data.imageSrc}
             alt={data.title}
-            onError={() => setImageError(true)}
+            unoptimized={!data.imageSrc.startsWith('https://')}
           />
         )}
         {userId && (
