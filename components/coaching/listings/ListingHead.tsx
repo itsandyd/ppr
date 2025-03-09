@@ -24,12 +24,11 @@ const ListingHead: React.FC<ListingHeadProps> = ({
   userId
 }) => {
   const { getByValue } = useCountries();
-  const [imageError, setImageError] = useState(false);
   const location = getByValue(locationValue);
 
   const placeholderImage = "/images/placeholder.jpg"; // Default placeholder path
-  const displayImage = (!imageSrc || imageError) ? placeholderImage : imageSrc;
-
+  const hasValidImage = imageSrc && imageSrc.trim() !== '';
+  
   return ( 
     <div className="flex flex-col md:flex-row gap-6 pb-2">
       {/* Profile Image Column */}
@@ -47,7 +46,7 @@ const ListingHead: React.FC<ListingHeadProps> = ({
             shadow-sm
           "
         >
-          {!imageSrc && !imageError ? (
+          {!hasValidImage ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-neutral-500 dark:text-neutral-400">
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -68,11 +67,11 @@ const ListingHead: React.FC<ListingHeadProps> = ({
             </div>
           ) : (
             <Image
-              src={displayImage}
+              src={imageSrc}
               fill
               className="object-cover w-full"
               alt={`${title} - Coach Profile`}
-              onError={() => setImageError(true)}
+              unoptimized={!imageSrc.startsWith('https://')}
               priority
               sizes="(max-width: 768px) 100vw, 25vw"
             />

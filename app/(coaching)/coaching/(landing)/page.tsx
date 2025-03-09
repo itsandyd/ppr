@@ -180,10 +180,7 @@ const Home = async ({ searchParams }: HomeProps) => {
         height="96"
         width="96"
         src="/discord-logo.svg"
-        onError={(e) => {
-          // Fallback if image doesn't exist
-          e.currentTarget.src = "/placeholder.svg";
-        }}
+        unoptimized
       />
     </div>
     <div className="flex-grow">
