@@ -35,13 +35,40 @@ const DiscordUsernameModal: React.FC<DiscordUsernameModalProps> = ({
     });
     
     if (isLoaded && user) {
+      // Look for discord connections - could be 'oauth_discord' or 'discord'
       const discord = user.externalAccounts.find(
-        account => account.provider === 'discord'
+        account => account.provider.toLowerCase().includes('discord')
       );
+      
+      if (discord) {
+        console.log('Found Discord account:', discord.username || 'Username not available');
+      }
       
       setDiscordAccount(discord);
     }
   }, [isLoaded, user]);
+
+  // Check if we just returned from Discord OAuth flow
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      const discordConnected = url.searchParams.get('discord');
+      
+      if (discordConnected === 'connected') {
+        // Remove the query parameter to avoid processing it multiple times
+        url.searchParams.delete('discord');
+        window.history.replaceState({}, document.title, url.toString());
+        
+        // Show success toast
+        toast.success('Discord connected successfully! Click "Verify Discord Account" to complete the process.');
+        
+        // Refresh user data to get latest external accounts
+        if (user) {
+          user.reload();
+        }
+      }
+    }
+  }, [user]);
 
   const handleVerifyDiscord = async () => {
     if (!discordAccount) return;
@@ -50,16 +77,28 @@ const DiscordUsernameModal: React.FC<DiscordUsernameModalProps> = ({
     try {
       // Send verification request to our API
       const response = await axios.post('/api/discord/verify-username', {
-        discordUsername: discordAccount.username
+        discordUsername: discordAccount.username || 'discord-user',
+        discordId: discordAccount.externalId,
       });
       
       toast.success('Discord account verified successfully!');
       onSuccess();
     } catch (error: any) {
-      if (error.response?.data?.error) {
+      console.error('Verification error details:', error.response?.data);
+      
+      // Check if we need to reconnect Discord
+      if (error.response?.data?.needsAuth) {
+        toast.error('Your Discord connection needs to be refreshed. Please reconnect.');
+        setDiscordAccount(null); // Reset to trigger reconnect UI
+      } else if (error.response?.status === 500) {
+        toast.error(error.response?.data?.error || 'Server error verifying Discord account');
+        // Add button to try again or reconnect
+        setDiscordAccount(null); // Reset to trigger reconnect UI
+      } else if (error.response?.data?.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error('Failed to verify Discord account.');
+        toast.error('Failed to verify Discord account. Please try reconnecting.');
+        setDiscordAccount(null); // Reset to trigger reconnect UI
       }
     } finally {
       setIsVerifying(false);
@@ -67,18 +106,29 @@ const DiscordUsernameModal: React.FC<DiscordUsernameModalProps> = ({
   };
 
   const handleConnectDiscord = async () => {
-    // This will redirect to Discord OAuth flow via Clerk
     try {
       setIsLoading(true);
       
-      // Redirect to Clerk's user profile to connect Discord
-      if (user) {
+      if (!user) {
+        toast.error('No user logged in. Please log in first.');
+        setIsLoading(false);
+        return;
+      }
+      
+      // Use Clerk's built-in OAuth flow
+      try {
+        // This will properly initiate the OAuth flow through Clerk
         await user.createExternalAccount({
           strategy: "oauth_discord",
-          redirect_url: window.location.href, // Return to the current page after connection
+          redirect_url: window.location.href, // Return to current page after auth
         });
-      } else {
-        toast.error('No user logged in. Please log in first.');
+        
+        // The above will redirect the user, so no code below will execute
+        // until the user returns from the OAuth flow
+      } catch (error) {
+        console.error('Failed to initiate Discord OAuth:', error);
+        toast.error('Failed to connect Discord account. Please try again.');
+        setIsLoading(false);
       }
     } catch (error) {
       console.error('Discord connection error:', error);
@@ -104,16 +154,16 @@ const DiscordUsernameModal: React.FC<DiscordUsernameModalProps> = ({
             </h2>
             
             <p className="text-sm sm:text-base mb-3 dark:text-neutral-300">
-              Coaching sessions take place in our Discord community. You'll need to:
+              Coaching sessions take place in our Discord community. You&apos;ll need to:
             </p>
             
             <ol className="list-decimal pl-5 mb-3 text-sm sm:text-base dark:text-neutral-300 space-y-2">
               <li>Connect your Discord account</li>
-              <li>Verify you're a member of our Discord server</li>
+              <li>Verify you&apos;re a member of our Discord server</li>
             </ol>
             
             <p className="text-sm sm:text-base dark:text-neutral-300">
-              <strong>Note:</strong> This only connects your Discord account for coaching. You'll still use your main login method ({user?.primaryEmailAddress?.emailAddress}) to access the website.
+              <strong>Note:</strong> This only connects your Discord account for coaching. You&apos;ll still use your main login method ({user?.primaryEmailAddress?.emailAddress}) to access the website.
             </p>
           </div>
           
@@ -125,15 +175,19 @@ const DiscordUsernameModal: React.FC<DiscordUsernameModalProps> = ({
             <>
               <div className="mb-5">
                 <p className="mb-4 text-sm sm:text-base dark:text-neutral-300">
-                  Your Discord account is connected as <strong>{discordAccount.username}</strong>. Click the button below to verify you're a member of our Discord server and set up access for your coaching sessions.
+                  Your Discord account is connected
+                  {discordAccount.username ? (
+                    <> as <strong>{discordAccount.username}</strong></>
+                  ) : null}
+                  . Click the button below to verify you&apos;re a member of our Discord server and set up access for your coaching sessions.
                 </p>
               </div>
               
               <div className="text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-700/50 p-3 rounded-md mb-5">
                 <p className="font-medium mb-1">Why do we need this?</p>
                 <p>
-                  Your Discord account allows us to verify you're a member of our server and set up private coaching channels for your sessions.
-                  We'll also assign you the proper roles for access to coaching resources.
+                  Your Discord account allows us to verify you&apos;re a member of our server and set up private coaching channels for your sessions.
+                  We&apos;ll also assign you the proper roles for access to coaching resources.
                 </p>
               </div>
               
@@ -157,6 +211,11 @@ const DiscordUsernameModal: React.FC<DiscordUsernameModalProps> = ({
                   onClick={handleVerifyDiscord}
                   disabled={isVerifying}
                 />
+                <Button
+                  label="Reconnect Discord"
+                  onClick={() => setDiscordAccount(null)}
+                  outline
+                />
               </div>
             </>
           ) : (
@@ -166,9 +225,9 @@ const DiscordUsernameModal: React.FC<DiscordUsernameModalProps> = ({
               </p>
               
               <div className="text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-700/50 p-3 rounded-md mb-5">
-                <p className="font-medium mb-1">This won't change your login method</p>
+                <p className="font-medium mb-1">This won&apos;t change your login method</p>
                 <p>
-                  You'll still use your current account ({user?.primaryEmailAddress?.emailAddress}) to login. 
+                  You&apos;ll still use your current account ({user?.primaryEmailAddress?.emailAddress}) to login. 
                   Discord will only be used for coaching sessions communication.
                 </p>
               </div>

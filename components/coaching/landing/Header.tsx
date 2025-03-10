@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Music } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from 'react';
 import { SafeUser } from "@/types";
 import UserMenu from "@/components/coaching/navbar/UserMenu";
 
 const Header = () => {
   const { user, isLoaded } = useUser();
-  const [currentUser, setCurrentUser] = useState<SafeUser | null>(null);
+//   const [currentUser, setCurrentUser] = useState<SafeUser | null>(null);
 
   useEffect(() => {
     if (isLoaded && user) {
@@ -22,7 +22,7 @@ const Header = () => {
         image: user.imageUrl,
       } as SafeUser;
       
-      setCurrentUser(basicUser);
+    //   setCurrentUser(basicUser);
     }
   }, [isLoaded, user]);
   
@@ -46,7 +46,7 @@ const Header = () => {
           <Link href="#" className="hover:text-primary transition-colors">
             About
           </Link> */}
-          {(!isLoaded || !user) && (
+          {/* {(!isLoaded || !user) && (
             <>
               <Button variant="outline" className="ml-2" asChild>
                 <Link href="/sign-in">Log In</Link>
@@ -55,10 +55,11 @@ const Header = () => {
                 <Link href="/sign-up">Sign Up</Link>
               </Button>
             </>
-          )}
+          )} */}
         </nav>
         
-        <UserMenu currentUser={currentUser} />
+        {/* <UserMenu currentUser={currentUser} /> */}
+        <UserButton />
       </header>
     </div>
   );
