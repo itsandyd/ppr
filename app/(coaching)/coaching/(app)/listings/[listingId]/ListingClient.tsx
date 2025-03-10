@@ -15,6 +15,7 @@ import ListingReservation from "@/components/coaching/listings/ListingReservatio
 import { categories } from "@/components/coaching/navbar/Categories"
 import { useUser } from "@clerk/nextjs";
 import { User } from "@prisma/client";
+import DiscordUsernameModal from "@/components/coaching/modals/DiscordUsernameModal";
 
 const initialDateRange = {
   startDate: new Date(),
@@ -39,7 +40,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
 }) => {
   const loginModal = useLoginModal();
   const router = useRouter();
-  const { user, isSignedIn } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
 
   const disabledDates = useMemo(() => {
     let dates: Date[] = [];
@@ -65,77 +66,116 @@ const ListingClient: React.FC<ListingClientProps> = ({
   const [totalPrice, setTotalPrice] = useState(listing.price);
   const [dateRange, setDateRange] = useState<Range>(initialDateRange);
   const [showDiscordModal, setShowDiscordModal] = useState(false);
-  const [discordUsername, setDiscordUsername] = useState('');
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   const onCreateReservation = useCallback(() => {
-      if (!isSignedIn) {
-        return loginModal.onOpen();
-      }
+    // Log authentication state for debugging
+    console.log('Auth state:', { 
+      isSignedIn, 
+      user: !!user, 
+      currentUser: !!currentUser,
+      userId: user?.id,
+      isLoaded
+    });
 
-      // Check if user has Discord username
-      const clerkDiscordUsername = user?.publicMetadata?.discordUsername as string | undefined;
-      const dbDiscordUsername = currentUser?.discordUsername;
-      
-      if (!clerkDiscordUsername && !dbDiscordUsername) {
-        setShowDiscordModal(true);
-        return;
-      }
+    // Check if user data is loaded first
+    if (!isLoaded) {
+      console.log('User data is still loading');
+      toast.error('Connecting to your account...');
+      return;
+    }
 
-      // Set end time 1 hour after start time
-      if (!dateRange.startDate || !selectedTime) {
-        toast.error('Please select a date and time for your session');
-        return;
-      }
-      
-      // Parse the selected time
-      const timeComponents = selectedTime.match(/(\d+):(\d+)\s*([AP]M)/i);
-      if (!timeComponents) {
-        toast.error('Invalid time format');
-        return;
-      }
-      
-      let hours = parseInt(timeComponents[1], 10);
-      const minutes = parseInt(timeComponents[2], 10);
-      const ampm = timeComponents[3].toUpperCase();
-      
-      // Convert to 24-hour format
-      if (ampm === 'PM' && hours < 12) {
-        hours += 12;
-      } else if (ampm === 'AM' && hours === 12) {
-        hours = 0;
-      }
-      
-      const bookedStartDate = new Date(dateRange.startDate);
-      bookedStartDate.setHours(hours, minutes, 0, 0);
-      
-      const bookedEndDate = new Date(bookedStartDate);
-      bookedEndDate.setHours(bookedEndDate.getHours() + 1);
+    if (!isSignedIn || !user) {
+      toast.error('Please sign in to reserve a session');
+      return loginModal.onOpen();
+    }
 
-      setIsLoading(true);
+    // Check if user has connected Discord
+    const hasDiscordConnection = user?.externalAccounts?.some(
+      account => account.provider === 'discord'
+    );
+    const dbDiscordVerified = currentUser?.discordVerified;
+    
+    console.log('Discord check:', { hasDiscordConnection, dbDiscordVerified, user, currentUser });
+    
+    if (!hasDiscordConnection) {
+      console.log('Discord not connected - opening Discord modal');
+      toast.error('Please connect your Discord account to continue');
+      setShowDiscordModal(true);
+      return;
+    }
 
-      axios.post('/api/coaching/reservations', {
-        totalPrice,
-        startDate: bookedStartDate,
-        endDate: bookedEndDate,
-        listingId: listing?.id
-      })
-      .then(() => {
-        toast.success('Coaching session reserved! Check your Discord for details.');
-        setDateRange(initialDateRange);
-        setSelectedTime(null);
-        router.push('/coaching/trips');
-      })
-      .catch((error) => {
-        if (error.response?.data?.error) {
-          toast.error(error.response.data.error);
-        } else {
-          toast.error('Something went wrong.');
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      })
+    if (!dbDiscordVerified) {
+      console.log('Discord not verified - opening Discord modal');
+      toast.error('Please verify your Discord account to continue');
+      setShowDiscordModal(true);
+      return;
+    }
+
+    // Set end time 1 hour after start time
+    if (!dateRange.startDate || !selectedTime) {
+      toast.error('Please select a date and time for your session');
+      return;
+    }
+    
+    // Parse the selected time
+    const timeComponents = selectedTime.match(/(\d+):(\d+)\s*([AP]M)/i);
+    if (!timeComponents) {
+      toast.error('Invalid time format');
+      console.error('Failed to parse time:', selectedTime);
+      return;
+    }
+    
+    let hours = parseInt(timeComponents[1], 10);
+    const minutes = parseInt(timeComponents[2], 10);
+    const ampm = timeComponents[3].toUpperCase();
+    
+    // Convert to 24-hour format
+    if (ampm === 'PM' && hours < 12) {
+      hours += 12;
+    } else if (ampm === 'AM' && hours === 12) {
+      hours = 0;
+    }
+    
+    const bookedStartDate = new Date(dateRange.startDate);
+    bookedStartDate.setHours(hours, minutes, 0, 0);
+    
+    const bookedEndDate = new Date(bookedStartDate);
+    bookedEndDate.setHours(bookedEndDate.getHours() + 1);
+
+    console.log('Booking session:', {
+      totalPrice,
+      startDate: bookedStartDate,
+      endDate: bookedEndDate,
+      listingId: listing?.id
+    });
+
+    setIsLoading(true);
+
+    axios.post('/api/coaching/reservations', {
+      totalPrice,
+      startDate: bookedStartDate,
+      endDate: bookedEndDate,
+      listingId: listing?.id
+    })
+    .then((response) => {
+      console.log('Reservation created:', response.data);
+      toast.success('Coaching session reserved! Check your Discord for details.');
+      setDateRange(initialDateRange);
+      setSelectedTime(null);
+      router.push('/coaching/trips');
+    })
+    .catch((error) => {
+      console.error('Reservation error:', error);
+      if (error.response?.data?.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error('Something went wrong.');
+      }
+    })
+    .finally(() => {
+      setIsLoading(false);
+    })
   },
   [
     totalPrice, 
@@ -146,38 +186,15 @@ const ListingClient: React.FC<ListingClientProps> = ({
     isSignedIn,
     user,
     currentUser,
-    loginModal
+    loginModal,
+    isLoaded
   ]);
 
   const handleDiscordSubmit = useCallback(() => {
-    if (!discordUsername) {
-      toast.error('Please enter your Discord username');
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Update user's Discord username in both Clerk metadata and database
-    axios.post('/api/user/update-discord', {
-      discordUsername
-    })
-    .then(() => {
-      toast.success('Discord username saved!');
-      setShowDiscordModal(false);
-      // Proceed with reservation
-      onCreateReservation();
-    })
-    .catch((error) => {
-      if (error.response?.data?.error) {
-        toast.error(error.response.data.error);
-      } else {
-        toast.error('Failed to save Discord username.');
-      }
-    })
-    .finally(() => {
-      setIsLoading(false);
-    });
-  }, [discordUsername, onCreateReservation]);
+    setShowDiscordModal(false);
+    // Discord username is now saved, proceed with reservation
+    onCreateReservation();
+  }, [onCreateReservation]);
 
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
@@ -202,7 +219,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
           max-w-screen-lg 
           mx-auto
           dark:text-white
-          pt-36
+          pt-16
           pb-10
         "
       >
@@ -304,38 +321,11 @@ const ListingClient: React.FC<ListingClientProps> = ({
       
       {/* Discord Username Modal */}
       {showDiscordModal && (
-        <div className="fixed inset-0 bg-neutral-800/70 z-50 flex items-center justify-center">
-          <div className="relative w-full md:w-4/6 lg:w-3/6 xl:w-2/5 my-6 mx-auto h-auto bg-white dark:bg-neutral-800 rounded-lg shadow-lg">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-4 dark:text-white">Enter Your Discord Username</h2>
-              <p className="mb-4 dark:text-neutral-300">
-                Coaching sessions are conducted via Discord. Please enter your Discord username (e.g., username#1234) to continue.
-              </p>
-              <input
-                type="text"
-                value={discordUsername}
-                onChange={(e) => setDiscordUsername(e.target.value)}
-                className="w-full p-2 border border-gray-300 dark:border-neutral-700 rounded-md dark:bg-neutral-900 dark:text-white"
-                placeholder="username#1234"
-              />
-              <div className="mt-6 flex justify-end gap-4">
-                <button
-                  onClick={() => setShowDiscordModal(false)}
-                  className="px-4 py-2 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-md"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDiscordSubmit}
-                  disabled={isLoading}
-                  className="px-4 py-2 text-sm bg-black dark:bg-white text-white dark:text-black rounded-md disabled:opacity-70"
-                >
-                  {isLoading ? 'Saving...' : 'Save and Continue'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DiscordUsernameModal
+          isOpen={showDiscordModal}
+          onClose={() => setShowDiscordModal(false)}
+          onSuccess={handleDiscordSubmit}
+        />
       )}
     </Container>
    );

@@ -2,7 +2,7 @@ import { authMiddleware } from "@clerk/nextjs";
 
 export default authMiddleware({
   publicRoutes: [
-    // API routes
+    // API routes that need to be public
     "/api/webhook/clerk", 
     "/api/webhook/stripe",
     "/api/clerk/callback",
@@ -11,11 +11,11 @@ export default authMiddleware({
     "/api/resources/:path*",
     "/api/leads",
     "/api/uploadthing",
-
-    // Discord API endpoints
+    "/api/:path*",
+    
+    // Add Discord API to public routes
     "/api/discord/verify-username",
     "/api/coaching/setup-discord-channel",
-    "/api/user/update-discord",  // Legacy endpoint for backward compatibility
     
     // Public pages
     "/",
@@ -32,13 +32,12 @@ export default authMiddleware({
     "/lib/agency/queries",
     "/site",
     
-    // Auth callback routes
-    "/signin",
-    "/signup",
-    "/sso-callback"
+    // Exclude NextAuth routes from Clerk
+    "/api/auth/:path*",
+    "/coaching/listings/:path*"
   ],
   ignoredRoutes: [
-    "/api/webhook/clerk", 
+    "/api/webhook/clerk",
     "/api/webhook/stripe",
     "/api/clerk/callback",
     "/api/verify-social-action"
@@ -51,4 +50,4 @@ export const config = {
     "/",
     "/(api|trpc)(.*)"
   ],
-};
+}; 

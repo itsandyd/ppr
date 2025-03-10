@@ -5,6 +5,7 @@ import getListingById from "@/actions/getListingById";
 import getReservations from "@/actions/getReservations";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import getListings from "@/actions/getListings";
+import AuthCheck from "@/components/coaching/AuthCheck";
 
 interface IParams {
   listingId?: string;
@@ -25,11 +26,13 @@ const ListingPage = async ({ params }: { params: IParams }) => {
 
   return (
     <ClientOnly>
-      <ListingClient
-        listing={listing}
-        reservations={reservations}
-        // currentUser={currentUser || undefined}
-      />
+      <AuthCheck>
+        <ListingClient
+          listing={listing}
+          reservations={reservations}
+          // currentUser={currentUser || undefined}
+        />
+      </AuthCheck>
     </ClientOnly>
   );
 }

@@ -24,6 +24,14 @@ export async function POST(
       totalPrice
     } = body;
 
+    console.log('[API] Reservation request:', { 
+      userId, 
+      listingId, 
+      startDate, 
+      endDate, 
+      totalPrice 
+    });
+
     if (!listingId || !startDate || !endDate || !totalPrice) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -31,8 +39,10 @@ export async function POST(
       );
     }
 
-    // Check if user has Discord username in Clerk metadata
-    const clerkDiscordUsername = user.publicMetadata.discordUsername as string | undefined;
+    // Check if user has Discord connected via Clerk external accounts
+    const hasDiscordConnection = user.externalAccounts.some(
+      account => account.provider === 'discord'
+    );
     
     // Check if user has Discord username in database
     const dbUser = await db.user.findUnique({
@@ -40,28 +50,31 @@ export async function POST(
         id: userId
       },
       select: {
-        discordUsername: true
+        discordUsername: true,
+        discordVerified: true
       }
     });
 
-    // If Discord username is not found in either place, return an error
-    if (!clerkDiscordUsername && !dbUser?.discordUsername) {
+    console.log('[API] Discord verification check:', { 
+      hasDiscordConnection,
+      discordUsername: dbUser?.discordUsername,
+      discordVerified: dbUser?.discordVerified
+    });
+
+    // If Discord is not connected or not verified, return an error
+    if (!hasDiscordConnection || !dbUser?.discordVerified) {
+      const errorMessage = !hasDiscordConnection 
+        ? "Please connect your Discord account before booking a coaching session."
+        : "Please verify your Discord account before booking a coaching session.";
+        
       return NextResponse.json(
-        { error: "Discord username is required for coaching sessions. Please update your profile." },
+        { 
+          error: errorMessage,
+          needsDiscordConnection: !hasDiscordConnection,
+          needsDiscordVerification: hasDiscordConnection && !dbUser?.discordVerified
+        },
         { status: 400 }
       );
-    }
-
-    // If Discord username is in Clerk but not in database, update the database
-    if (clerkDiscordUsername && !dbUser?.discordUsername) {
-      await db.user.update({
-        where: {
-          id: userId
-        },
-        data: {
-          discordUsername: clerkDiscordUsername
-        }
-      });
     }
 
     // Get the listing
@@ -88,6 +101,8 @@ export async function POST(
         guestCount: 1 // Default to 1 for coaching sessions
       }
     });
+
+    console.log('[API] Reservation created:', reservation);
 
     return NextResponse.json(reservation);
   } catch (error) {

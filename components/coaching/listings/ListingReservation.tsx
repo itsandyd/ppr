@@ -1,9 +1,10 @@
 'use client';
 
 import { Range } from "react-date-range";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../Button";
 import Calendar from "../inputs/Calendar";
+import { useUser } from "@clerk/nextjs";
 
 interface ListingReservationProps {
   price: number;
@@ -36,11 +37,16 @@ const ListingReservation: React.FC<
   selectedTime,
   onTimeSelect
 }) => {
+  const { isSignedIn, isLoaded } = useUser();
+
   const handleSubmit = () => {
+    console.log('ListingReservation: handleSubmit called, selectedTime =', selectedTime, 'isSignedIn:', isSignedIn, 'isLoaded:', isLoaded);
     if (!selectedTime) {
+      console.log('ListingReservation: No time selected');
       // Optionally show an error message here
       return;
     }
+    console.log('ListingReservation: Calling onSubmit');
     onSubmit();
   };
 
@@ -102,13 +108,18 @@ const ListingReservation: React.FC<
       
       <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
         <Button 
-          disabled={disabled || !selectedTime} 
-          label="Reserve Session" 
+          disabled={disabled || !selectedTime || !isLoaded} 
+          label={!isLoaded ? "Loading..." : "Reserve Session"}
           onClick={handleSubmit}
         />
         {!selectedTime && (
           <p className="text-xs text-rose-500 mt-2">
             Please select a time slot for your session
+          </p>
+        )}
+        {!isSignedIn && isLoaded && (
+          <p className="text-xs text-rose-500 mt-2">
+            Please sign in to reserve a session
           </p>
         )}
       </div>

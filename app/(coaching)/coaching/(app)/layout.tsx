@@ -41,7 +41,7 @@ export default async function RootLayout({
           <SearchModal />
           <RentModal />
           <Navbar />
-          <div className="pt-28 pb-20">
+          <div className="pt-14 pb-20">
             {children}
           </div>
         </ClientOnly>

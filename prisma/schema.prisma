@@ -174,7 +174,9 @@ model User {
   avatarUrl       String?               @db.Text
   userRoleId      String?
   userTypeId      String?
-  discordUsername String? // Discord username for coaching sessions
+  discordUsername String?
+  discordId       String?               @unique
+  discordVerified Boolean               @default(false)
   favorites       Favorite[]
   accounts        Account[]
   reservations    CoachingReservation[]
@@ -249,17 +251,19 @@ model CoachingListing {
 }
 
 model CoachingReservation {
-  id         String          @id @default(uuid())
-  date       DateTime        @default(now())
-  guestCount Int
-  userId     String
-  listingId  String
-  createdAt  DateTime        @default(now())
-  endDate    DateTime        @default(now())
-  startDate  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  listing    CoachingListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  id                   String          @id @default(uuid())
+  date                 DateTime        @default(now())
+  guestCount           Int
+  userId               String
+  listingId            String
+  createdAt            DateTime        @default(now())
+  endDate              DateTime        @default(now())
+  startDate            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing              CoachingListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  discordChannelId     String?
+  discordSetupComplete Boolean         @default(false)
 
   @@index([userId])
   @@index([listingId])

@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
-import { auth, clerkClient } from "@clerk/nextjs";
-import { db } from "@/lib/db";
-import { verifyDiscordMember } from "@/lib/discord-service";
+import { NextResponse } from 'next/server';
+import { auth, clerkClient } from '@clerk/nextjs';
+import { verifyDiscordMember } from '@/lib/discord-service';
+import { db } from '@/lib/db';
 
-// This endpoint is for backward compatibility with older code
 export async function POST(request: Request) {
   try {
     // Get the authenticated user from Clerk
@@ -13,13 +12,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { discordUsername } = body;
-    
-    // Get user from Clerk
+    // Get the user from Clerk to check if they have connected Discord
     const user = await clerkClient.users.getUser(userId);
-    
-    // Check if Discord account is connected
     const discordAccount = user.externalAccounts.find(
       account => account.provider === 'discord'
     );
@@ -31,7 +25,7 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    // Verify Discord membership
+    // Verify the user is in our Discord server
     const { isValid } = await verifyDiscordMember(discordAccount.externalId);
 
     if (!isValid) {
@@ -40,20 +34,15 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    // Update user record - use the Discord username from the connected account
-    // or fall back to the provided username
-    const username = discordAccount.username || discordUsername;
-    
+    // Update the user in our database
     if (user.emailAddresses && user.emailAddresses.length > 0) {
-      const primaryEmail = user.emailAddresses.find(
-        email => email.id === user.primaryEmailAddressId
-      )?.emailAddress;
+      const primaryEmail = user.emailAddresses.find(email => email.id === user.primaryEmailAddressId)?.emailAddress;
       
       if (primaryEmail) {
         await db.user.update({
           where: { email: primaryEmail },
           data: {
-            discordUsername: username,
+            discordUsername: discordAccount.username,
             discordId: discordAccount.externalId,
             discordVerified: true,
           },
@@ -64,10 +53,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ 
       success: true, 
       message: 'Discord account verified successfully',
-      discordId: discordAccount.externalId
+      discordId: discordAccount.externalId,
+      discordUsername: discordAccount.username
     });
   } catch (error) {
-    console.error('Error updating Discord account:', error);
+    console.error('Error verifying Discord account:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 } 
