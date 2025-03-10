@@ -14,7 +14,7 @@ import { Nunito } from 'next/font/google'
 import { auth, useUser } from '@clerk/nextjs';
 import Navbar from '@/components/coaching/navbar/Navbar';
 import SearchModal from '@/components/coaching/modals/SearchModal';
-import RentModal from '@/components/coaching/modals/RentModal';
+import CoachingRegisterModal from '@/components/coaching/modals/CoachingRegisterModal';
 import ClientOnly from '@/components/coaching/ClientOnly';
 
 export const metadata = {
@@ -39,7 +39,7 @@ export default async function RootLayout({
         <ClientOnly>
           {/* Modals should be rendered at the root level, outside any content containers */}
           <SearchModal />
-          <RentModal />
+          <CoachingRegisterModal />
           <Navbar />
           <div className="pt-14 pb-20">
             {children}

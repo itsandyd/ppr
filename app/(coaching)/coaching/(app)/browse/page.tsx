@@ -4,6 +4,12 @@ import ClientOnly from "@/components/coaching/ClientOnly";
 import EmptyState from "@/components/coaching/EmptyState";
 import getListings, { IListingsParams } from "@/actions/getListings";
 import { auth } from "@clerk/nextjs";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Browse Coaches | Music Production Coaching',
+  description: 'Explore and find music production coaches. Browse through our selection of expert coaches who can help you enhance your music production skills.',
+};
 
 interface HomeProps {
   searchParams: IListingsParams;

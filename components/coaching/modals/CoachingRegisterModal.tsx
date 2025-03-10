@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useForm, FieldValues, SubmitHandler } from 'react-hook-form';
 import Modal from './Modal';
 import Heading from '../Heading';
@@ -15,7 +15,7 @@ import Input from '../inputs/Input';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import useRentModal from '@/hooks/useRentModal';
+import useCoachingRegisterModal from '@/hooks/useCoachingRegisterModal';
 import Image from 'next/image';
 import { ImageIcon, Pencil, PlusCircle, X, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -31,11 +31,16 @@ enum STEPS {
     PRICE = 5,
 }
 
-const RentModal = () => {
-    const rentModal = useRentModal();
+const CoachingRegisterModal = () => {
+    const coachingRegisterModal = useCoachingRegisterModal();
     const [step, setStep] = useState(STEPS.CATEGORY);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+
+    // Debug logging
+    useEffect(() => {
+        console.log('CoachingRegisterModal - Modal open state:', coachingRegisterModal.isOpen);
+    }, [coachingRegisterModal.isOpen]);
 
     const {
         register,
@@ -69,7 +74,7 @@ const RentModal = () => {
 
     const Map = useMemo(() => dynamic(() => import('../Map'), {
         ssr: false,
-    }), [location]);
+    }), []);
         
     const setCustomValue = (id: string, value: any) => {
         setValue(id, value, {
@@ -99,7 +104,7 @@ const RentModal = () => {
             router.refresh();
             reset();
             setStep(STEPS.CATEGORY);
-            rentModal.onClose();
+            coachingRegisterModal.onClose();
         })
         .catch((error) => {
             toast.error('Something went wrong.')
@@ -348,16 +353,16 @@ const RentModal = () => {
     return (
         <Modal
             title="Register as a Coach"
-            isOpen={rentModal.isOpen}
+            isOpen={coachingRegisterModal.isOpen}
             body={bodyContent}
             onSubmit={handleSubmit(onSubmit)}
             secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
             secondaryActionLabel={secondaryActionLabel}
             actionLabel={actionLabel}
-            onClose={rentModal.onClose}
+            onClose={coachingRegisterModal.onClose}
             disabled={isLoading}
         />
     );
 };
 
-export default RentModal;
+export default CoachingRegisterModal;

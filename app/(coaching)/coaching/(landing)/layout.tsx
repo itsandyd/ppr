@@ -1,50 +1,23 @@
-import { Nunito } from 'next/font/google'
-
-
-// import LoginModal from '@/app/components/modals/LoginModal';
-// import RegisterModal from '@/app/components/modals/RegisterModal';
-
-// import RentModal from '@/app/components/modals/RentModal';
-
-// import ToasterProvider from '@/app/providers/ToasterProvider';
-
-// import getCurrentUser from './actions/getCurrentUser';
-// import ClientOnly from '@/components/coaching/ClientOnly';
-
-import { auth, useUser } from '@clerk/nextjs';
-import Navbar from '@/components/coaching/navbar/Navbar';
-import SearchModal from '@/components/coaching/modals/SearchModal';
-import RentModal from '@/components/coaching/modals/RentModal';
+import { Metadata } from 'next';
+import CoachingRegisterModal from '@/components/coaching/modals/CoachingRegisterModal';
 import ClientOnly from '@/components/coaching/ClientOnly';
 
-export const metadata = {
-  title: 'PausePlayRepeat Coaching',
-  description: 'Find Coaches for Music Prodiction',
+export const metadata: Metadata = {
+  title: 'Find Your Music Production Coach | Level Up Your Skills',
+  description: 'Connect with experienced music production coaches who can elevate your skills, refine your sound, and help you achieve your musical goals.',
 }
 
-const font = Nunito({ 
-  subsets: ['latin'], 
-});
-
-export default async function RootLayout({
+export default function LandingLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-    // const currentUser = auth();
-
   return (
-    <html lang="en">
-      <body>
-          {/* <LoginModal /> */}
-          {/* <RegisterModal /> */}
-          {/* <SearchModal />
-          <RentModal /> */}
-          {/* <Navbar /> */}
-        <div>
-          {children}
-        </div>
-      </body>
-    </html>
-  )
+    <>
+      <ClientOnly>
+        <CoachingRegisterModal />
+      </ClientOnly>
+      {children}
+    </>
+  );
 }

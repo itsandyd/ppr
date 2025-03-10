@@ -13,8 +13,9 @@ import { useRouter } from "next/navigation";
 import MenuItem from "./MenuItem";
 import Avatar from "../Avatar";
 import { SafeUser } from "@/types";
-import useRentModal from "@/hooks/useRentModal";
+
 import { UserButton } from "@clerk/nextjs";
+import useCoachingRegisterModal from "@/hooks/useCoachingRegisterModal";
 
 interface UserMenuProps {
   currentUser?: SafeUser | null
@@ -26,8 +27,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
   const router = useRouter();
 
   // const loginModal = useLoginModal();
-  // const registerModal = useRegisterModal();
-  const rentModal = useRentModal();
+  // const registerModal = use();
+  const coachingRegisterModal = useCoachingRegisterModal();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -39,9 +40,9 @@ const UserMenu: React.FC<UserMenuProps> = ({
     // if (!currentUser) {
     //   return loginModal.onOpen();
     // }
-
-    rentModal.onOpen();
-  }, [rentModal,]);
+    console.log('onRent called - opening coaching register modal');
+    coachingRegisterModal.onOpen();
+  }, [coachingRegisterModal,]);
 
   return ( 
     <div className="relative">
@@ -138,7 +139,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
               />
               <MenuItem 
                 label="Register as a coach" 
-                onClick={rentModal.onOpen}
+                onClick={coachingRegisterModal.onOpen}
               />
               <hr className="dark:border-neutral-700" />
               { /* <MenuItem 
