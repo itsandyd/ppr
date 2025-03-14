@@ -42,20 +42,77 @@ const ListingClient: React.FC<ListingClientProps> = ({
   const router = useRouter();
   const { user, isSignedIn, isLoaded } = useUser();
 
+  const [reservedTimeSlots, setReservedTimeSlots] = useState<{[key: string]: string[]}>({});
+  const [reservedServicesInfo, setReservedServicesInfo] = useState<{[key: string]: {[time: string]: string}}>({});
+
   const disabledDates = useMemo(() => {
+    // For the calendar, we still need to know which dates have ALL slots booked
+    // We'll implement this logic when we build the time slot selector
     let dates: Date[] = [];
 
-    reservations.forEach((reservation: any) => {
-      const range = eachDayOfInterval({
-        start: new Date(reservation.startDate),
-        end: new Date(reservation.endDate)
-      });
-
-      dates = [...dates, ...range];
-    });
-
+    // Only completely disable dates in the past
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
     return dates;
-  }, [reservations]);
+  }, []);
+  
+  // This function checks if a specific time slot is available on a selected date
+  const isTimeSlotAvailable = useCallback((date: Date, time: string) => {
+    if (!date) return true;
+    
+    // Format date as YYYY-MM-DD for lookup
+    const dateString = date.toISOString().split('T')[0];
+    
+    // If we have reserved slots for this date, check if this time is reserved
+    return !reservedTimeSlots[dateString]?.includes(time);
+  }, [reservedTimeSlots]);
+  
+  // Load reserved time slots when reservations change or date range changes
+  useEffect(() => {
+    const slots: {[key: string]: string[]} = {};
+    const servicesInfo: {[key: string]: {[time: string]: string}} = {};
+    
+    reservations.forEach((reservation: any) => {
+      const startDate = new Date(reservation.startDate);
+      const dateString = startDate.toISOString().split('T')[0];
+      
+      // Get the time in the format "1:00 PM"
+      const hours = startDate.getHours();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const hour = hours % 12 || 12;
+      const timeString = `${hour}:00 ${ampm}`;
+      
+      if (!slots[dateString]) {
+        slots[dateString] = [];
+      }
+      
+      slots[dateString].push(timeString);
+      
+      // Track which service is booked for this slot
+      if (!servicesInfo[dateString]) {
+        servicesInfo[dateString] = {};
+      }
+      
+      // Use the listing title as the service name, truncate if too long
+      let serviceName = reservation.listing.title || 'Coaching Session';
+      const shortServiceName = serviceName.length > 20 
+        ? serviceName.substring(0, 20) + '...' 
+        : serviceName;
+        
+      // Add listing ID to easily identify if it's this listing or another
+      if (reservation.listingId === listing.id) {
+        serviceName = `${shortServiceName} (This Service)`;
+      } else {
+        serviceName = shortServiceName;
+      }
+      
+      servicesInfo[dateString][timeString] = serviceName;
+    });
+    
+    setReservedTimeSlots(slots);
+    setReservedServicesInfo(servicesInfo);
+  }, [reservations, listing.id]);
 
   const category = useMemo(() => {
     return categories.find((items) => 
@@ -292,6 +349,15 @@ const ListingClient: React.FC<ListingClientProps> = ({
                   ) : null;
                 })()}
               </div>
+              
+              {/* Shared schedule info */}
+              <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-md border border-amber-200 dark:border-amber-800">
+                <h3 className="text-md font-semibold text-amber-800 dark:text-amber-300">Shared Schedule</h3>
+                <p className="text-sm text-amber-600 dark:text-amber-400">
+                  This coach may offer multiple services. Their schedule is shared across all offerings to avoid double bookings.
+                </p>
+              </div>
+              
               <ListingReservation
                 price={listing.price}
                 totalPrice={totalPrice}
@@ -302,6 +368,9 @@ const ListingClient: React.FC<ListingClientProps> = ({
                 disabledDates={disabledDates}
                 selectedTime={selectedTime}
                 onTimeSelect={setSelectedTime}
+                reservedTimeSlots={reservedTimeSlots}
+                isTimeSlotAvailable={isTimeSlotAvailable}
+                reservedServicesInfo={reservedServicesInfo}
               />
             </div>
 
@@ -323,6 +392,15 @@ const ListingClient: React.FC<ListingClientProps> = ({
                   ) : null;
                 })()}
               </div>
+              
+              {/* Shared schedule info */}
+              <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-md border border-amber-200 dark:border-amber-800">
+                <h3 className="text-md font-semibold text-amber-800 dark:text-amber-300">Shared Schedule</h3>
+                <p className="text-sm text-amber-600 dark:text-amber-400">
+                  This coach may offer multiple services. Their schedule is shared across all offerings to avoid double bookings.
+                </p>
+              </div>
+              
               <ListingReservation
                 price={listing.price}
                 totalPrice={totalPrice}
@@ -333,6 +411,9 @@ const ListingClient: React.FC<ListingClientProps> = ({
                 disabledDates={disabledDates}
                 selectedTime={selectedTime}
                 onTimeSelect={setSelectedTime}
+                reservedTimeSlots={reservedTimeSlots}
+                isTimeSlotAvailable={isTimeSlotAvailable}
+                reservedServicesInfo={reservedServicesInfo}
               />
             </div>
           </div>

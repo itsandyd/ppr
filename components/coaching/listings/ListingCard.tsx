@@ -65,12 +65,29 @@ const ListingCard: React.FC<ListingCardProps> = ({
   }, [disabled, onAction, actionId]);
 
   const price = useMemo(() => {
+    // For reservations, try to use totalPrice first
     if (reservation) {
-      return reservation.totalPrice;
+      // If totalPrice exists and is a number, use it
+      if (typeof reservation.totalPrice === 'number' && !isNaN(reservation.totalPrice)) {
+        return reservation.totalPrice;
+      }
+      
+      // If we can't get totalPrice from reservation, fall back to the listing price
+      // This shouldn't happen with proper data, but provides a safety net
+      console.warn('Reservation missing totalPrice, using listing price instead');
+      return data.price;
     }
 
+    // For listings, just use the listing price
     return data.price;
   }, [reservation, data.price]);
+
+  // Format price with proper decimal places - ensure it's always a number
+  const formattedPrice = useMemo(() => {
+    // Since price is an Int in the schema, we can safely convert it to a number
+    const numericPrice = Number(price) || 0;
+    return numericPrice.toFixed(2);
+  }, [price]);
 
   const reservationDate = useMemo(() => {
     if (!reservation) {
@@ -83,10 +100,30 @@ const ListingCard: React.FC<ListingCardProps> = ({
     return `${format(start, 'PP')} - ${format(end, 'PP')}`;
   }, [reservation]);
 
+  // Format session time for reservations
+  const sessionTime = useMemo(() => {
+    if (!reservation) return null;
+    
+    const start = new Date(reservation.startDate);
+    const end = new Date(reservation.endDate);
+    
+    return `${format(start, 'h:mm a')} - ${format(end, 'h:mm a')}`;
+  }, [reservation]);
+
   // Create truncated description for the card
   const truncatedDescription = data.description && data.description.length > 100 
     ? `${data.description.substring(0, 100)}...` 
     : data.description;
+
+  // Determine if price is hourly or total
+  const isPriceHourly = useMemo(() => {
+    return !reservation;
+  }, [reservation]);
+
+  // Create a user-friendly price label
+  const priceLabel = useMemo(() => {
+    return isPriceHourly ? '/ hour' : 'total';
+  }, [isPriceHourly]);
 
   return (
     <Card 
@@ -168,16 +205,35 @@ const ListingCard: React.FC<ListingCardProps> = ({
         
         {reservationDate && (
           <div className="font-light text-neutral-500 dark:text-neutral-300 mb-2">
-            {reservationDate}
+            <div>{reservationDate}</div>
+            {sessionTime && (
+              <div className="text-sm text-primary font-medium mt-1">
+                {sessionTime}
+              </div>
+            )}
           </div>
         )}
         
         <div className="flex flex-row items-center gap-1 mt-2">
-          <div className="font-semibold text-lg">
-            ${price}
-          </div>
-          {!reservation && (
-            <div className="font-light">/ hour</div>
+          {reservation ? (
+            <>
+              <div className="flex items-center">
+                <div className="font-semibold text-lg">
+                  ${formattedPrice}
+                </div>
+                <div className="font-light text-neutral-500 dark:text-neutral-400 ml-1">{priceLabel}</div>
+              </div>
+              <div className="ml-2 px-2 py-0.5 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs rounded-full">
+                Booked
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="font-semibold text-lg">
+                ${formattedPrice}
+              </div>
+              <div className="font-light text-neutral-500 dark:text-neutral-400">{priceLabel}</div>
+            </>
           )}
         </div>
       </CardContent>

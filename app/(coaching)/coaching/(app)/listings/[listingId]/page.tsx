@@ -3,6 +3,7 @@ import ListingClient from "./ListingClient";
 import EmptyState from "@/components/coaching/EmptyState";
 import getListingById from "@/actions/getListingById";
 import getReservations from "@/actions/getReservations";
+import getCoachReservations from "@/actions/getCoachReservations";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import getListings from "@/actions/getListings";
 import AuthCheck from "@/components/coaching/AuthCheck";
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: { params: IParams }): Promise
 
 const ListingPage = async ({ params }: { params: IParams }) => {
   const listing = await getListingById(params);
-  const reservations = await getReservations(params);
+  const reservations = await getCoachReservations(params);
   const currentUser = await getCurrentUser();
 
   if (!listing) {

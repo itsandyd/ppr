@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { 
   DateRange, 
   Range, 
@@ -26,12 +26,46 @@ const DatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const dateRangeRef = useRef<any>(null);
+  
+  // Initialize with current date and update whenever value changes
+  const [currentDate, setCurrentDate] = useState(() => {
+    // Use the selected date if available, otherwise use today
+    return value.startDate || new Date();
+  });
+  
+  // Force a re-render of the calendar when the month changes
+  const [forceUpdate, setForceUpdate] = useState(0);
+  
+  // Update currentDate whenever value.startDate changes
+  useEffect(() => {
+    if (value.startDate) {
+      setCurrentDate(new Date(value.startDate));
+    }
+  }, [value.startDate]);
   
   // Avoid hydration mismatch by only rendering after mount
   useEffect(() => {
     setMounted(true);
+    
+    // Clean up function to force re-initialization on unmount
+    return () => {
+      // This helps ensure the calendar is properly reinitialized
+      if (dateRangeRef.current) {
+        dateRangeRef.current = null;
+      }
+    };
   }, []);
+  
+  // Add effect to ensure day alignment when month changes
+  useEffect(() => {
+    // Force the calendar to rebuild with the correct date
+    const timeoutId = setTimeout(() => {
+      setForceUpdate(prevState => prevState + 1);
+    }, 10);
+    
+    return () => clearTimeout(timeoutId);
+  }, [currentDate]);
   
   if (!mounted) {
     return null;
@@ -39,17 +73,29 @@ const DatePicker: React.FC<DatePickerProps> = ({
   
   const isDarkMode = resolvedTheme === 'dark';
 
-  // Handle navigation
+  // Handle custom navigation and ensure calendar updates
   const navigateToPreviousMonth = () => {
     const newDate = new Date(currentDate);
+    newDate.setDate(1); // Go to first day of month
     newDate.setMonth(newDate.getMonth() - 1);
     setCurrentDate(newDate);
   };
 
   const navigateToNextMonth = () => {
     const newDate = new Date(currentDate);
+    newDate.setDate(1); // Go to first day of month
     newDate.setMonth(newDate.getMonth() + 1);
     setCurrentDate(newDate);
+  };
+
+  // Create a custom handler for the date range onChange
+  const handleDateRangeChange = (rangeChanges: RangeKeyDict) => {
+    onChange(rangeChanges);
+    
+    // Update currentDate to match the new selection
+    if (rangeChanges.selection.startDate) {
+      setCurrentDate(new Date(rangeChanges.selection.startDate));
+    }
   };
 
   // Format month and year for display
@@ -88,22 +134,26 @@ const DatePicker: React.FC<DatePickerProps> = ({
       </div>
       
       <DateRange
+        ref={dateRangeRef}
+        key={`date-range-${currentDate.getMonth()}-${currentDate.getFullYear()}-${forceUpdate}`}
         rangeColors={[isDarkMode ? '#3b82f6' : '#262626']}
         ranges={[value]}
         date={currentDate}
-        onChange={onChange}
+        onChange={handleDateRangeChange}
         direction="vertical"
         showDateDisplay={false}
         minDate={new Date()}
         disabledDates={disabledDates}
         color={isDarkMode ? '#3b82f6' : '#262626'}
         months={1}
-        weekdayDisplayFormat="EEEEE"
+        weekdayDisplayFormat="EEE" // Use 3-letter format for weekdays
         dayDisplayFormat="d"
         monthDisplayFormat="MMM yyyy"
-        fixedHeight
+        fixedHeight={false}
         className={isDarkMode ? 'dark-calendar-inner' : ''}
         showMonthAndYearPickers={false} // Hide default pickers since we're using custom ones
+        shownDate={currentDate} // Set the month being shown based on our navigation
+        preventSnapRefocus={true}
       />
     </div>
   );

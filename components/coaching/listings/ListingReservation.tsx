@@ -16,6 +16,9 @@ interface ListingReservationProps {
   disabledDates: Date[];
   selectedTime: string | null;
   onTimeSelect: (time: string | null) => void;
+  reservedTimeSlots?: {[key: string]: string[]};
+  isTimeSlotAvailable?: (date: Date, time: string) => boolean;
+  reservedServicesInfo?: {[key: string]: {[time: string]: string}};
 }
 
 const timeSlots = [
@@ -35,7 +38,10 @@ const ListingReservation: React.FC<
   disabled,
   disabledDates,
   selectedTime,
-  onTimeSelect
+  onTimeSelect,
+  reservedTimeSlots = {},
+  isTimeSlotAvailable = () => true,
+  reservedServicesInfo = {}
 }) => {
   const { isSignedIn, isLoaded } = useUser();
 
@@ -88,22 +94,53 @@ const ListingReservation: React.FC<
       {/* Time slot selector */}
       <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
         <h3 className="text-lg font-medium mb-2 dark:text-white">Select Time</h3>
-        <div className="grid grid-cols-3 gap-2">
-          {timeSlots.map((time) => (
-            <button
-              key={time}
-              onClick={() => onTimeSelect(time)}
-              className={`
-                py-2 px-1 text-sm rounded-md transition
-                ${selectedTime === time 
-                  ? 'bg-black dark:bg-white text-white dark:text-black font-medium' 
-                  : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 hover:opacity-80'}
-              `}
-            >
-              {time}
-            </button>
-          ))}
-        </div>
+        {dateRange.startDate ? (
+          <div className="grid grid-cols-3 gap-2">
+            {timeSlots.map((time) => {
+              const dateStr = dateRange.startDate?.toISOString().split('T')[0] || '';
+              const isReserved = !isTimeSlotAvailable(dateRange.startDate!, time);
+              const serviceName = reservedServicesInfo[dateStr]?.[time] || '';
+              const isThisService = serviceName.includes('(This Service)');
+              
+              return (
+                <button
+                  key={time}
+                  onClick={() => !isReserved && onTimeSelect(time)}
+                  disabled={isReserved}
+                  title={isReserved ? `Reserved for: ${serviceName}` : 'Available time slot'}
+                  className={`
+                    py-2 px-1 text-sm rounded-md transition relative group
+                    ${selectedTime === time 
+                      ? 'bg-black dark:bg-white text-white dark:text-black font-medium' 
+                      : isReserved
+                        ? isThisService
+                          ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 cursor-not-allowed'
+                          : 'bg-neutral-200 dark:bg-neutral-600 text-neutral-400 dark:text-neutral-500 cursor-not-allowed'
+                        : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 hover:opacity-80'}
+                  `}
+                >
+                  {time}
+                  {isReserved && (
+                    <div className="mt-1">
+                      <span className="block text-xs font-medium">
+                        {isThisService ? 'Reserved (This)' : 'Reserved'}
+                      </span>
+                      {serviceName && (
+                        <span className="block text-xs italic opacity-80">
+                          {serviceName.replace(' (This Service)', '')}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            Please select a date first
+          </p>
+        )}
       </div>
       
       <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
