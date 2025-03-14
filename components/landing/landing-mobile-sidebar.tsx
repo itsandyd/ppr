@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Montserrat } from 'next/font/google'
-import { BookIcon, Code, ComputerIcon, ImageIcon, LayoutDashboard, MessageSquare, Music, Settings, UserIcon, VideoIcon, Gift, Users } from "lucide-react";
+import { BookIcon, Code, ComputerIcon, ImageIcon, LayoutDashboard, MessageSquare, Music, Settings, UserIcon, VideoIcon, Gift, Users, Medal } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -27,6 +27,11 @@ const routes = [
       label: 'Academy',
       icon: BookIcon,
       href: '/academy',
+    },
+    {
+      label: 'Coaching',
+      icon: Medal,
+      href: '/coaching',
     },
     {
       label: 'AI',

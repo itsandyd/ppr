@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function CtaSection() {
   return (
@@ -50,9 +51,11 @@ export default function CtaSection() {
           </div>
 
           <div className="flex flex-col items-center">
-            <Button size="lg" className="group mb-3 px-8 py-6 text-lg">
-              Start Your Journey Today
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            <Button size="lg" className="group mb-3 px-8 py-6 text-lg" asChild>
+              <Link href="/coaching/browse">
+                Start Your Journey Today
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
             <p className="text-primary text-sm">
               100% Satisfaction Guarantee: Love your first session or it&apos;s free

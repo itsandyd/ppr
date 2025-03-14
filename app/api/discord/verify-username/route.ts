@@ -2,6 +2,30 @@ import { NextResponse } from 'next/server';
 import { auth, clerkClient } from '@clerk/nextjs';
 import { verifyDiscordMember } from '@/lib/discord-service';
 import { db } from '@/lib/db';
+import axios from 'axios';
+
+// Function to try fetching Discord username directly from Discord API
+async function fetchDiscordUsername(accountId: string, token: string | null) {
+  if (!token) return null;
+  
+  try {
+    console.log('Attempting to fetch Discord username directly from Discord API');
+    const response = await axios.get('https://discord.com/api/users/@me', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    
+    if (response.data && response.data.username) {
+      console.log('Successfully fetched Discord username from API:', response.data.username);
+      return response.data.username;
+    }
+  } catch (error) {
+    console.error('Error fetching Discord data from API:', error);
+  }
+  
+  return null;
+}
 
 export async function POST(request: Request) {
   try {
@@ -39,8 +63,26 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
     
-    // Get the discordUsername from the connected account or input
-    const discordUsername = discordAccount.username || body.discordUsername || 'discord-user';
+    // Require a valid Discord username from OAuth
+    if (!discordAccount.username) {
+      return NextResponse.json({ 
+        error: 'Could not retrieve your Discord username. Please reconnect your Discord account.',
+        needsAuth: true,
+        invalidUsername: true
+      }, { status: 400 });
+    }
+    
+    // Use Discord username from OAuth connection
+    const discordUsername = discordAccount.username;
+    
+    console.log('Using verified Discord username from OAuth:', discordUsername);
+    
+    console.log('Discord verification for user:', {
+      clerkUserId: userId,
+      discordUsername,
+      fromOAuth: true,
+      discordExternalId: discordAccount.externalId || null
+    });
     
     // Update Clerk user metadata
     try {
@@ -50,7 +92,9 @@ export async function POST(request: Request) {
           discordUsername: discordUsername,
           discordConnected: true,
           discordVerified: true,
-          discordId: discordAccount.externalId || null
+          discordId: discordAccount.externalId || null,
+          // Store whether this was manually entered for reference
+          discordUsernameSource: discordAccount.username ? 'oauth' : (body.discordUsername ? 'manual' : 'fallback')
         }
       });
       console.log('Updated Clerk metadata with discordUsername:', discordUsername);

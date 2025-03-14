@@ -54,6 +54,11 @@ export const LandingNavbar = () => {
                 Academy
             </Button>
         </Link>
+        <Link href="/coaching">
+            <Button variant="ghost" className="rounded-full">
+                Coaching
+            </Button>
+        </Link>
         {/* <Link href="/coaching/browse">
             <Button variant="ghost" className="rounded-full">
                 Coaching

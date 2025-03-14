@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function HeroSection() {
   return (
@@ -20,9 +21,11 @@ export default function HeroSection() {
             like the pros. The missing piece? Personalized guidance from someone who&apos;s already succeeded.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Button size="lg" className="group">
-              Discover The Difference
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            <Button size="lg" className="group" asChild>
+              <Link href="/coaching/browse">
+                Discover The Difference
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
           </div>
         </div>

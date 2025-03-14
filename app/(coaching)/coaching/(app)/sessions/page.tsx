@@ -1,11 +1,11 @@
 import ClientOnly from "@/components/coaching/ClientOnly";
 import EmptyState from "@/components/coaching/EmptyState";
-import TripsClient from "./components/SessionsClient";
+import SessionsClient from "./components/SessionsClient";
 import { auth } from "@clerk/nextjs";
 import getReservations from "@/actions/getReservations";
 
 
-const TripsPage = async () => {
+const SessionsPage = async () => {
 
   const { userId } = auth();
 
@@ -35,7 +35,7 @@ const TripsPage = async () => {
 
   return (
     <ClientOnly>
-      <TripsClient
+      <SessionsClient
         reservations={reservations}
         userId={userId}
       />
@@ -43,4 +43,4 @@ const TripsPage = async () => {
   );
 }
  
-export default TripsPage;
+export default SessionsPage;

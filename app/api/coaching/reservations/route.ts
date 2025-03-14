@@ -41,8 +41,15 @@ export async function POST(
 
     // Check if user has Discord connected via Clerk external accounts
     const hasDiscordConnection = user.externalAccounts.some(
-      account => account.provider === 'discord'
+      account => account.provider.toLowerCase().includes('discord')
     );
+    
+    // Check if user has Discord username in Clerk metadata
+    const hasDiscordMetadata = typeof user.publicMetadata?.discordUsername === 'string' && 
+                              (user.publicMetadata.discordUsername as string).length > 0;
+    
+    // Check if user has verified Discord in Clerk metadata
+    const discordVerifiedInClerk = user.publicMetadata?.discordVerified === true;
     
     // Check if user has Discord username in database
     const dbUser = await db.user.findUnique({
@@ -57,21 +64,41 @@ export async function POST(
 
     console.log('[API] Discord verification check:', { 
       hasDiscordConnection,
-      discordUsername: dbUser?.discordUsername,
-      discordVerified: dbUser?.discordVerified
+      hasDiscordMetadata,
+      discordVerifiedInClerk,
+      discordUsername: user.publicMetadata?.discordUsername || dbUser?.discordUsername,
+      discordVerified: discordVerifiedInClerk || dbUser?.discordVerified
     });
 
+    // Allow booking if either they have a Discord connection or a Discord username in metadata
+    const hasDiscord = hasDiscordConnection || hasDiscordMetadata;
+    
+    // Check if verification has been completed - either through Clerk metadata or database
+    const isVerified = discordVerifiedInClerk || dbUser?.discordVerified;
+    
+    // Check if connected but needs verification
+    const needsVerification = hasDiscord && !isVerified;
+
     // If Discord is not connected or not verified, return an error
-    if (!hasDiscordConnection || !dbUser?.discordVerified) {
-      const errorMessage = !hasDiscordConnection 
+    if (!hasDiscord || !isVerified) {
+      const errorMessage = !hasDiscord 
         ? "Please connect your Discord account before booking a coaching session."
         : "Please verify your Discord account before booking a coaching session.";
+        
+      console.log('Reservation blocked:', {
+        hasDiscord,
+        isVerified,
+        discordVerifiedInClerk,
+        dbDiscordVerified: dbUser?.discordVerified,
+        needsVerification,
+        publicMetadata: user.publicMetadata
+      });
         
       return NextResponse.json(
         { 
           error: errorMessage,
-          needsDiscordConnection: !hasDiscordConnection,
-          needsDiscordVerification: hasDiscordConnection && !dbUser?.discordVerified
+          needsDiscordConnection: !hasDiscord,
+          needsDiscordVerification: needsVerification
         },
         { status: 400 }
       );

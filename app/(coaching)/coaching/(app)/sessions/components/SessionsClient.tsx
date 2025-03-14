@@ -9,13 +9,12 @@ import Container from "@/components/coaching/Container";
 import Heading from "@/components/coaching/Heading";
 import ListingCard from "@/components/coaching/listings/ListingCard";
 
-
-interface TripsClientProps {
+interface SessionsClientProps {
   reservations: SafeReservation[],
   userId?: string,
 }
 
-const TripsClient: React.FC<TripsClientProps> = ({
+const SessionsClient: React.FC<SessionsClientProps> = ({
   reservations,
   userId
 }) => {
@@ -25,13 +24,13 @@ const TripsClient: React.FC<TripsClientProps> = ({
   const onCancel = useCallback((id: string) => {
     setDeletingId(id);
 
-    axios.delete(`/api/reservations/${id}`)
+    axios.delete(`/api/sessions/${id}`)
     .then(() => {
-      toast.success('Reservation cancelled');
+      toast.success('Coaching session cancelled');
       router.refresh();
     })
     .catch((error) => {
-      toast.error(error?.response?.data?.error)
+      toast.error(error?.response?.data?.error || 'Error cancelling session')
     })
     .finally(() => {
       setDeletingId('');
@@ -41,12 +40,12 @@ const TripsClient: React.FC<TripsClientProps> = ({
   return (
     <Container>
       <Heading
-        title="Trips"
-        subtitle="Where you've been and where you're going"
+        title="Coaching Sessions"
+        subtitle="Your upcoming and past coaching sessions"
       />
       <div 
         className="
-          mt-24
+          mt-12
           grid 
           grid-cols-1 
           sm:grid-cols-2 
@@ -65,7 +64,7 @@ const TripsClient: React.FC<TripsClientProps> = ({
             actionId={reservation.id}
             onAction={onCancel}
             disabled={deletingId === reservation.id}
-            actionLabel="Cancel reservation"
+            actionLabel="Cancel session"
             userId={userId}
           />
         ))}
@@ -74,4 +73,4 @@ const TripsClient: React.FC<TripsClientProps> = ({
    );
 }
  
-export default TripsClient;
+export default SessionsClient;

@@ -92,24 +92,44 @@ const ListingClient: React.FC<ListingClientProps> = ({
 
     // Check if user has connected Discord
     const hasDiscordConnection = user?.externalAccounts?.some(
-      account => account.provider === 'discord'
+      account => account.provider.toLowerCase().includes('discord')
     );
-    const dbDiscordVerified = currentUser?.discordVerified;
     
-    console.log('Discord check:', { hasDiscordConnection, dbDiscordVerified, user, currentUser });
+    // Check if we have a Discord username in metadata (this means they've gone through our verification process)
+    const hasDiscordUsername = typeof user?.publicMetadata?.discordUsername === 'string' && 
+                              user.publicMetadata.discordUsername.length > 0;
     
-    if (!hasDiscordConnection) {
+    console.log('Discord check:', { 
+      hasDiscordConnection, 
+      hasDiscordUsername,
+      discordUsername: user?.publicMetadata?.discordUsername,
+      discordVerified: user?.publicMetadata?.discordVerified,
+      discordId: user?.publicMetadata?.discordId,
+      publicMetadata: user?.publicMetadata,
+      externalAccounts: user?.externalAccounts,
+      dbUsername: currentUser?.discordUsername,
+      dbVerified: currentUser?.discordVerified
+    });
+    
+    // Allow booking if either condition is met
+    if (!hasDiscordConnection && !hasDiscordUsername) {
       console.log('Discord not connected - opening Discord modal');
       toast.error('Please connect your Discord account to continue');
       setShowDiscordModal(true);
       return;
     }
 
-    if (!dbDiscordVerified) {
-      console.log('Discord not verified - opening Discord modal');
-      toast.error('Please verify your Discord account to continue');
-      setShowDiscordModal(true);
-      return;
+    // Only check verification if we have a Discord connection
+    if (hasDiscordConnection) {
+      // Check if the Discord account has been verified through our API
+      const discordVerifiedInClerk = user?.publicMetadata?.discordVerified === true;
+      
+      if (!discordVerifiedInClerk) {
+        console.log('Discord not verified in Clerk metadata - opening Discord modal');
+        toast.error('Please verify your Discord account to continue');
+        setShowDiscordModal(true);
+        return;
+      }
     }
 
     // Set end time 1 hour after start time
@@ -163,7 +183,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
       toast.success('Coaching session reserved! Check your Discord for details.');
       setDateRange(initialDateRange);
       setSelectedTime(null);
-      router.push('/coaching/trips');
+      router.push('/coaching/sessions');
     })
     .catch((error) => {
       console.error('Reservation error:', error);

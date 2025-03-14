@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Award } from "lucide-react";
+import Link from "next/link";
 
 export default function ExpertsSection() {
   return (
@@ -20,9 +21,11 @@ export default function ExpertsSection() {
             share insider techniques they&apos;ve never revealed in tutorials—secrets that took them years to discover
             but will take you minutes to learn.
           </p>
-          <Button variant="outline" className="group">
-            Explore Our Coaches
-            <Award className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          <Button variant="outline" className="group" asChild>
+            <Link href="/coaching/browse">
+              Explore Our Coaches
+              <Award className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </Button>
         </div>
       </div>
