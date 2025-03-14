@@ -10,6 +10,7 @@ interface ButtonProps {
   outline?: boolean;
   small?: boolean;
   icon?: IconType;
+  className?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
@@ -19,6 +20,7 @@ const Button: React.FC<ButtonProps> = ({
   outline,
   small,
   icon: Icon,
+  className = '',
 }) => {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log('Button clicked:', { label, disabled });
@@ -54,6 +56,7 @@ const Button: React.FC<ButtonProps> = ({
         ${small ? 'py-2 px-4' : 'py-3'}
         ${small ? 'font-medium' : 'font-semibold'}
         ${small ? 'border-[1px]' : 'border-0'}
+        ${className}
       `}
     >
       {Icon && (

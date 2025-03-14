@@ -138,6 +138,10 @@ const UserMenu: React.FC<UserMenuProps> = ({
                 onClick={() => router.push('/coaching/materials')}
               />
               <MenuItem 
+                label="Coach Panel" 
+                onClick={() => router.push('/coaching/coach-panel')}
+              />
+              <MenuItem 
                 label="Register as a coach" 
                 onClick={coachingRegisterModal.onOpen}
               />
