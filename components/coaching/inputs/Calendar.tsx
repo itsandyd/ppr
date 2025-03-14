@@ -1,17 +1,16 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { 
   DateRange, 
   Range, 
   RangeKeyDict
 } from 'react-date-range';
-import { useTheme } from 'next-themes';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
-import './calendar-styles.css'; // We'll create this for custom styles
+import './calendar-styles.css';
 
 interface DatePickerProps {
   value: Range,
@@ -24,7 +23,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
   onChange,
   disabledDates
 }) => {
-  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const dateRangeRef = useRef<any>(null);
   
@@ -70,8 +68,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
   if (!mounted) {
     return null;
   }
-  
-  const isDarkMode = resolvedTheme === 'dark';
 
   // Handle custom navigation and ensure calendar updates
   const navigateToPreviousMonth = () => {
@@ -108,7 +104,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   const [month, year] = formattedMonthYear.split(' ');
   
   return (
-    <div className={`calendar-wrapper ${isDarkMode ? 'dark-calendar' : ''}`}>
+    <div className="calendar-wrapper">
       {/* Custom month/year navigation */}
       <div className="month-year-navigation">
         <div className="month-selection">
@@ -136,7 +132,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <DateRange
         ref={dateRangeRef}
         key={`date-range-${currentDate.getMonth()}-${currentDate.getFullYear()}-${forceUpdate}`}
-        rangeColors={[isDarkMode ? '#3b82f6' : '#262626']}
+        rangeColors={['#3b82f6']}
         ranges={[value]}
         date={currentDate}
         onChange={handleDateRangeChange}
@@ -144,16 +140,14 @@ const DatePicker: React.FC<DatePickerProps> = ({
         showDateDisplay={false}
         minDate={new Date()}
         disabledDates={disabledDates}
-        color={isDarkMode ? '#3b82f6' : '#262626'}
+        color="#3b82f6"
         months={1}
-        weekdayDisplayFormat="EEE" // Use 3-letter format for weekdays
+        weekdayDisplayFormat="EEE"
         dayDisplayFormat="d"
-        monthDisplayFormat="MMM yyyy"
-        fixedHeight={false}
-        className={isDarkMode ? 'dark-calendar-inner' : ''}
-        showMonthAndYearPickers={false} // Hide default pickers since we're using custom ones
-        shownDate={currentDate} // Set the month being shown based on our navigation
+        showMonthAndYearPickers={false}
+        shownDate={currentDate}
         preventSnapRefocus={true}
+        className="dark-theme-calendar"
       />
     </div>
   );
