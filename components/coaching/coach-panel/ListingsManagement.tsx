@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import Button from '@/components/coaching/Button';
+import { Button } from '@/components/ui/button';
 import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
 import Image from 'next/image';
 
@@ -21,39 +21,30 @@ interface Listing {
   price: number;
   imageSrc: string;
   category: string;
+  createdAt: string;
 }
 
 const ListingsManagement: React.FC<ListingsManagementProps> = ({
   currentUser
 }) => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [listings, setListings] = useState<Listing[]>([]);
 
-  // Mock listings for demonstration
-  const mockListings: Listing[] = [
-    {
-      id: '1',
-      title: 'Music Production Coaching',
-      description: 'Learn advanced music production techniques',
-      price: 50,
-      imageSrc: '/images/coaching-placeholder.jpg',
-      category: 'Music Production'
-    },
-    {
-      id: '2',
-      title: 'Mixing Masterclass',
-      description: 'Master the art of professional mixing',
-      price: 75,
-      imageSrc: '/images/coaching-placeholder.jpg',
-      category: 'Mixing'
-    }
-  ];
-
   useEffect(() => {
-    // In a real app, you would fetch the coach's listings from the server
-    // For this demo, we'll use the mock data
-    setListings(mockListings);
+    const fetchListings = async () => {
+      try {
+        const response = await axios.get('/api/coaching/listings');
+        setListings(response.data);
+      } catch (error) {
+        console.error('Error fetching listings:', error);
+        toast.error('Failed to load your listings');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchListings();
   }, []);
 
   const handleCreateListing = () => {
@@ -69,13 +60,12 @@ const ListingsManagement: React.FC<ListingsManagementProps> = ({
       setIsLoading(true);
       
       try {
-        // Here you would make an API call to delete the listing
-        // For demo purposes, we'll just simulate it client-side
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await axios.delete(`/api/coaching/listings/${listingId}`);
         setListings(prevListings => prevListings.filter(listing => listing.id !== listingId));
-        
         toast.success('Listing deleted successfully');
+        router.refresh();
       } catch (error) {
+        console.error('Error deleting listing:', error);
         toast.error('Failed to delete listing');
       } finally {
         setIsLoading(false);
@@ -88,24 +78,34 @@ const ListingsManagement: React.FC<ListingsManagementProps> = ({
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-white">Your Listings</h2>
         <Button 
-          small
-          label="Create New Listing"
+          size="sm"
           onClick={handleCreateListing}
           disabled={isLoading}
-          icon={AiOutlinePlus}
-        />
+          className="flex items-center gap-2"
+        >
+          <AiOutlinePlus size={16} />
+          Create New Listing
+        </Button>
       </div>
 
-      {listings.length === 0 ? (
+      {isLoading ? (
+        <Card className="bg-neutral-800 border-neutral-700">
+          <CardContent className="flex items-center justify-center p-12">
+            <p className="text-neutral-400">Loading your listings...</p>
+          </CardContent>
+        </Card>
+      ) : listings.length === 0 ? (
         <Card className="bg-neutral-800 border-neutral-700">
           <CardContent className="flex flex-col items-center justify-center p-12">
             <p className="text-neutral-400 mb-4">You don&apos;t have any listings yet</p>
             <Button 
-              label="Create Your First Listing"
               onClick={handleCreateListing}
               disabled={isLoading}
-              icon={AiOutlinePlus}
-            />
+              className="flex items-center gap-2"
+            >
+              <AiOutlinePlus size={16} />
+              Create Your First Listing
+            </Button>
           </CardContent>
         </Card>
       ) : (
@@ -116,7 +116,7 @@ const ListingsManagement: React.FC<ListingsManagementProps> = ({
                 <div className="relative h-48 md:h-auto md:w-1/3 md:max-w-[200px]">
                   <Image
                     fill
-                    src={listing.imageSrc}
+                    src={listing.imageSrc || '/images/coaching-placeholder.jpg'}
                     alt={listing.title}
                     className="object-cover"
                   />
@@ -134,20 +134,24 @@ const ListingsManagement: React.FC<ListingsManagementProps> = ({
                   <p className="mt-4 text-neutral-400">{listing.description}</p>
                   <div className="mt-6 flex space-x-3">
                     <Button 
-                      small
-                      label="Edit"
+                      size="sm"
                       onClick={() => handleEditListing(listing.id)}
                       disabled={isLoading}
-                      icon={AiOutlineEdit}
-                    />
+                      className="flex items-center gap-2"
+                    >
+                      <AiOutlineEdit size={16} />
+                      Edit
+                    </Button>
                     <Button 
-                      small
-                      label="Delete"
+                      size="sm"
+                      variant="outline"
                       onClick={() => handleDeleteListing(listing.id)}
                       disabled={isLoading}
-                      outline
-                      icon={AiOutlineDelete}
-                    />
+                      className="flex items-center gap-2"
+                    >
+                      <AiOutlineDelete size={16} />
+                      Delete
+                    </Button>
                   </div>
                 </div>
               </div>

@@ -2,6 +2,7 @@
 
 import { IconType } from "react-icons";
 import React, { ReactNode } from "react";
+import { Button as ShadcnButton } from "@/components/ui/button";
 
 interface ButtonProps {
   label: ReactNode;
@@ -22,55 +23,20 @@ const Button: React.FC<ButtonProps> = ({
   icon: Icon,
   className = '',
 }) => {
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('Button clicked:', { label, disabled });
-    onClick(e);
-  };
-
   return ( 
-    <button
+    <ShadcnButton
       disabled={disabled}
-      onClick={handleClick}
+      onClick={onClick}
+      variant={outline ? "outline" : "default"}
+      size={small ? "sm" : "default"}
       className={`
-        relative
-        disabled:opacity-70
-        disabled:cursor-not-allowed
-        rounded-lg
-        hover:opacity-80
-        transition
-        w-full
-        theme-transition
-        ${outline 
-          ? 'bg-white dark:bg-neutral-800' 
-          : 'bg-[#3B97D8] dark:bg-[#3B97D8]'
-        }
-        ${outline 
-          ? 'border-black dark:border-neutral-300' 
-          : 'border-[#3B97D8] dark:border-[#3B97D8]'
-        }
-        ${outline 
-          ? 'text-black dark:text-white' 
-          : 'text-white'
-        }
-        ${small ? 'text-sm' : 'text-md'}
-        ${small ? 'py-2 px-4' : 'py-3'}
-        ${small ? 'font-medium' : 'font-semibold'}
-        ${small ? 'border-[1px]' : 'border-0'}
+        ${Icon ? "flex items-center gap-2" : ""}
         ${className}
       `}
     >
-      {Icon && (
-        <Icon
-          size={24}
-          className="
-            absolute
-            left-4
-            top-3
-          "
-        />
-      )}
+      {Icon && <Icon size={small ? 16 : 20} />}
       {label}
-    </button>
+    </ShadcnButton>
    );
 }
  

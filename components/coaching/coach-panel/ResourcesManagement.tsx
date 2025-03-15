@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import Button from '@/components/coaching/Button';
+import { Button } from '@/components/ui/button';
 import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete, AiOutlineCloudDownload, AiOutlineLink } from 'react-icons/ai';
 import { BsFileEarmark, BsFileEarmarkPdf, BsFileEarmarkZip, BsFileEarmarkMusic } from 'react-icons/bs';
 
@@ -122,12 +122,14 @@ const ResourcesManagement: React.FC<ResourcesManagementProps> = ({
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-white">Your Resources</h2>
         <Button 
-          small
-          label="Upload New Resource"
+          size="sm"
           onClick={handleCreateResource}
           disabled={isLoading}
-          icon={AiOutlinePlus}
-        />
+          className="flex items-center gap-2"
+        >
+          <AiOutlinePlus size={16} />
+          Upload New Resource
+        </Button>
       </div>
 
       {resources.length === 0 ? (
@@ -135,11 +137,13 @@ const ResourcesManagement: React.FC<ResourcesManagementProps> = ({
           <CardContent className="flex flex-col items-center justify-center p-12">
             <p className="text-neutral-400 mb-4">You don&apos;t have any resources yet</p>
             <Button 
-              label="Upload Your First Resource"
               onClick={handleCreateResource}
               disabled={isLoading}
-              icon={AiOutlinePlus}
-            />
+              className="flex items-center gap-2"
+            >
+              <AiOutlinePlus size={16} />
+              Upload Your First Resource
+            </Button>
           </CardContent>
         </Card>
       ) : (

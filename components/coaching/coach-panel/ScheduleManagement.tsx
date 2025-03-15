@@ -7,10 +7,11 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import Button from '@/components/coaching/Button';
-import { Calendar as CalendarIcon, Clock, CheckCircle, XCircle, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Calendar as CalendarIcon, Clock, CheckCircle, XCircle, Plus, Trash2 } from 'lucide-react';
 import { Range } from 'react-date-range';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { format } from 'date-fns';
 
 interface ScheduleManagementProps {
   currentUser: User;
@@ -54,6 +55,7 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlot[]>([]);
   const [showTimeSlotForm, setShowTimeSlotForm] = useState(false);
+  const [showWeeklyAvailabilityForm, setShowWeeklyAvailabilityForm] = useState(false);
   const [newTimeSlot, setNewTimeSlot] = useState<TimeSlotFormData>({
     startTime: "09:00",
     endTime: "10:00"
@@ -66,30 +68,83 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
     key: 'selection'
   });
   
-  // Mock time slots for demonstration
-  const mockTimeSlots: TimeSlot[] = [
-    { id: '1', date: new Date(), startTime: '09:00', endTime: '10:00', isAvailable: true },
-    { id: '2', date: new Date(), startTime: '10:00', endTime: '11:00', isAvailable: false },
-    { id: '3', date: new Date(), startTime: '11:00', endTime: '12:00', isAvailable: true },
-    { id: '4', date: new Date(), startTime: '14:00', endTime: '15:00', isAvailable: true },
-    { id: '5', date: new Date(), startTime: '15:00', endTime: '16:00', isAvailable: false },
-    { id: '6', date: new Date(), startTime: '16:00', endTime: '17:00', isAvailable: true },
-  ];
+  // Fetch coach's available time slots
+  const fetchTimeSlots = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Format the date for API request
+      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+      
+      console.log(`Fetching time slots for date: ${formattedDate}`);
+      
+      const response = await axios.get(`/api/availability?date=${formattedDate}`);
+      
+      console.log('API response:', response.data);
+      
+      if (response.data && Array.isArray(response.data)) {
+        // Transform API response to our TimeSlot interface
+        const slots = response.data.map((slot: any) => ({
+          id: slot.id,
+          date: new Date(slot.date),
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          isAvailable: slot.isAvailable
+        }));
+        
+        console.log(`Loaded ${slots.length} time slots`);
+        setAvailableTimeSlots(slots);
+      } else {
+        console.log('No time slots returned from API or invalid format');
+        setAvailableTimeSlots([]);
+      }
+    } catch (error) {
+      console.error('Error fetching time slots', error);
+      toast.error('Failed to load availability');
+      
+      // Fallback to empty array if API fails
+      setAvailableTimeSlots([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // In a real app, you would fetch the coach's available time slots from the server
-    // For this demo, we'll use the mock data
-    setAvailableTimeSlots(mockTimeSlots);
-  }, []);
+    fetchTimeSlots();
+  }, [selectedDate]);
   
-  const toggleTimeSlotAvailability = (slotId: string) => {
-    setAvailableTimeSlots(prevSlots => 
-      prevSlots.map(slot => 
-        slot.id === slotId 
-          ? { ...slot, isAvailable: !slot.isAvailable } 
-          : slot
-      )
-    );
+  const toggleTimeSlotAvailability = async (slotId: string) => {
+    try {
+      const slot = availableTimeSlots.find(s => s.id === slotId);
+      
+      if (!slot) return;
+      
+      setIsLoading(true);
+      
+      // Optimistically update UI
+      setAvailableTimeSlots(prevSlots => 
+        prevSlots.map(s => 
+          s.id === slotId 
+            ? { ...s, isAvailable: !s.isAvailable } 
+            : s
+        )
+      );
+      
+      // Update in database
+      await axios.patch(`/api/availability/${slotId}`, {
+        isAvailable: !slot.isAvailable
+      });
+      
+      toast.success('Availability updated');
+    } catch (error) {
+      console.error('Error updating availability', error);
+      toast.error('Failed to update availability');
+      
+      // Revert optimistic update on error
+      fetchTimeSlots();
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleAddTimeSlot = () => {
@@ -104,7 +159,7 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
     }));
   };
 
-  const handleCreateTimeSlot = () => {
+  const handleCreateTimeSlot = async () => {
     const { startTime, endTime } = newTimeSlot;
     
     // Validate time format and range
@@ -118,39 +173,100 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
       return;
     }
     
-    // Create new time slot
-    const newSlot: TimeSlot = {
-      id: `new-${Date.now()}`,
-      date: selectedDate,
-      startTime,
-      endTime,
-      isAvailable: true
-    };
-    
-    setAvailableTimeSlots(prev => [...prev, newSlot]);
-    setShowTimeSlotForm(false);
-    
-    // Reset form
-    setNewTimeSlot({
-      startTime: "09:00",
-      endTime: "10:00"
-    });
-    
-    toast.success('New time slot added');
+    try {
+      setIsLoading(true);
+      
+      // Create new time slot in the database
+      const response = await axios.post('/api/availability', {
+        date: selectedDate.toISOString(),
+        startTime,
+        endTime,
+        isAvailable: true
+      });
+      
+      // Add the new slot to the local state
+      const newSlot: TimeSlot = {
+        id: response.data.id,
+        date: selectedDate,
+        startTime,
+        endTime,
+        isAvailable: true
+      };
+      
+      setAvailableTimeSlots(prev => [...prev, newSlot]);
+      setShowTimeSlotForm(false);
+      
+      // Reset form
+      setNewTimeSlot({
+        startTime: "09:00",
+        endTime: "10:00"
+      });
+      
+      toast.success('New time slot added');
+    } catch (error) {
+      console.error('Error creating time slot', error);
+      toast.error('Failed to create time slot');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddWeeklyAvailability = () => {
+    setShowWeeklyAvailabilityForm(true);
+  };
+
+  const applyWeeklyAvailability = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Create time slots for the next 7 days
+      const startDate = new Date(selectedDate);
+      const weekDates = [...Array(7)].map((_, i) => {
+        const date = new Date(startDate);
+        date.setDate(date.getDate() + i);
+        return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+      });
+      
+      // Send request to create weekly availability
+      await axios.post('/api/availability/weekly', {
+        dates: weekDates,
+        startTime: newTimeSlot.startTime,
+        endTime: newTimeSlot.endTime
+      });
+      
+      setShowWeeklyAvailabilityForm(false);
+      toast.success('Weekly availability has been added for the next 7 days');
+      
+      // Refresh the current view
+      fetchTimeSlots();
+    } catch (error) {
+      console.error('Error creating weekly availability', error);
+      toast.error('Failed to create weekly availability');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const saveAvailability = async () => {
     setIsLoading(true);
     
     try {
-      // Here you would make an API call to save the coach's availability
-      // For demo purposes, we'll just simulate a successful save
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Save all time slots for the selected date
+      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+      
+      // Send all available time slots to be saved
+      await axios.post('/api/availability/save-all', {
+        date: formattedDate,
+        timeSlots: availableTimeSlots
+      });
       
       toast.success('Availability updated successfully');
-      router.refresh();
+      
+      // Refresh the data
+      fetchTimeSlots();
     } catch (error) {
-      toast.error('Something went wrong');
+      console.error('Error saving time slots', error);
+      toast.error('Something went wrong while saving your availability');
     } finally {
       setIsLoading(false);
     }
@@ -164,6 +280,27 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
         endDate: value.selection.startDate,
         key: 'selection'
       });
+    }
+  };
+
+  const handleDeleteTimeSlot = async (e: React.MouseEvent, slotId: string) => {
+    e.stopPropagation();
+    
+    if (window.confirm('Are you sure you want to delete this time slot?')) {
+      try {
+        setIsLoading(true);
+        
+        await axios.delete(`/api/availability/${slotId}`);
+        
+        setAvailableTimeSlots(prev => prev.filter(slot => slot.id !== slotId));
+        
+        toast.success('Time slot deleted successfully');
+      } catch (error) {
+        console.error('Error deleting time slot', error);
+        toast.error('Failed to delete time slot');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -185,22 +322,13 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
         </CardContent>
         <CardFooter className="border-t border-neutral-700 pt-4 flex justify-center">
           <Button
-            small
-            outline
-            onClick={() => {
-              const newDate = new Date(selectedDate);
-              const nextWeek = [...Array(7)].map((_, i) => {
-                const date = new Date(newDate);
-                date.setDate(date.getDate() + i);
-                return date;
-              });
-              
-              toast.success('Added availability for the next 7 days');
-            }}
-            label="Add Weekly Availability"
-            icon={AiOutlinePlus}
-            className="max-w-[220px]"
-          />
+            variant="outline"
+            onClick={handleAddWeeklyAvailability}
+            className="w-full justify-center py-2 border-neutral-600 hover:bg-neutral-700 dark:text-white text-neutral-800 hover:text-white bg-transparent dark:bg-transparent flex items-center gap-2"
+          >
+            <AiOutlinePlus />
+            Add Weekly Availability
+          </Button>
         </CardFooter>
       </Card>
 
@@ -223,22 +351,76 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
           </div>
           <div className="flex space-x-2">
             <Button 
-              small
+              size="sm"
               onClick={handleAddTimeSlot}
               disabled={isLoading}
-              label="Add Slot"
-              className="max-w-[100px] py-1.5 bg-blue-500"
-            />
+              className="max-w-[100px] py-1.5 bg-blue-500 hover:bg-blue-600 text-white"
+            >
+              Add Slot
+            </Button>
             <Button 
-              small
+              size="sm"
               onClick={saveAvailability}
               disabled={isLoading}
-              label="Save"
-              className="max-w-[100px] py-1.5"
-            />
+              className="max-w-[100px] py-1.5 bg-neutral-700 hover:bg-neutral-600 text-white"
+            >
+              Save
+            </Button>
           </div>
         </CardHeader>
         <CardContent className="pt-5">
+          {/* Weekly Availability Form */}
+          {showWeeklyAvailabilityForm && (
+            <div className="mb-6 p-4 bg-neutral-900 rounded-md border border-neutral-700">
+              <h3 className="text-white text-sm font-medium mb-3">Add Weekly Availability</h3>
+              <p className="text-neutral-400 text-sm mb-4">
+                This will create the same time slots for the next 7 days.
+              </p>
+              
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm text-neutral-400 mb-1">Daily Start Time</label>
+                  <input
+                    type="time"
+                    name="startTime"
+                    value={newTimeSlot.startTime}
+                    onChange={handleTimeSlotChange}
+                    className="w-full bg-neutral-800 border border-neutral-700 rounded-md p-2 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-neutral-400 mb-1">Daily End Time</label>
+                  <input
+                    type="time"
+                    name="endTime"
+                    value={newTimeSlot.endTime}
+                    onChange={handleTimeSlotChange}
+                    className="w-full bg-neutral-800 border border-neutral-700 rounded-md p-2 text-white"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-2">
+                <button 
+                  onClick={() => setShowWeeklyAvailabilityForm(false)}
+                  className="px-3 py-1.5 text-sm text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition"
+                >
+                  Cancel
+                </button>
+                <div className="mt-2">
+                  <Button 
+                    variant="outline"
+                    onClick={applyWeeklyAvailability}
+                    disabled={isLoading}
+                    className="w-full bg-transparent border-neutral-600 hover:bg-neutral-700 dark:text-white text-neutral-800 hover:text-white"
+                  >
+                    Apply to Selected Day
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+          
           {/* Time Slot Form */}
           {showTimeSlotForm && (
             <div className="mb-6 p-4 bg-neutral-900 rounded-md border border-neutral-700">
@@ -268,7 +450,7 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
               <div className="flex justify-end space-x-2">
                 <button 
                   onClick={() => setShowTimeSlotForm(false)}
-                  className="px-3 py-1.5 text-sm text-neutral-300 hover:text-white transition"
+                  className="px-3 py-1.5 text-sm text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition"
                 >
                   Cancel
                 </button>
@@ -282,7 +464,11 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
             </div>
           )}
         
-          {availableTimeSlots.length > 0 ? (
+          {isLoading ? (
+            <div className="py-12 text-center text-neutral-400">
+              <p>Loading availability...</p>
+            </div>
+          ) : availableTimeSlots.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {availableTimeSlots.map((slot) => (
                 <div 
@@ -304,12 +490,19 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
                       </span>
                     </div>
                   </div>
-                  <div>
+                  <div className="flex items-center space-x-2">
                     {slot.isAvailable ? (
                       <CheckCircle className="h-5 w-5 text-green-500" />
                     ) : (
                       <XCircle className="h-5 w-5 text-neutral-500" />
                     )}
+                    <button
+                      onClick={(e) => handleDeleteTimeSlot(e, slot.id)}
+                      className="ml-2 p-1.5 rounded-full hover:bg-red-500/20 transition-colors"
+                      title="Delete time slot"
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </button>
                   </div>
                 </div>
               ))}
@@ -317,13 +510,13 @@ const ScheduleManagement: React.FC<ScheduleManagementProps> = ({
           ) : (
             <div className="py-12 text-center text-neutral-400 bg-neutral-900/50 rounded-lg border border-neutral-700">
               <p className="mb-3">No time slots available for this date.</p>
-              <Button 
-                small
-                outline
-                label="Add Time Slot"
+              <button 
                 onClick={handleAddTimeSlot}
-                icon={AiOutlinePlus}
-              />
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm"
+              >
+                <Plus className="h-4 w-4" />
+                Add Time Slot
+              </button>
             </div>
           )}
         </CardContent>
