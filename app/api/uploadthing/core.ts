@@ -30,6 +30,33 @@ export const ourFileRouter = {
     chapterVideo: f({ video: { maxFileCount: 1, maxFileSize: "512GB" } })
         .middleware(() => handleAuth())
         .onUploadComplete(() => {}),
+    chapterAudio: f({ audio: { maxFileCount: 1, maxFileSize: "128MB" } })
+        .middleware(() => handleAuth())
+        .onUploadComplete((data) => {
+            console.log("Audio upload complete!", data);
+        }),
+    // New route specifically for ElevenLabs audio
+    elevenLabsAudio: f({ audio: { maxFileSize: "32MB", maxFileCount: 1 } })
+        .middleware(() => {
+            // Get auth data
+            const { userId } = auth();
+            if (!userId) throw new Error("Unauthorized");
+            
+            console.log("ElevenLabs audio upload middleware - userId:", userId);
+            
+            // Return data that is accessible in onUploadComplete
+            return { userId };
+        })
+        .onUploadComplete(({ metadata, file }) => {
+            console.log("ElevenLabs audio upload complete!");
+            console.log("File URL:", file.url);
+            console.log("File name:", file.name);
+            console.log("File size:", file.size);
+            console.log("User ID:", metadata.userId);
+            
+            // Return the file URL to make it available in the client
+            return { url: file.url };
+        }),
     songImageFile: f({ image: { maxFileSize: "128MB", maxFileCount: 1 }})
         .middleware(() => handleAuth())
         .onUploadComplete(() => {}),

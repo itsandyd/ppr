@@ -4,10 +4,6 @@ const nextConfig = {
     RESEND_API_KEY: process.env.RESEND_API_KEY,
   },
   output: "standalone",
-  experimental: {
-    serverActions: true,
-    runtime: "nodejs",
-  },
   staticPageGenerationTimeout: 300,
   images: {
     domains: [

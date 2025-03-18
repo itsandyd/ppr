@@ -79,14 +79,20 @@ export async function POST(
       },
       business_profile: {
         name: user.name || undefined,
-        product_description: 'Music Production Coaching',
-        url: process.env.NEXT_PUBLIC_APP_URL
+        product_description: 'Digital Content Creator on PausePlayRepeat',
+        url: process.env.NEXT_PUBLIC_APP_URL,
+        mcc: "5734" // Computer Software Stores
       },
       settings: {
         payouts: {
           schedule: {
-            interval: 'manual'
+            interval: 'daily'
           }
+        },
+        payments: {
+          statement_descriptor: 'PAUSEPLAYREPEAT',
+          statement_descriptor_kana: 'PAUSEPLAYREPEAT',
+          statement_descriptor_kanji: 'PAUSEPLAYREPEAT'
         }
       }
     }).catch(error => {
@@ -125,6 +131,7 @@ export async function POST(
           timezone: "UTC+0",
           availableDays: JSON.stringify({}),
           stripeAccountId: account.id,
+          stripeAccountStatus: "pending",
         }
       });
     } else {
@@ -135,10 +142,22 @@ export async function POST(
           id: coachProfile.id
         },
         data: {
-          stripeAccountId: account.id
+          stripeAccountId: account.id,
+          stripeAccountStatus: "pending"
         }
       });
     }
+
+    // Also update the User model with the Stripe account ID for global use
+    await db.user.update({
+      where: {
+        id: user.id
+        
+      },
+      data: {
+        stripeConnectAccountId: account.id
+      }
+    });
 
     console.log("[STRIPE_CONNECT_ACCOUNT] Creating account link");
 

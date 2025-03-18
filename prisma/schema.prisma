@@ -161,39 +161,40 @@ model Prompt {
 }
 
 model User {
-  id              String                @id @default(uuid())
-  name            String?
-  email           String?               @unique
-  emailVerified   DateTime?
-  image           String?
-  hashedPassword  String?
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @updatedAt
-  agencyId        String?
-  role            AgencyRole?           @default(SUBACCOUNT_USER)
-  avatarUrl       String?               @db.Text
-  userRoleId      String?
-  userTypeId      String?
-  discordUsername String?
-  discordId       String?               @unique
-  discordVerified Boolean               @default(false)
-  favorites       Favorite[]
-  accounts        Account[]
-  reservations    CoachingReservation[]
-  availability    CoachAvailability[]
-  StorageFolder   StorageFolder[]
-  StorageFile     StorageFile[]
-  SharedTrack     SharedTrack[]
-  Agency          Agency?               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  Permissions     Permissions[]
-  Ticket          Ticket[]
-  Notification    Notification[]
-  Sound           Sounds[]
-  campaigns       Campaign[]
-  MusicProfile    MusicProfile[]
-  VectorEmbedding VectorEmbedding[]
-  playlists       Playlist[]
-  coachProfile    CoachProfile[]
+  id                     String                @id @default(uuid())
+  name                   String?
+  email                  String?               @unique
+  emailVerified          DateTime?
+  image                  String?
+  hashedPassword         String?
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  agencyId               String?
+  role                   AgencyRole?           @default(SUBACCOUNT_USER)
+  avatarUrl              String?               @db.Text
+  userRoleId             String?
+  userTypeId             String?
+  discordUsername        String?
+  discordId              String?               @unique
+  discordVerified        Boolean               @default(false)
+  stripeConnectAccountId String?               @unique
+  favorites              Favorite[]
+  accounts               Account[]
+  reservations           CoachingReservation[]
+  availability           CoachAvailability[]
+  storageFolder          StorageFolder[]
+  storageFile            StorageFile[]
+  sharedTrack            SharedTrack[]
+  agency                 Agency?               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  permissions            Permissions[]
+  ticket                 Ticket[]
+  notification           Notification[]
+  sound                  Sounds[]
+  campaigns              Campaign[]
+  musicProfile           MusicProfile[]
+  vectorEmbedding        VectorEmbedding[]
+  playlists              Playlist[]
+  coachProfile           CoachProfile[]
 
   @@index([agencyId])
 }
@@ -396,6 +397,7 @@ model CourseChapter {
   title        String
   description  String?           @db.Text
   videoUrl     String?           @db.Text
+  audioUrl     String?           @db.Text
   position     Int
   isPublished  Boolean           @default(false)
   isFree       Boolean           @default(false)
