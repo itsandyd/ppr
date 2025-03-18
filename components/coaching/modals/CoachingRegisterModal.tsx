@@ -471,7 +471,7 @@ const CoachingRegisterModal = () => {
                         onClick={async () => {
                             try {
                                 setIsLoading(true);
-                                // Call our API to create a Stripe Connect account link
+                                // Call our API to create a Stripe Connect account
                                 const response = await axios.post('/api/stripe/connect-account');
                                 
                                 // Store any relevant Stripe information we need for later
@@ -488,9 +488,20 @@ const CoachingRegisterModal = () => {
                                     // Open in a new tab so they can return to the form
                                     window.open(response.data.url, '_blank');
                                 }
-                            } catch (error) {
-                                console.error("Stripe Connect error:", error);
-                                toast.error("Failed to initiate Stripe Connect. Please try again.");
+                            } catch (error: any) {
+                                console.error("Stripe Connect error:", {
+                                    message: error.message,
+                                    response: error.response?.data,
+                                    status: error.response?.status
+                                });
+                                
+                                // Display a more specific error message
+                                const errorMessage = error.response?.data?.error 
+                                    || error.response?.data 
+                                    || error.message 
+                                    || "Failed to initiate Stripe Connect";
+                                    
+                                toast.error(errorMessage);
                             } finally {
                                 setIsLoading(false);
                             }

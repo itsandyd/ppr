@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs";
 import Stripe from 'stripe';
 import { db } from '@/lib/db';
 
@@ -20,23 +20,19 @@ export async function POST(
   req: Request,
 ) {
   try {
-    // Verify Stripe configuration
-    try {
-      await stripe.accounts.list({ limit: 1 });
-    } catch (error: any) {
-      console.error("[STRIPE_CONFIG_ERROR]", {
-        error: error.message,
-        type: error.type,
-        code: error.code
-      });
-      return new NextResponse("Stripe configuration error. Please check your API keys.", { status: 500 });
-    }
-
+    // Get the authenticated user from Clerk
     const { userId } = auth();
+    const clerkUser = await currentUser();
 
-    if (!userId) {
+    if (!userId || !clerkUser) {
+      console.error("[STRIPE_CONNECT_ACCOUNT_ERROR] No authenticated user");
       return new NextResponse("Unauthorized", { status: 401 });
     }
+
+    console.log("[STRIPE_CONNECT_ACCOUNT] User data:", {
+      userId,
+      email: clerkUser.emailAddresses[0]?.emailAddress,
+    });
 
     // First, find or create the user
     let user = await db.user.findFirst({
@@ -51,31 +47,55 @@ export async function POST(
       user = await db.user.create({
         data: {
           id: userId,
+          email: clerkUser.emailAddresses[0]?.emailAddress,
+          name: clerkUser.firstName ? `${clerkUser.firstName} ${clerkUser.lastName || ''}`.trim() : undefined,
         }
       });
     }
 
-    console.log("[STRIPE_CONNECT_ACCOUNT] Creating Stripe account for user:", userId);
+    if (!user.email && clerkUser.emailAddresses[0]?.emailAddress) {
+      // Update user with email if it's missing
+      user = await db.user.update({
+        where: { id: userId },
+        data: { email: clerkUser.emailAddresses[0].emailAddress }
+      });
+    }
+
+    console.log("[STRIPE_CONNECT_ACCOUNT] Creating Stripe account for user:", {
+      userId,
+      email: user.email,
+      name: user.name
+    });
     
     // Create Stripe Connect account
     const account = await stripe.accounts.create({
       type: 'express',
       country: 'US',
       email: user.email || undefined,
+      business_type: 'individual',
       capabilities: {
         card_payments: { requested: true },
         transfers: { requested: true },
       },
-      business_type: 'individual',
-      tos_acceptance: {
-        service_agreement: 'recipient',
+      business_profile: {
+        name: user.name || undefined,
+        product_description: 'Music Production Coaching',
+        url: process.env.NEXT_PUBLIC_APP_URL
       },
+      settings: {
+        payouts: {
+          schedule: {
+            interval: 'manual'
+          }
+        }
+      }
     }).catch(error => {
       console.error("[STRIPE_ACCOUNT_CREATE_ERROR]", {
         error: error.message,
         type: error.type,
         code: error.code,
-        userId: userId
+        userId: userId,
+        email: user.email
       });
       throw error;
     });
@@ -153,7 +173,11 @@ export async function POST(
     const errorMessage = error.message || "Internal Error";
     const statusCode = error.statusCode || 500;
     
-    return new NextResponse(errorMessage, { 
+    return new NextResponse(JSON.stringify({ 
+      error: errorMessage,
+      code: error.code,
+      type: error.type
+    }), { 
       status: statusCode,
       headers: {
         'Content-Type': 'application/json'
