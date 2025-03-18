@@ -80,9 +80,12 @@ const CoachSettingsPage = () => {
         window.open(response.data.url, '_blank');
         toast.success("Redirecting to Stripe Connect...");
       }
-    } catch (error) {
-      console.error("Error connecting Stripe:", error);
-      toast.error("Failed to connect with Stripe");
+    } catch (error: any) {
+      console.error("Error connecting Stripe:", {
+        message: error.message,
+        response: error.response?.data
+      });
+      toast.error(error.response?.data || "Failed to connect with Stripe");
     } finally {
       setLoading(false);
     }
@@ -97,7 +100,7 @@ const CoachSettingsPage = () => {
         return;
       }
       
-      const response = await axios.get(`/api/stripe/refresh-status?accountId=${stripeStatus.accountId}`);
+      const response = await axios.get(`/api/stripe/refresh-status`);
       
       if (response.data) {
         setStripeStatus(prev => ({
