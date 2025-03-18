@@ -28,6 +28,7 @@ const CourseIdPage = async ({
            isPublished: true,
            position: 1,
            videoUrl: null,
+           audioUrl: null,
            isFree: true,
            courseId: params.courseId,
            userProgress: []
@@ -41,6 +42,7 @@ const CourseIdPage = async ({
            isPublished: true,
            position: 2,
            videoUrl: null,
+           audioUrl: null,
            isFree: false,
            courseId: params.courseId,
            userProgress: []
