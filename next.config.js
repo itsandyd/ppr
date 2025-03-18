@@ -5,6 +5,9 @@ const nextConfig = {
   },
   output: "standalone",
   staticPageGenerationTimeout: 300,
+  experimental: {
+    serverActions: true,
+  },
   images: {
     domains: [
       "uploadthing.com",
