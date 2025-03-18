@@ -193,6 +193,7 @@ model User {
   MusicProfile    MusicProfile[]
   VectorEmbedding VectorEmbedding[]
   playlists       Playlist[]
+  coachProfile    CoachProfile[]
 
   @@index([agencyId])
 }
@@ -247,6 +248,36 @@ model CoachingListing {
   userId        String
   price         Int
   reservations  CoachingReservation[]
+
+  @@index([userId])
+}
+
+model CoachProfile {
+  id                     String   @id @default(uuid())
+  userId                 String
+  category               String
+  location               String
+  imageSrc               String
+  basePrice              Int
+  title                  String
+  description            String   @db.Text
+  discordUsername        String
+  discordId              String?
+  alternativeContact     String?
+  professionalBackground String?  @db.Text
+  certifications         String?  @db.Text
+  notableProjects        String?  @db.Text
+  timezone               String
+  availableDays          String   @db.Text // JSON string of available days
+  availableHours         String?
+  isActive               Boolean  @default(true)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  // Stripe Connect fields
+  stripeAccountId        String?
+  stripeConnectComplete  Boolean  @default(false)
+  stripeAccountStatus    String?  @default("pending")
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
