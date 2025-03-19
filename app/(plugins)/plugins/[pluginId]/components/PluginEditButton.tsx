@@ -14,7 +14,7 @@ export const PluginEditButton = ({
     const router = useRouter();
 
     const handleEdit = () => {
-        router.push(`/dashboard/plugins/${pluginId}`);
+        router.push(`/plugins/dashboard/${pluginId}`);
     };
 
     return (
