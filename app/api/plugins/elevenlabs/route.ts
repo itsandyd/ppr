@@ -8,7 +8,7 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 // Set runtime to nodejs to avoid edge runtime limitations
-export const runtime = "nodejs";
+export const maxDuration = 300; // 300 seconds (5 minutes) maximum timeout
 
 // Create a new Prisma Client instance
 const prisma = new PrismaClient();
@@ -210,36 +210,23 @@ export async function POST(req: Request) {
       const s3ObjectKey = await uploadAudioStreamToS3(audioBuffer);
       console.log(`Audio uploaded to S3: ${s3ObjectKey}`);
       
-      // Generate a presigned URL for the uploaded audio
-      const audioUrl = await generatePresignedUrl(s3ObjectKey);
-      console.log("Presigned URL generated for audio access");
-      
-      // Get the direct S3 URL to store in the database
+      // Get the direct S3 URL to store in the database - NO PRESIGNED URL
       const directS3Url = getS3Url(s3ObjectKey);
+      console.log("Direct S3 URL for database and video generation:", directS3Url);
       
-      // Find the plugin and update it with the audio URL
-      const plugin = await prisma.plugin.findUnique({
-        where: { id: pluginId }
-      });
-      
-      if (!plugin) {
-        return new NextResponse("Plugin not found", { status: 404 });
-      }
-      
-      // Update the plugin with the audio URL
+      // Update the plugin with the direct S3 URL
       await prisma.plugin.update({
         where: { id: pluginId },
         data: {
           audioUrl: directS3Url,
         }
       });
-      console.log("Plugin updated with audio URL");
+      console.log("Plugin updated with direct S3 audio URL");
       
-      // Return the audio information
+      // Return the audio information with the DIRECT URL, not the presigned URL
       return NextResponse.json({
-        audioUrl: audioUrl, // Presigned URL for immediate access
+        audioUrl: directS3Url, // Use direct URL instead of presigned URL
         audioKey: s3ObjectKey,
-        s3Url: directS3Url, // Include the direct URL in the response
         pluginId: pluginId,
         success: true,
         message: "Audio generated and uploaded to S3 successfully."

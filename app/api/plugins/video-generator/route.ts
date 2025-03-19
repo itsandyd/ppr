@@ -3,8 +3,8 @@ import { auth } from "@clerk/nextjs";
 import { db } from "@/lib/db";
 import { fal } from "@fal-ai/client";
 
-// Configure for Edge runtime to get longer timeouts on Vercel
-export const maxDuration = 300; // 60 seconds for Pro plan, adjust as needed
+// Configure for longer timeouts on Vercel
+export const maxDuration = 300; // 300 seconds (5 minutes) maximum timeout
 
 export async function POST(req: Request) {
   console.log("API route /api/plugins/video-generator called");
@@ -69,30 +69,9 @@ export async function POST(req: Request) {
     // Use the direct URL from the database instead of the presigned URL
     let fullAudioUrl = plugin.audioUrl;
     
-    // Handle Amazon S3 signed URLs which cause FFmpeg errors
+    // Handle Amazon S3 signed URLs - but don't replace with fallback
     if (fullAudioUrl.includes("X-Amz-Algorithm") || fullAudioUrl.includes("X-Amz-Signature")) {
-      console.log("Detected S3 signed URL, this will likely cause FFmpeg errors");
-      
-      try {
-        console.log("Attempting to download the audio to use a direct path instead...");
-        // Try to download the audio file and use a direct URL that's known to work
-        const audioResponse = await fetch(fullAudioUrl);
-        
-        if (!audioResponse.ok) {
-          console.error("Failed to download audio file from S3");
-          // Fall back to a sample audio file
-          fullAudioUrl = "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars3.wav";
-          console.log("Falling back to sample audio:", fullAudioUrl);
-        } else {
-          console.log("Successfully downloaded audio file, using sample audio for reliability");
-          // For simplicity, still use a known working audio file that Fal.ai can process reliably
-          fullAudioUrl = "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars3.wav";
-        }
-      } catch (downloadError) {
-        console.error("Error downloading audio file:", downloadError);
-        fullAudioUrl = "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars3.wav";
-        console.log("Falling back to sample audio due to download error:", fullAudioUrl);
-      }
+      console.log("Detected S3 signed URL, attempting to use it directly");
     }
     
     // Ensure the audioUrl is accessible to external services
@@ -100,12 +79,6 @@ export async function POST(req: Request) {
     if (fullAudioUrl.startsWith("/")) {
       fullAudioUrl = `${process.env.NEXT_PUBLIC_APP_URL}${fullAudioUrl}`;
       console.log("Converted relative audio URL to absolute:", fullAudioUrl);
-    }
-
-    // If the URL is still too long (has query parameters), use a sample URL
-    if (fullAudioUrl.includes("?")) {
-      console.log("URL has query parameters, using sample audio instead");
-      fullAudioUrl = "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars3.wav";
     }
 
     // Determine what image to use for the video
@@ -118,9 +91,8 @@ export async function POST(req: Request) {
         imageUrlToUse = plugin.image;
         console.log("Using plugin image URL:", imageUrlToUse);
       } else {
-        // Use a default image if no plugin image is available
-        imageUrlToUse = "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg";
-        console.log("No plugin image found, using default placeholder");
+        console.error("No plugin image found and no cover image provided");
+        return new NextResponse("No image available for video. Please provide a cover image or set a plugin image.", { status: 400 });
       }
     }
 
@@ -201,7 +173,7 @@ export async function POST(req: Request) {
       // Continue anyway - the URLs might still work with Fal.ai
     }
 
-    // Prepare the input for Fal.ai FFmpeg API
+    // Prepare the input for Fal.ai FFmpeg API - use actual URLs directly
     const input = {
       tracks: [
         // Image track (video)
@@ -211,7 +183,7 @@ export async function POST(req: Request) {
           keyframes: [
             {
               timestamp: 0,
-              duration: estimatedDuration, // Use estimated duration based on text length
+              duration: estimatedDuration,
               url: imageUrlToUse
             }
           ]
@@ -223,7 +195,7 @@ export async function POST(req: Request) {
           keyframes: [
             {
               timestamp: 0,
-              duration: estimatedDuration, // Use estimated duration based on text length
+              duration: estimatedDuration,
               url: fullAudioUrl
             }
           ]
@@ -234,89 +206,19 @@ export async function POST(req: Request) {
     try {
       console.log("Calling Fal.ai FFmpeg API with input:", JSON.stringify(input));
       
-      // Try with simplified settings first
-      const simplifiedInput = {
-        tracks: [
-          // Image track (video) with shorter duration
-          {
-            id: "image-track",
-            type: "video",
-            keyframes: [
-              {
-                timestamp: 0,
-                duration: Math.min(estimatedDuration, 60000), // Cap at 1 minute max for first attempt
-                url: imageUrlToUse
-              }
-            ]
-          },
-          // Audio track with shorter duration
-          {
-            id: "audio-track",
-            type: "audio",
-            keyframes: [
-              {
-                timestamp: 0,
-                duration: Math.min(estimatedDuration, 60000), // Cap at 1 minute max for first attempt
-                url: fullAudioUrl
-              }
-            ]
+      // Use actual input with no fallbacks
+      let result = await fal.subscribe("fal-ai/ffmpeg-api/compose", {
+        input,
+        logs: true,
+        onQueueUpdate: (update: { status: string; logs?: { message: string }[] }) => {
+          if (update.status === "IN_PROGRESS" && update.logs) {
+            update.logs.map((log) => log.message).forEach(console.log);
           }
-        ]
-      };
-      
-      console.log("Attempting with simplified input first:", JSON.stringify(simplifiedInput));
-      
-      // Make the duration much shorter for better reliability
-      const simplestInput = {
-        tracks: [
-          // Image track (video) with very short duration
-          {
-            id: "image-track",
-            type: "video",
-            keyframes: [
-              {
-                timestamp: 0,
-                duration: 30000, // Just 30 seconds max
-                url: "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg" // Use known working image
-              }
-            ]
-          },
-          // Audio track with very short duration
-          {
-            id: "audio-track",
-            type: "audio",
-            keyframes: [
-              {
-                timestamp: 0,
-                duration: 30000, // Just 30 seconds max
-                url: "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars3.wav" // Use known working audio
-              }
-            ]
-          }
-        ]
-      };
-      
-      console.log("Attempting with absolute minimal input for reliability:", JSON.stringify(simplestInput));
-      
-      let result;
-      try {
-        // Try first with simplest input with known working files
-        result = await fal.subscribe("fal-ai/ffmpeg-api/compose", {
-          input: simplestInput,
-          logs: true,
-          onQueueUpdate: (update: { status: string; logs?: { message: string }[] }) => {
-            if (update.status === "IN_PROGRESS" && update.logs) {
-              update.logs.map((log) => log.message).forEach(console.log);
-            }
-          }
-        }).catch((err) => {
-          console.error("Fal.ai API call with simplest input threw an exception:", err);
-          throw new Error(`Fal.ai API error with simplest input: ${err.message || 'Unknown error'}`);
-        });
-      } catch (simplestError) {
-        console.log("Even simplest attempt failed, service may be unavailable:", simplestError);
-        return new NextResponse("The video generation service is currently unavailable. Please try again later or upload a video manually.", { status: 503 });
-      }
+        }
+      }).catch((err) => {
+        console.error("Fal.ai API call threw an exception:", err);
+        throw new Error(`Fal.ai API error: ${err.message || 'Unknown error'}`);
+      });
       
       if (!result) {
         console.error("Fal.ai result is undefined");
