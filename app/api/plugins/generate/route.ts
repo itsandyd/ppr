@@ -54,8 +54,9 @@ IMPORTANT: The script MUST end with a similar closing line: "Want to get your ha
 Script:
 `);
 
+// Define and export the POST function directly
 export async function POST(req: Request) {
-  console.log("API route /api/plugins/generate-script called");
+  console.log("API route /api/plugins/generate called");
   try {
     const { userId } = auth();
     const body = await req.json();
@@ -113,10 +114,34 @@ export async function POST(req: Request) {
     return NextResponse.json({ 
       script,
       message: "Video script generated successfully"
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      }
     });
   } catch (error) {
     console.error("[GENERATE_SCRIPT_ERROR]", error);
     const errorMessage = error instanceof Error ? error.message : "Internal error";
-    return new NextResponse(errorMessage, { status: 500 });
+    return new NextResponse(errorMessage, { 
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      }
+    });
   }
+}
+
+// Add OPTIONS method handler for CORS preflight requests
+export async function OPTIONS(req: Request) {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }
+  });
 } 

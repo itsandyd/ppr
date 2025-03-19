@@ -12,6 +12,7 @@ export default authMiddleware({
     "/api/leads",
     "/api/uploadthing",
     "/api/uploadthing/:path*",
+    "/api/plugins/generate",
 
     // Discord API endpoints
     "/api/discord/verify-username",
