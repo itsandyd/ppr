@@ -39,19 +39,25 @@ const PluginIdPage = async ({ params }: PluginPageProps) => {
         }
     });
 
-    // Query the plugin based on ID/slug and either user ownership or admin access
+    // Query the plugin without user restrictions
     const plugin = await db.plugin.findFirst({
         where: {
             OR: [
                 { id: params.pluginId },
                 { slug: params.pluginId }
             ],
-            ...(user?.admin ? {} : { userId }),
         },
     });
 
+    // If no plugin is found, redirect
     if (!plugin) {
         return redirect("/");
+    }
+
+    // Check if user is authorized to view this plugin
+    // Allow access only if user is the creator OR user is an admin
+    if (plugin.userId !== userId && !user?.admin) {
+        return redirect("/plugins");
     }
 
     const effectCategories = (await db.pluginEffectCategory.findMany({
