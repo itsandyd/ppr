@@ -29,13 +29,24 @@ const PluginIdPage = async ({ params }: PluginPageProps) => {
         return redirect("/");
     }
 
+    // Get the current user to check if they're an admin
+    const user = await db.user.findUnique({
+        where: {
+            id: userId,
+        },
+        select: {
+            admin: true,
+        }
+    });
+
+    // Query the plugin based on ID/slug and either user ownership or admin access
     const plugin = await db.plugin.findFirst({
         where: {
             OR: [
                 { id: params.pluginId },
                 { slug: params.pluginId }
             ],
-            // userId,
+            ...(user?.admin ? {} : { userId }),
         },
     });
 

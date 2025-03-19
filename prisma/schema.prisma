@@ -178,6 +178,7 @@ model User {
   discordId              String?               @unique
   discordVerified        Boolean               @default(false)
   stripeConnectAccountId String?               @unique
+  admin                  Boolean               @default(false)
   favorites              Favorite[]
   accounts               Account[]
   reservations           CoachingReservation[]
