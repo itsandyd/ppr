@@ -98,6 +98,13 @@ export const ourFileRouter = {
     playlistImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
         .middleware(() => handleAuth())
         .onUploadComplete(() => {}),
+    // Plugin endpoints
+    pluginVideo: f({ video: { maxFileCount: 1, maxFileSize: "512GB" } })
+        .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
+    pluginAudio: f({ audio: { maxFileCount: 1, maxFileSize: "128MB" } })
+        .middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
 } satisfies FileRouter;
  
 export type OurFileRouter = typeof ourFileRouter;

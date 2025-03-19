@@ -2,17 +2,15 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs";
 import { db } from "@/lib/db";
 import { PrismaClient } from "@prisma/client";
-import { createRouteHandler } from "uploadthing/next";
-import { ourFileRouter } from "../uploadthing/core";
 import { ElevenLabsClient } from "elevenlabs";
 import { v4 as uuidv4 } from "uuid";
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-// Set runtime to nodejs to avoid edge runtime limitations with UploadThing
+// Set runtime to nodejs to avoid edge runtime limitations
 export const runtime = "nodejs";
 
-// Create a new Prisma Client instance to ensure we have the latest schema
+// Create a new Prisma Client instance
 const prisma = new PrismaClient();
 
 // Initialize S3 client
@@ -49,7 +47,7 @@ const getS3Url = (objectKey: string) => {
 
 // Function to upload audio buffer to S3
 const uploadAudioStreamToS3 = async (audioStream: Buffer) => {
-  const remotePath = `audio/${uuidv4()}.mp3`;
+  const remotePath = `audio/plugins/${uuidv4()}.mp3`;
   await s3.send(
     new PutObjectCommand({
       Bucket: AWS_S3_BUCKET_NAME,
@@ -60,11 +58,6 @@ const uploadAudioStreamToS3 = async (audioStream: Buffer) => {
   );
   return remotePath;
 };
-
-// Create route handler for uploadthing
-export const { POST: uploadthingPost, GET: uploadthingGet } = createRouteHandler({
-  router: ourFileRouter,
-});
 
 // Simple function to strip markdown formatting for cleaner TTS
 function stripMarkdown(text: string): string {
@@ -134,25 +127,37 @@ async function createAudioBufferFromText(text: string): Promise<Buffer> {
 export async function POST(req: Request) {
   try {
     const { userId } = auth();
-    const { text, chapterId: recordId } = await req.json();
+    const { text, pluginId } = await req.json();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!text) {
-      return new NextResponse("Text is required", { status: 400 });
+    if (!pluginId) {
+      return new NextResponse("Plugin ID is required", { status: 400 });
     }
 
-    if (!recordId) {
-      return new NextResponse("ID is required", { status: 400 });
+    // Find the plugin to get the video script or description if text isn't provided
+    const plugin = await prisma.plugin.findUnique({
+      where: { id: pluginId }
+    });
+    
+    if (!plugin) {
+      return new NextResponse("Plugin not found", { status: 404 });
     }
 
-    console.log("Generating audio with ElevenLabs TTS...");
-    console.log("Text length:", text.length);
+    // Use provided text, or fall back to video script, or finally use description
+    const textToUse = text || plugin.videoScript || plugin.description || "";
+    
+    if (!textToUse) {
+      return new NextResponse("No text content available for audio generation", { status: 400 });
+    }
+
+    console.log("Generating audio with ElevenLabs TTS for plugin...");
+    console.log("Text length:", textToUse.length);
 
     // Clean the text by removing markdown formatting
-    const cleanedText = stripMarkdown(text);
+    const cleanedText = stripMarkdown(textToUse);
     console.log("Text cleaned of markdown formatting");
 
     // For very long texts, we might need to chunk or summarize
@@ -180,36 +185,30 @@ export async function POST(req: Request) {
       // Get the direct S3 URL to store in the database
       const directS3Url = getS3Url(s3ObjectKey);
       
-      // Determine if we're updating a course chapter or a plugin based on ID format or existence
-      const isPlugin = await prisma.plugin.findUnique({ where: { id: recordId } });
+      // Find the plugin and update it with the audio URL
+      const plugin = await prisma.plugin.findUnique({
+        where: { id: pluginId }
+      });
       
-      if (isPlugin) {
-        // Update the plugin with the audio URL
-        await prisma.plugin.update({
-          where: { id: recordId },
-          data: {
-            audioUrl: directS3Url,
-          }
-        });
-        console.log("Plugin updated with full S3 URL");
-      } else {
-        // Update the course chapter with the audio URL (original behavior)
-        await prisma.courseChapter.update({
-          where: { id: recordId },
-          data: {
-            audioUrl: directS3Url,
-            description: truncatedText
-          }
-        });
-        console.log("Course chapter updated with full S3 URL");
+      if (!plugin) {
+        return new NextResponse("Plugin not found", { status: 404 });
       }
+      
+      // Update the plugin with the audio URL
+      await prisma.plugin.update({
+        where: { id: pluginId },
+        data: {
+          audioUrl: directS3Url,
+        }
+      });
+      console.log("Plugin updated with audio URL");
       
       // Return the audio information
       return NextResponse.json({
         audioUrl: audioUrl, // Presigned URL for immediate access
         audioKey: s3ObjectKey,
         s3Url: directS3Url, // Include the direct URL in the response
-        chapterId: recordId,
+        pluginId: pluginId,
         success: true,
         message: "Audio generated and uploaded to S3 successfully."
       });
@@ -226,7 +225,7 @@ export async function POST(req: Request) {
       await prisma.$disconnect();
     }
   } catch (error) {
-    console.error("[ELEVENLABS_ERROR]", error);
+    console.error("[PLUGIN_ELEVENLABS_ERROR]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 } 

@@ -549,7 +549,10 @@ model Plugin {
   slug         String?         @default("")
   author       String?
   description  String?         @db.Text
+  videoScript  String?         @db.Text
   image        String?         @db.Text
+  videoUrl     String?         @db.Text
+  audioUrl     String?         @db.Text
   userId       String?
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt

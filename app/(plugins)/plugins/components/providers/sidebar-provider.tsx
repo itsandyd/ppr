@@ -26,7 +26,15 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 export function useSidebar() {
   const context = useContext(SidebarContext);
   if (context === undefined) {
-    throw new Error('useSidebar must be used within a SidebarProvider');
+    // Log the component stack to help identify where the hook is being used incorrectly
+    console.warn("SidebarProvider not found. The useSidebar hook must be used within a SidebarProvider component.", 
+      new Error().stack);
+    
+    // Return a default implementation
+    return {
+      isCollapsed: false,
+      toggleCollapse: () => {}
+    };
   }
   return context;
 } 

@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { SidebarProvider } from "../../../components/providers/sidebar-provider";
 
 import {
   Form,
@@ -19,6 +20,8 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { IconBadge } from "@/components/courses/icon-badge";
+import { LayoutDashboard } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -40,7 +43,7 @@ const CreatePage = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const response = await axios.post("/api/plugins", values);
-      router.push(`/dashboard/plugins/${response.data.id}`);
+      router.push(`/plugins/dashboard/plugins/${response.data.id}`);
       toast.success("Plugin created");
     } catch {
       toast.error("Something went wrong");
@@ -48,61 +51,75 @@ const CreatePage = () => {
   }
 
   return ( 
-    <div className="max-w-5xl mx-auto flex md:items-center md:justify-center h-full p-6">
-      <div>
-        <h1 className="text-2xl">
-          What is the name of your plugin?
-        </h1>
-        {/* <p className="text-sm text-slate-600">
-          What is the nam? Don&apos;t worry, you can change this later.
-        </p> */}
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Plugin Title
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isSubmitting}
-                      placeholder="e.g. 'My Plugin'"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    What is the name of your plugin?
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <SidebarProvider>
+      <div className="p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-y-2">
+            <h1 className="text-2xl font-medium">Create a New Plugin</h1>
+            <span className="text-sm text-muted-foreground">
+              Start by giving your plugin a name
+            </span>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+          <div>
             <div className="flex items-center gap-x-2">
-              <Link href="/">
-                <Button
-                  type="button"
-                  variant="ghost"
-                >
-                  Cancel
-                </Button>
-              </Link>
-              <Button
-                type="submit"
-                disabled={!isValid || isSubmitting}
-              >
-                Continue
-              </Button>
+              <IconBadge icon={LayoutDashboard} variant="success" />
+              <h2 className="text-xl font-bold">
+                Plugin Details
+              </h2>
             </div>
-          </form>
-        </Form>
+            
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8 mt-8"
+              >
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Plugin Title
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isSubmitting}
+                          placeholder="e.g. 'My Plugin'"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        What is the name of your plugin?
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex items-center gap-x-2">
+                  <Link href="/plugins">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                    >
+                      Cancel
+                    </Button>
+                  </Link>
+                  <Button
+                    type="submit"
+                    disabled={!isValid || isSubmitting}
+                  >
+                    Continue
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
    );
 }
  

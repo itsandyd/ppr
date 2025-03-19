@@ -1,7 +1,7 @@
 "use client";
 
 import { PluginNavbarRoutes } from "./plugin-navbar-routes";
-import { useSidebar } from "../providers/sidebar-provider";
+import { useSidebar, SidebarProvider } from "../providers/sidebar-provider";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Menu } from "lucide-react";
@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { PluginSidebarRoutes } from "../sidebar/plugin-sidebar-routes";
 
-export const PluginNavbar = () => {
+// Inner component that uses the context
+const PluginNavbarContent = () => {
     const { isCollapsed } = useSidebar();
 
     return ( 
@@ -45,4 +46,13 @@ export const PluginNavbar = () => {
             </div>
         </div>
      );
+}
+
+// Wrapper component that provides the context
+export const PluginNavbar = () => {
+    return (
+        <SidebarProvider>
+            <PluginNavbarContent />
+        </SidebarProvider>
+    );
 }

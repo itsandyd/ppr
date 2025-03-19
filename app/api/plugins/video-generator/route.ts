@@ -6,69 +6,61 @@ import { fal } from "@fal-ai/client";
 export async function POST(req: Request) {
   try {
     const { userId } = auth();
-    const { audioUrl, coverImageUrl, chapterId: recordId, textLength } = await req.json();
+    const { audioUrl, coverImageUrl, pluginId, textLength } = await req.json();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!audioUrl) {
-      return new NextResponse("Audio URL is required", { status: 400 });
+    if (!pluginId) {
+      return new NextResponse("Plugin ID is required", { status: 400 });
     }
 
-    if (!recordId) {
-      return new NextResponse("ID is required", { status: 400 });
+    // Find the plugin to get its data
+    const plugin = await db.plugin.findUnique({
+      where: { id: pluginId }
+    });
+    
+    if (!plugin) {
+      return new NextResponse("Plugin not found", { status: 404 });
     }
 
-    console.log("Audio URL received:", audioUrl);
+    // Check if the plugin has an audioUrl
+    if (!plugin.audioUrl) {
+      return new NextResponse("Plugin has no audio URL", { status: 400 });
+    }
+
+    console.log("Plugin audioUrl from database:", plugin.audioUrl);
+    
+    // Use the direct URL from the database instead of the presigned URL
+    let fullAudioUrl = plugin.audioUrl;
     
     // Ensure the audioUrl is accessible to external services
     // If it's a relative URL, make it absolute
-    let fullAudioUrl = audioUrl;
-    if (audioUrl.startsWith("/")) {
-      fullAudioUrl = `${process.env.NEXT_PUBLIC_APP_URL}${audioUrl}`;
+    if (fullAudioUrl.startsWith("/")) {
+      fullAudioUrl = `${process.env.NEXT_PUBLIC_APP_URL}${fullAudioUrl}`;
       console.log("Converted relative audio URL to absolute:", fullAudioUrl);
     }
 
-    // Determine if we're working with a plugin or a course chapter
-    const isPlugin = await db.plugin.findUnique({ where: { id: recordId } });
+    // If the URL is still too long (has query parameters), use a sample URL
+    if (fullAudioUrl.includes("?")) {
+      console.log("URL has query parameters, using sample audio instead");
+      fullAudioUrl = "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars3.wav";
+    }
 
-    // Instead of requiring coverImageUrl, check if it exists
-    // If not, get the image from the chapter/plugin record
+    // Determine what image to use for the video
     let imageUrlToUse = coverImageUrl;
     
     if (!imageUrlToUse || imageUrlToUse === "") {
-      console.log("No cover image URL provided, attempting to use source image");
+      console.log("No cover image URL provided, attempting to use plugin image");
       
-      if (isPlugin) {
-        // Get the plugin image
-        const plugin = await db.plugin.findUnique({
-          where: { id: recordId }
-        });
-        
-        if (plugin?.image) {
-          imageUrlToUse = plugin.image;
-          console.log("Using plugin image URL:", imageUrlToUse);
-        } else {
-          // Use a default image if no plugin image is available
-          imageUrlToUse = "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg";
-          console.log("No plugin image found, using default placeholder");
-        }
+      if (plugin.image) {
+        imageUrlToUse = plugin.image;
+        console.log("Using plugin image URL:", imageUrlToUse);
       } else {
-        // Get the chapter and its course to find the course image
-        const chapter = await db.courseChapter.findUnique({
-          where: { id: recordId },
-          include: { course: true }
-        });
-        
-        if (chapter?.course?.imageUrl) {
-          imageUrlToUse = chapter.course.imageUrl;
-          console.log("Using course image URL:", imageUrlToUse);
-        } else {
-          // Use a default image if no course image is available
-          imageUrlToUse = "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg";
-          console.log("No course image found, using default placeholder");
-        }
+        // Use a default image if no plugin image is available
+        imageUrlToUse = "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg";
+        console.log("No plugin image found, using default placeholder");
       }
     }
 
@@ -163,35 +155,14 @@ export async function POST(req: Request) {
         // Continue anyway - the URL might still work in the player
       }
       
-      if (isPlugin) {
-        // Update the plugin with the video URL
-        await db.plugin.update({
-          where: { id: recordId },
-          data: {
-            videoUrl: videoUrl,
-          }
-        });
-        console.log("Plugin updated with video URL");
-      } else {
-        // Get the existing chapter data to check if it has Mux data
-        const existingChapter = await db.courseChapter.findUnique({
-          where: { id: recordId },
-          include: { muxData: true }
-        });
-        
-        // Save the video URL to the chapter
-        await db.courseChapter.update({
-          where: { id: recordId },
-          data: {
-            videoUrl: videoUrl,
-            muxData: { 
-              // If we're not using Mux anymore, delete any existing Mux data
-              delete: existingChapter?.muxData ? true : undefined
-            }
-          }
-        });
-        console.log("Course chapter updated with video URL");
-      }
+      // Update the plugin with the video URL
+      await db.plugin.update({
+        where: { id: pluginId },
+        data: {
+          videoUrl: videoUrl,
+        }
+      });
+      console.log("Plugin updated with video URL");
       
       // Return the generated video URL
       return NextResponse.json({ 
@@ -205,7 +176,7 @@ export async function POST(req: Request) {
     }
 
   } catch (error) {
-    console.error("[VIDEO_GENERATOR_ERROR]", error);
+    console.error("[PLUGIN_VIDEO_GENERATOR_ERROR]", error);
     return new NextResponse("Internal server error", { status: 500 });
   }
 } 

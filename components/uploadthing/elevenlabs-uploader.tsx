@@ -15,7 +15,8 @@ interface FileResponse {
 interface ElevenLabsUploaderProps {
   audioData: string;
   audioFilename: string;
-  chapterId: string;
+  chapterId?: string;
+  pluginId?: string;
   onUploadComplete?: (audioUrl: string) => void;
   onUploadError?: (error: Error) => void;
   onUploadStart?: () => void;
@@ -25,6 +26,7 @@ export function ElevenLabsUploader({
   audioData,
   audioFilename,
   chapterId,
+  pluginId,
   onUploadComplete,
   onUploadError,
   onUploadStart
@@ -46,13 +48,22 @@ export function ElevenLabsUploader({
       console.log("Upload complete! URL:", url);
       
       try {
-        // Update chapter with the permanent URL
-        await axios.post('/api/chapters/update-audio', {
-          chapterId,
-          audioUrl: url
-        });
+        // Update the appropriate record with the permanent URL
+        if (chapterId) {
+          // Update chapter with the audio URL
+          await axios.post('/api/chapters/update-audio', {
+            chapterId,
+            audioUrl: url
+          });
+          console.log("Chapter updated with audio URL:", url);
+        } else if (pluginId) {
+          // Update plugin with the audio URL
+          await axios.patch(`/api/plugins/${pluginId}`, {
+            audioUrl: url
+          });
+          console.log("Plugin updated with audio URL:", url);
+        }
         
-        console.log("Chapter updated with audio URL:", url);
         setIsComplete(true);
         toast.success("Audio uploaded successfully");
         
@@ -60,11 +71,11 @@ export function ElevenLabsUploader({
           onUploadComplete(url);
         }
       } catch (err) {
-        console.error("Error updating chapter:", err);
-        setError("Upload succeeded but failed to update chapter");
+        console.error("Error updating record:", err);
+        setError("Upload succeeded but failed to update record");
         
         if (onUploadError) {
-          onUploadError(new Error("Failed to update chapter with audio URL"));
+          onUploadError(new Error("Failed to update record with audio URL"));
         }
       }
     },

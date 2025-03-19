@@ -11,96 +11,78 @@ export async function PATCH(
     try {
       const { userId } = auth();
     //   const { pluginCategoryId } = await req.json();
-    const body = await req.json();
-    const {
-      pluginCategoryId,
-      name,
-      description,
-      image,
-      pricingType,
-      price,
-      optInFormUrl,
-      purchaseUrl,
-      pluginTypeId
-    } = body;
+      const { videoUrl, audioUrl, ...values } = await req.json();
 
-     
-  
       if (!userId) {
         return new NextResponse("Unauthorized", { status: 401 });
       }
   
-      const plugin = await db.plugin.update({
+      const plugin = await db.plugin.findFirst({
         where: {
           id: params.pluginId,
-          userId
+          userId,
         },
-        data: {
-          categoryId: pluginCategoryId,
-          name,
-          description,
-          image,
-          pricingType,
-          price,
-          optInFormUrl,
-          purchaseUrl,
-          pluginTypeId: pluginTypeId
-        }
       });
   
-      return NextResponse.json(plugin);
+      if (!plugin) {
+        return new NextResponse("Not found", { status: 404 });
+      }
+  
+      const updateData: any = { ...values };
+  
+      if (videoUrl !== undefined) {
+        updateData.videoUrl = videoUrl;
+      }
+      
+      if (audioUrl !== undefined) {
+        updateData.audioUrl = audioUrl;
+      }
+  
+      const updatedPlugin = await db.plugin.update({
+        where: {
+          id: params.pluginId,
+        },
+        data: updateData,
+      });
+  
+      return NextResponse.json(updatedPlugin);
     } catch (error) {
-      console.log("[PLUGIN_ID]", error);
+      console.error("[PLUGIN_PATCH]", error);
       return new NextResponse("Internal Error", { status: 500 });
     }
   }
 
-  // export async function DELETE(
-//   req: Request,
-//   { params }: { params: { courseId: string } }
-// ) {
-//   try {
-//     const { userId } = auth();
+export async function DELETE(
+  req: Request,
+  { params }: { params: { pluginId: string } }
+) {
+  try {
+    const { userId } = auth();
 
-//     if (!userId) {
-//       return new NextResponse("Unauthorized", { status: 401 });
-//     }
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
-//     const course = await db.course.findUnique({
-//       where: {
-//         id: params.courseId,
-//         userId: userId,
-//       },
-//       include: {
-//         courseChapter: {
-//           include: {
-//             muxData: true,
-//           }
-//         }
-//       }
-//     });
+    const plugin = await db.plugin.findFirst({
+      where: {
+        id: params.pluginId,
+        userId,
+      },
+    });
 
+    if (!plugin) {
+      return new NextResponse("Not found", { status: 404 });
+    }
 
-//     if (!course) {
-//       return new NextResponse("Not found", { status: 404 });
-//     }
+    await db.plugin.delete({
+      where: {
+        id: params.pluginId,
+      },
+    });
 
-//     for (const chapter of course.courseChapter) {
-//       if (chapter.muxData?.assetId) {
-//         await Video.Assets.del(chapter.muxData.assetId);
-//       }
-//     }
-
-//     const deletedCourse = await db.course.delete({
-//       where: {
-//         id: params.courseId,
-//       },
-//     });
-
-//     return NextResponse.json(deletedCourse);
-
-//   } catch (error) {
-//     console.log("[COURSE_ID_DELETE]", error);
-//     return new NextResponse("Internal Error", { status: 500 });
-//   }
-// }
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    console.error("[PLUGIN_DELETE]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
