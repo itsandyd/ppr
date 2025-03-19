@@ -84,6 +84,7 @@ export const PluginVideoForm = ({
       
       const toastId = toast.loading('Generating audio from text...');
       
+      // Use the plugin-specific elevenlabs endpoint
       const audioResponse = await axios.post("/api/plugins/elevenlabs", {
         text: textToUse,
         pluginId: pluginId
@@ -92,11 +93,12 @@ export const PluginVideoForm = ({
       toast.dismiss(toastId);
       
       if (audioResponse.data.audioUrl) {
-        toast.success("Audio generated successfully!");
+        // Server handled upload directly
+        toast.success("Audio generated and uploaded successfully!");
         setProcessingStage("Audio ready! Click 'Create Video' to continue...");
         setUploadStatus('complete');
         
-        // Set audioData with empty base64 as a marker that we have server-uploaded audio
+        // Set audioData with the returned URL
         setAudioData({
           base64: "",
           filename: audioResponse.data.audioUrl,
@@ -113,62 +115,90 @@ export const PluginVideoForm = ({
         toast.success("Audio generated successfully!");
         setProcessingStage("Audio ready for upload! Please wait for upload to complete...");
       } 
+      else if (audioResponse.data.error) {
+        // Server returned an error
+        throw new Error(`Server error: ${audioResponse.data.error}`);
+      }
       else {
-        throw new Error('Failed to generate audio - no data or URL received');
+        // No recognized response format
+        console.error("Unexpected API response:", audioResponse.data);
+        throw new Error('Unexpected response from server - no audio URL or data received');
       }
     } catch (error: any) {
       console.error("Error generating audio:", error);
       
       if (error.response) {
-        console.log('Response status:', error.response.status);
-        console.log('Response data:', error.response.data);
+        const statusCode = error.response.status;
+        const responseData = error.response.data;
         
-        if (error.response.status === 404) {
-          toast.error("Plugin not found. Please make sure you have the correct access.");
-        } else if (error.response.status === 403) {
-          toast.error("You don't have permission to edit this plugin. Only admins or the plugin owner can generate scripts.");
+        // More detailed error based on status code
+        if (statusCode === 401 || statusCode === 403) {
+          toast.error("Authentication error: You don't have permission to generate audio");
+        } else if (statusCode === 404) {
+          toast.error("Plugin not found. Please check your access rights.");
+        } else if (statusCode === 429) {
+          toast.error("Rate limit exceeded. Please try again later.");
         } else {
           toast.error(`Failed to generate audio: ${error.response.status} ${error.response.statusText}`);
         }
+        console.error("Error response data:", responseData);
       } else if (error.request) {
-        console.log('No response received:', error.request);
         toast.error("Failed to generate audio: No response from server");
       } else {
         toast.error(`Failed to generate audio: ${error.message}`);
       }
+      setIsProcessing(false);
+      setProcessingStage("");
     }
   };
 
-  const handleCreateVideo = async (audioUrl: string) => {
+  const handleCreateVideo = async () => {
+    if (!audioData) {
+      toast.error("No audio data available. Please generate audio first.");
+      return;
+    }
+
+    if (uploadStatus !== 'complete') {
+      toast.error("Please wait for audio upload to complete before creating the video.");
+      return;
+    }
+
     try {
       setProcessingStage("Creating video with generated audio...");
       const videoToastId = toast.loading('Creating video with AI...');
       
-      // Check if we have a permanent audio URL from uploadthing or directly from server
+      // Fetch plugin data to get the latest audio URL
+      console.log("Fetching plugin data to get audio URL...");
+      const pluginResponse = await axios.get(`/api/plugins/${pluginId}`);
+      
+      // Verify we have audio URL and it's valid
+      if (!pluginResponse.data || !pluginResponse.data.audioUrl) {
+        if (audioData.filename && audioData.filename.startsWith('http')) {
+          console.log("Using audio URL from local state:", audioData.filename);
+          // If we have a valid URL from our local state, use that
+        } else {
+          toast.error("No audio URL found in plugin data. Please regenerate audio.");
+          toast.dismiss(videoToastId);
+          return;
+        }
+      }
+      
+      // Use the URL from plugin data if available, otherwise use from audioData
+      const audioUrl = pluginResponse.data?.audioUrl || audioData.filename;
       console.log("Using audio URL:", audioUrl);
       
       if (!audioUrl) {
-        toast.error("No audio URL found. Please regenerate audio.");
+        toast.error("No audio URL available. Please regenerate audio.");
         toast.dismiss(videoToastId);
         return;
       }
       
-      console.log('Starting video generation with params:', {
-        audioUrl,
-        coverImageUrl: coverImageUrl || "",
-        pluginId,
-        textLength: (scriptText || initialData.description || "").length
-      });
-      
-      // Process the audio and cover image to create a video
+      // Use the plugin-specific video-generator endpoint
       const videoResponse = await axios.post("/api/plugins/video-generator", {
         audioUrl: audioUrl,
         coverImageUrl: coverImageUrl || "", 
         pluginId: pluginId,
         textLength: (scriptText || initialData.description || "").length
-      }, {
-        // Add longer timeout for video generation
-        timeout: 60000, // 60 seconds
       });
       
       toast.dismiss(videoToastId);
@@ -180,112 +210,18 @@ export const PluginVideoForm = ({
       const videoUrl = videoResponse.data.videoUrl;
       console.log("Video generated successfully:", videoUrl);
       
-      // Check if it's likely a placeholder video
-      const isPlaceholder = videoUrl.includes("fal.cdn") && !audioUrl.includes(pluginId);
-      
       // Update the plugin with the new video URL
       await onSubmit({ videoUrl });
       setIsModalOpen(false);
-      
-      if (isPlaceholder) {
-        toast.success("Demo video created with placeholder content", { duration: 5000 });
-        toast((t) => (
-          <div>
-            <p className="font-medium">Your video was created with placeholder content</p>
-            <p className="text-sm mt-1 text-muted-foreground">
-              Due to technical limitations, we&apos;ve created a demo video with placeholder content.
-              You can upload your own video for a more customized result.
-            </p>
-            <div className="mt-3">
-              <button
-                onClick={() => {
-                  toast.dismiss(t.id);
-                  toggleEdit();
-                }}
-                className="px-3 py-2 bg-blue-500 text-white rounded-md text-sm w-full"
-              >
-                Upload Custom Video
-              </button>
-            </div>
-          </div>
-        ), { duration: 10000 });
-      } else {
-        toast.success("Video generated successfully");
-      }
+      toast.success("Video generated successfully");
     } catch (error: any) {
       console.error("Error generating video:", error);
       
-      // Get detailed error information
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error("Error response data:", error.response.data);
-        console.error("Error response status:", error.response.status);
-        console.error("Error response headers:", error.response.headers);
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "Failed to generate video. Please try again.";
         
-        const errorMessage = error.response.data?.message || 
-                            (typeof error.response.data === 'string' ? error.response.data : 'Unknown server error');
-        
-        // Special handling for FFmpeg errors
-        if (errorMessage.includes("ffmpeg error")) {
-          toast.error("Video generation failed: There was a problem processing your audio or image files. The system will try to create a simpler version.");
-        } else if (errorMessage.includes("service is currently unavailable") || error.response.status === 503) {
-          toast.error("Video generation is unavailable in the production environment due to server limitations. Please upload a video manually.");
-        } else {
-          toast.error(`Video generation failed: ${errorMessage}`);
-        }
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("Error request:", error.request);
-        toast.error("Video generation failed: No response received from server");
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        toast.error(`Video generation failed: ${error.message}`);
-      }
-      
-      // Show fallback options
-      toast((t) => (
-        <div>
-          <p className="font-medium">Video generation failed. You can:</p>
-          <div className="mt-2 flex flex-col gap-2">
-            <button
-              onClick={() => {
-                toast.dismiss(t.id);
-                setIsEditing(true);
-                toggleModal();
-              }}
-              className="px-3 py-2 bg-slate-200 dark:bg-slate-700 rounded-md text-sm"
-            >
-              Try again later
-            </button>
-            <button
-              onClick={() => {
-                toast.dismiss(t.id);
-                toggleEdit();
-              }}
-              className="px-3 py-2 bg-blue-500 text-white rounded-md text-sm"
-            >
-              Upload video manually
-            </button>
-            <button
-              onClick={() => {
-                toast.dismiss(t.id);
-                // Try with sample audio if we have a generated script
-                if (initialData.videoScript) {
-                  toast.loading("Trying with sample audio...");
-                  setProcessingStage("Using fallback method...");
-                  handleGenerate();
-                } else {
-                  toast.error("No script available for fallback method");
-                }
-              }}
-              className="px-3 py-2 bg-green-500 text-white rounded-md text-sm"
-            >
-              Try with sample audio
-            </button>
-          </div>
-        </div>
-      ), { duration: 10000 });
+      toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
       setProcessingStage("");
@@ -382,8 +318,10 @@ export const PluginVideoForm = ({
                 onUploadComplete={(url: string) => {
                   setUploadStatus('complete');
                   toast.success("Audio uploaded successfully");
-                  // Start video generation now that audio is ready
-                  handleCreateVideo(url);
+                  // Store the URL for later use in video generation
+                  setAudioData(prev => prev ? { ...prev, filename: url } : null);
+                  // Show the Create Video button now that audio is ready
+                  setProcessingStage("Audio uploaded! Click 'Create Video' to continue...");
                 }}
                 onUploadError={(error: Error) => {
                   setUploadStatus('error');
@@ -446,7 +384,7 @@ export const PluginVideoForm = ({
                 {/* Only show the "Create Video" button when audio is ready */}
                 {audioData && uploadStatus === 'complete' && (
                   <Button
-                    onClick={() => handleCreateVideo(audioData.filename)}
+                    onClick={handleCreateVideo}
                     className="mt-2"
                     variant="default"
                   >
@@ -488,7 +426,7 @@ export const PluginVideoForm = ({
               disabled={isProcessing || (!scriptText && !initialData.description)}
               onClick={handleGenerate}
             >
-              {isProcessing ? "Processing..." : "Generate Video"}
+              {isProcessing && !audioData ? "Processing..." : "Generate Audio"}
             </Button>
           </div>
         </div>

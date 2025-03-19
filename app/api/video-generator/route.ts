@@ -3,25 +3,79 @@ import { auth } from "@clerk/nextjs";
 import { db } from "@/lib/db";
 import { fal } from "@fal-ai/client";
 
+// Configure for longer timeouts on Vercel
+export const maxDuration = 300; // 300 seconds (5 minutes) maximum timeout
+
 export async function POST(req: Request) {
+  console.log("API route /api/video-generator called");
   try {
     const { userId } = auth();
-    const { audioUrl, coverImageUrl, chapterId: recordId, textLength } = await req.json();
+    const body = await req.json();
+    console.log("Request body:", body);
+    const { audioUrl, coverImageUrl, chapterId: recordId, textLength } = body;
 
     if (!userId) {
+      console.log("Unauthorized - no userId");
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     if (!audioUrl) {
+      console.log("Missing audioUrl in request");
       return new NextResponse("Audio URL is required", { status: 400 });
     }
 
     if (!recordId) {
+      console.log("Missing recordId in request");
       return new NextResponse("ID is required", { status: 400 });
     }
 
-    console.log("Audio URL received:", audioUrl);
+    console.log("Authenticated userId:", userId);
     
+    // Determine if we're working with a plugin or a chapter based on the record ID
+    const isPlugin = await db.plugin.findUnique({ 
+      where: { id: recordId },
+      select: { id: true, userId: true, image: true }
+    });
+    
+    const isChapter = isPlugin ? false : await db.courseChapter.findUnique({
+      where: { id: recordId },
+      select: { id: true, course: { select: { userId: true, imageUrl: true } } }
+    });
+    
+    if (!isPlugin && !isChapter) {
+      console.log("Neither plugin nor chapter found with id:", recordId);
+      return new NextResponse("No valid record found", { status: 404 });
+    }
+    
+    // Check authorization for the record
+    let canModify = false;
+    let imageForVideo = "";
+    
+    if (isPlugin) {
+      console.log("Record is a plugin");
+      // Check if user is admin
+      const adminCheck = await db.user.findUnique({
+        where: { id: userId },
+        select: { admin: true }
+      });
+      
+      const isAdmin = adminCheck?.admin || false;
+      
+      // Allow if: 1) user is admin, 2) plugin has no owner, or 3) plugin belongs to user
+      canModify = isAdmin || !isPlugin.userId || isPlugin.userId === userId;
+      imageForVideo = isPlugin.image || "";
+    } else if (isChapter) {
+      console.log("Record is a course chapter");
+      // Check if user created the course
+      canModify = isChapter.course.userId === userId;
+      imageForVideo = isChapter.course.imageUrl || "";
+    }
+    
+    if (!canModify) {
+      console.log("Permission denied - record belongs to another user");
+      return new NextResponse("You don't have permission to edit this record", { status: 403 });
+    }
+
     // Ensure the audioUrl is accessible to external services
     // If it's a relative URL, make it absolute
     let fullAudioUrl = audioUrl;
@@ -29,46 +83,24 @@ export async function POST(req: Request) {
       fullAudioUrl = `${process.env.NEXT_PUBLIC_APP_URL}${audioUrl}`;
       console.log("Converted relative audio URL to absolute:", fullAudioUrl);
     }
+    
+    // Handle Amazon S3 signed URLs - but don't replace with fallback
+    if (fullAudioUrl.includes("X-Amz-Algorithm") || fullAudioUrl.includes("X-Amz-Signature")) {
+      console.log("Detected S3 signed URL, attempting to use it directly");
+    }
 
-    // Determine if we're working with a plugin or a course chapter
-    const isPlugin = await db.plugin.findUnique({ where: { id: recordId } });
-
-    // Instead of requiring coverImageUrl, check if it exists
-    // If not, get the image from the chapter/plugin record
+    // Determine what image to use for the video
     let imageUrlToUse = coverImageUrl;
     
     if (!imageUrlToUse || imageUrlToUse === "") {
-      console.log("No cover image URL provided, attempting to use source image");
+      console.log("No cover image URL provided, attempting to use record image");
       
-      if (isPlugin) {
-        // Get the plugin image
-        const plugin = await db.plugin.findUnique({
-          where: { id: recordId }
-        });
-        
-        if (plugin?.image) {
-          imageUrlToUse = plugin.image;
-          console.log("Using plugin image URL:", imageUrlToUse);
-        } else {
-          // Use a default image if no plugin image is available
-          imageUrlToUse = "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg";
-          console.log("No plugin image found, using default placeholder");
-        }
+      if (imageForVideo) {
+        imageUrlToUse = imageForVideo;
+        console.log("Using record image URL:", imageUrlToUse);
       } else {
-        // Get the chapter and its course to find the course image
-        const chapter = await db.courseChapter.findUnique({
-          where: { id: recordId },
-          include: { course: true }
-        });
-        
-        if (chapter?.course?.imageUrl) {
-          imageUrlToUse = chapter.course.imageUrl;
-          console.log("Using course image URL:", imageUrlToUse);
-        } else {
-          // Use a default image if no course image is available
-          imageUrlToUse = "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg";
-          console.log("No course image found, using default placeholder");
-        }
+        console.error("No image found and no cover image provided");
+        return new NextResponse("No image available for video. Please provide a cover image.", { status: 400 });
       }
     }
 
@@ -93,13 +125,43 @@ export async function POST(req: Request) {
     
     if (!falApiKey) {
       console.error("FAL_API_KEY is not configured");
-      return new NextResponse("Video generation service not properly configured", { status: 500 });
+      return new NextResponse("Video generation service not properly configured: Missing FAL_API_KEY environment variable", { status: 500 });
     }
 
+    // Check if key has newlines that need to be removed
+    const cleanedApiKey = falApiKey.replace(/\r?\n|\r/g, "");
+    console.log("Using Fal.ai API key (first 10 chars):", cleanedApiKey.substring(0, 10) + "...");
+    
     // Configure Fal.ai API key
-    fal.config({
-      credentials: falApiKey
-    });
+    try {
+      fal.config({
+        credentials: cleanedApiKey
+      });
+      console.log("Fal.ai client configured successfully");
+    } catch (configError) {
+      console.error("Error configuring Fal.ai client:", configError);
+      return new NextResponse(`Failed to configure Fal.ai client: ${configError instanceof Error ? configError.message : 'Unknown error'}`, { status: 500 });
+    }
+
+    // Validate input URLs
+    try {
+      // Validate audio URL
+      const audioUrlResponse = await fetch(fullAudioUrl, { method: 'HEAD' }).catch(() => null);
+      if (!audioUrlResponse || !audioUrlResponse.ok) {
+        console.error("Audio URL is not accessible:", fullAudioUrl);
+        return new NextResponse(`Audio URL is not accessible. Please check that the audio file exists and is publicly accessible.`, { status: 400 });
+      }
+
+      // Validate image URL
+      const imageUrlResponse = await fetch(imageUrlToUse, { method: 'HEAD' }).catch(() => null);
+      if (!imageUrlResponse || !imageUrlResponse.ok) {
+        console.error("Image URL is not accessible:", imageUrlToUse);
+        return new NextResponse(`Image URL is not accessible. Please check that the image file exists and is publicly accessible.`, { status: 400 });
+      }
+    } catch (urlValidationError) {
+      console.error("Error validating URLs:", urlValidationError);
+      // Continue anyway - the URLs might still work with Fal.ai
+    }
 
     // Prepare the input for Fal.ai FFmpeg API
     const input = {
@@ -111,7 +173,7 @@ export async function POST(req: Request) {
           keyframes: [
             {
               timestamp: 0,
-              duration: estimatedDuration, // Use estimated duration based on text length
+              duration: estimatedDuration,
               url: imageUrlToUse
             }
           ]
@@ -123,7 +185,7 @@ export async function POST(req: Request) {
           keyframes: [
             {
               timestamp: 0,
-              duration: estimatedDuration, // Use estimated duration based on text length
+              duration: estimatedDuration,
               url: fullAudioUrl
             }
           ]
@@ -132,8 +194,10 @@ export async function POST(req: Request) {
     };
     
     try {
-      // Call the Fal.ai FFmpeg API using the client library
-      const result = await fal.subscribe("fal-ai/ffmpeg-api/compose", {
+      console.log("Calling Fal.ai FFmpeg API with input:", JSON.stringify(input));
+      
+      // Use actual input with no fallbacks
+      let result = await fal.subscribe("fal-ai/ffmpeg-api/compose", {
         input,
         logs: true,
         onQueueUpdate: (update: { status: string; logs?: { message: string }[] }) => {
@@ -141,28 +205,29 @@ export async function POST(req: Request) {
             update.logs.map((log) => log.message).forEach(console.log);
           }
         }
+      }).catch((err) => {
+        console.error("Fal.ai API call threw an exception:", err);
+        throw new Error(`Fal.ai API error: ${err.message || 'Unknown error'}`);
       });
+      
+      if (!result) {
+        console.error("Fal.ai result is undefined");
+        throw new Error("Fal.ai returned undefined result");
+      }
+      
+      console.log("Fal.ai API call completed with result:", JSON.stringify(result));
       
       // Access the data property of the result which contains the API response
       if (!result?.data?.video_url) {
+        console.error("No video URL returned from Fal.ai");
         return new NextResponse("The video generation service did not return a valid video URL", { status: 500 });
       }
       
       // Convert the video URL to string if it's not already
       const videoUrl = String(result.data.video_url);
+      console.log("Received video URL:", videoUrl);
       
-      // Validate the URL to ensure it's accessible
-      try {
-        console.log("Validating video URL:", videoUrl);
-        const videoResponse = await fetch(videoUrl, { method: 'HEAD' });
-        if (!videoResponse.ok) {
-          // Log but continue - the URL might still work
-        }
-        console.log("Video URL is valid and accessible");
-      } catch (validationError) {
-        // Continue anyway - the URL might still work in the player
-      }
-      
+      // Update the appropriate record with the video URL
       if (isPlugin) {
         // Update the plugin with the video URL
         await db.plugin.update({
@@ -184,10 +249,8 @@ export async function POST(req: Request) {
           where: { id: recordId },
           data: {
             videoUrl: videoUrl,
-            muxData: { 
-              // If we're not using Mux anymore, delete any existing Mux data
-              delete: existingChapter?.muxData ? true : undefined
-            }
+            // If we're not using Mux anymore, delete any existing Mux data
+            muxData: existingChapter?.muxData ? { delete: true } : undefined
           }
         });
         console.log("Course chapter updated with video URL");
@@ -201,11 +264,24 @@ export async function POST(req: Request) {
       });
     } catch (falError) {
       console.error("Fal.ai API call error:", falError);
-      return new NextResponse("Failed to connect to the video generation service. Please try again later.", { status: 500 });
+      return new NextResponse(`Failed to connect to the video generation service: ${falError instanceof Error ? falError.message : 'Unknown error'}`, { status: 500 });
     }
 
   } catch (error) {
     console.error("[VIDEO_GENERATOR_ERROR]", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+    return new NextResponse(errorMessage, { status: 500 });
   }
+}
+
+// Add OPTIONS method handler for CORS preflight requests
+export async function OPTIONS(req: Request) {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }
+  });
 } 

@@ -28,18 +28,6 @@ const s3 = new S3Client({
   region: AWS_REGION_NAME || '',
 });
 
-// Function to generate presigned URL for an S3 object
-const generatePresignedUrl = async (objectKey: string) => {
-  const getObjectParams = {
-    Bucket: AWS_S3_BUCKET_NAME,
-    Key: objectKey,
-    Expires: 3600,
-  };
-  const command = new GetObjectCommand(getObjectParams);
-  const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-  return url;
-};
-
 // Function to get the direct S3 URL (not presigned)
 const getS3Url = (objectKey: string) => {
   return `https://${AWS_S3_BUCKET_NAME}.s3.${AWS_REGION_NAME}.amazonaws.com/${objectKey}`;
@@ -142,6 +130,11 @@ export async function POST(req: Request) {
       return new NextResponse("Plugin ID is required", { status: 400 });
     }
 
+    if (!text) {
+      console.log("Missing text in request");
+      return new NextResponse("Text is required for audio generation", { status: 400 });
+    }
+
     console.log("Authenticated userId:", userId);
     console.log("Looking for plugin with ID:", pluginId);
 
@@ -154,13 +147,11 @@ export async function POST(req: Request) {
     const isAdmin = adminCheck?.admin || false;
     console.log("Is user admin:", isAdmin);
 
-    // First, try to find the plugin without userId constraint
+    // Find the plugin to verify permissions
     const plugin = await db.plugin.findUnique({
-      where: { 
-        id: pluginId
-      }
+      where: { id: pluginId }
     });
-
+    
     if (!plugin) {
       console.log("Plugin not found with id:", pluginId);
       return new NextResponse("Plugin not found", { status: 404 });
@@ -168,7 +159,7 @@ export async function POST(req: Request) {
     
     console.log("Plugin found:", plugin.name, "Plugin userId:", plugin.userId);
 
-    // Check if this is a plugin the user can modify (for saving)
+    // Check if this is a plugin the user can modify
     // Allow if: 1) user is admin, 2) plugin has no owner, or 3) plugin belongs to user
     const canModify = isAdmin || !plugin.userId || plugin.userId === userId;
     console.log("User can modify plugin:", canModify);
@@ -178,22 +169,11 @@ export async function POST(req: Request) {
       return new NextResponse("You don't have permission to edit this plugin", { status: 403 });
     }
 
-    // Use provided text, or fall back to video script, or finally use description
-    const textToUse = text || plugin.videoScript || plugin.description || "";
-    
-    if (!textToUse) {
-      return new NextResponse("No text content available for audio generation", { status: 400 });
-    }
-
-    console.log("Generating audio with ElevenLabs TTS for plugin...");
-    console.log("Text length:", textToUse.length);
-
     // Clean the text by removing markdown formatting
-    const cleanedText = stripMarkdown(textToUse);
+    const cleanedText = stripMarkdown(text);
     console.log("Text cleaned of markdown formatting");
 
-    // For very long texts, we might need to chunk or summarize
-    // For now, we'll just truncate if it's too long (ElevenLabs has limits)
+    // For very long texts, we might need to truncate (ElevenLabs has limits)
     const maxLength = 4000;
     const truncatedText = cleanedText.length > maxLength 
       ? cleanedText.substring(0, maxLength) + "..." 
@@ -215,7 +195,7 @@ export async function POST(req: Request) {
       console.log("Direct S3 URL for database and video generation:", directS3Url);
       
       // Update the plugin with the direct S3 URL
-      await prisma.plugin.update({
+      await db.plugin.update({
         where: { id: pluginId },
         data: {
           audioUrl: directS3Url,
@@ -223,9 +203,9 @@ export async function POST(req: Request) {
       });
       console.log("Plugin updated with direct S3 audio URL");
       
-      // Return the audio information with the DIRECT URL, not the presigned URL
+      // Return the audio information with the DIRECT URL
       return NextResponse.json({
-        audioUrl: directS3Url, // Use direct URL instead of presigned URL
+        audioUrl: directS3Url,
         audioKey: s3ObjectKey,
         pluginId: pluginId,
         success: true,
@@ -235,7 +215,7 @@ export async function POST(req: Request) {
     } catch (error) {
       console.error("Error generating or uploading audio:", error);
       
-      // If there was an error, just return the error message
+      // Return error message
       return NextResponse.json({ 
         error: error instanceof Error ? error.message : "Unknown error",
         success: false
@@ -245,6 +225,19 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     console.error("[PLUGIN_ELEVENLABS_ERROR]", error);
-    return new NextResponse("Internal error", { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+    return new NextResponse(errorMessage, { status: 500 });
   }
+}
+
+// Add OPTIONS method handler for CORS preflight requests
+export async function OPTIONS(req: Request) {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }
+  });
 } 
