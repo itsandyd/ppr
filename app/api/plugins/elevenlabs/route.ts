@@ -125,25 +125,57 @@ async function createAudioBufferFromText(text: string): Promise<Buffer> {
 }
 
 export async function POST(req: Request) {
+  console.log("API route /api/plugins/elevenlabs called");
   try {
     const { userId } = auth();
-    const { text, pluginId } = await req.json();
+    const body = await req.json();
+    console.log("Request body:", body);
+    const { text, pluginId } = body;
 
     if (!userId) {
+      console.log("Unauthorized - no userId");
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     if (!pluginId) {
+      console.log("Missing pluginId in request");
       return new NextResponse("Plugin ID is required", { status: 400 });
     }
 
-    // Find the plugin to get the video script or description if text isn't provided
-    const plugin = await prisma.plugin.findUnique({
-      where: { id: pluginId }
+    console.log("Authenticated userId:", userId);
+    console.log("Looking for plugin with ID:", pluginId);
+
+    // Check if the user is an admin
+    const adminCheck = await db.user.findUnique({
+      where: { id: userId },
+      select: { admin: true }
     });
     
+    const isAdmin = adminCheck?.admin || false;
+    console.log("Is user admin:", isAdmin);
+
+    // First, try to find the plugin without userId constraint
+    const plugin = await db.plugin.findUnique({
+      where: { 
+        id: pluginId
+      }
+    });
+
     if (!plugin) {
+      console.log("Plugin not found with id:", pluginId);
       return new NextResponse("Plugin not found", { status: 404 });
+    }
+    
+    console.log("Plugin found:", plugin.name, "Plugin userId:", plugin.userId);
+
+    // Check if this is a plugin the user can modify (for saving)
+    // Allow if: 1) user is admin, 2) plugin has no owner, or 3) plugin belongs to user
+    const canModify = isAdmin || !plugin.userId || plugin.userId === userId;
+    console.log("User can modify plugin:", canModify);
+
+    if (!canModify) {
+      console.log("Permission denied - plugin belongs to another user");
+      return new NextResponse("You don't have permission to edit this plugin", { status: 403 });
     }
 
     // Use provided text, or fall back to video script, or finally use description

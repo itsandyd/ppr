@@ -4,17 +4,34 @@ import { db } from "@/lib/db";
 import { fal } from "@fal-ai/client";
 
 export async function POST(req: Request) {
+  console.log("API route /api/plugins/video-generator called");
   try {
     const { userId } = auth();
-    const { audioUrl, coverImageUrl, pluginId, textLength } = await req.json();
+    const body = await req.json();
+    console.log("Request body:", body);
+    const { audioUrl, coverImageUrl, pluginId, textLength } = body;
 
     if (!userId) {
+      console.log("Unauthorized - no userId");
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     if (!pluginId) {
+      console.log("Missing pluginId in request");
       return new NextResponse("Plugin ID is required", { status: 400 });
     }
+
+    console.log("Authenticated userId:", userId);
+    console.log("Looking for plugin with ID:", pluginId);
+
+    // Check if the user is an admin
+    const adminCheck = await db.user.findUnique({
+      where: { id: userId },
+      select: { admin: true }
+    });
+    
+    const isAdmin = adminCheck?.admin || false;
+    console.log("Is user admin:", isAdmin);
 
     // Find the plugin to get its data
     const plugin = await db.plugin.findUnique({
@@ -22,11 +39,25 @@ export async function POST(req: Request) {
     });
     
     if (!plugin) {
+      console.log("Plugin not found with id:", pluginId);
       return new NextResponse("Plugin not found", { status: 404 });
+    }
+
+    console.log("Plugin found:", plugin.name, "Plugin userId:", plugin.userId);
+
+    // Check if this is a plugin the user can modify (for saving)
+    // Allow if: 1) user is admin, 2) plugin has no owner, or 3) plugin belongs to user
+    const canModify = isAdmin || !plugin.userId || plugin.userId === userId;
+    console.log("User can modify plugin:", canModify);
+
+    if (!canModify) {
+      console.log("Permission denied - plugin belongs to another user");
+      return new NextResponse("You don't have permission to edit this plugin", { status: 403 });
     }
 
     // Check if the plugin has an audioUrl
     if (!plugin.audioUrl) {
+      console.log("Plugin has no audio URL");
       return new NextResponse("Plugin has no audio URL", { status: 400 });
     }
 
@@ -124,6 +155,7 @@ export async function POST(req: Request) {
     };
     
     try {
+      console.log("Calling Fal.ai FFmpeg API with input:", JSON.stringify(input));
       // Call the Fal.ai FFmpeg API using the client library
       const result = await fal.subscribe("fal-ai/ffmpeg-api/compose", {
         input,
@@ -137,21 +169,25 @@ export async function POST(req: Request) {
       
       // Access the data property of the result which contains the API response
       if (!result?.data?.video_url) {
+        console.error("No video URL returned from Fal.ai");
         return new NextResponse("The video generation service did not return a valid video URL", { status: 500 });
       }
       
       // Convert the video URL to string if it's not already
       const videoUrl = String(result.data.video_url);
+      console.log("Received video URL:", videoUrl);
       
       // Validate the URL to ensure it's accessible
       try {
         console.log("Validating video URL:", videoUrl);
         const videoResponse = await fetch(videoUrl, { method: 'HEAD' });
         if (!videoResponse.ok) {
+          console.warn("Video URL validation failed, but continuing");
           // Log but continue - the URL might still work
         }
         console.log("Video URL is valid and accessible");
       } catch (validationError) {
+        console.warn("Error validating video URL:", validationError);
         // Continue anyway - the URL might still work in the player
       }
       
@@ -177,6 +213,19 @@ export async function POST(req: Request) {
 
   } catch (error) {
     console.error("[PLUGIN_VIDEO_GENERATOR_ERROR]", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+    return new NextResponse(errorMessage, { status: 500 });
   }
+}
+
+// Add OPTIONS method handler for CORS preflight requests
+export async function OPTIONS(req: Request) {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }
+  });
 } 
