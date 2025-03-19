@@ -127,6 +127,13 @@ export const PluginVideoForm = ({
       setProcessingStage("Creating video with generated audio...");
       const videoToastId = toast.loading('Creating video with AI...');
       
+      console.log('Starting video generation with params:', {
+        audioUrl,
+        coverImageUrl: coverImageUrl || "",
+        pluginId,
+        textLength: (scriptText || initialData.description || "").length
+      });
+      
       // Process the audio and cover image to create a video
       const videoResponse = await axios.post("/api/plugins/video-generator", {
         audioUrl: audioUrl,
@@ -138,22 +145,116 @@ export const PluginVideoForm = ({
       toast.dismiss(videoToastId);
       
       if (!videoResponse.data.videoUrl) {
-        throw new Error('Failed to generate video');
+        throw new Error('Failed to generate video: No video URL returned');
       }
       
       const videoUrl = videoResponse.data.videoUrl;
       console.log("Video generated successfully:", videoUrl);
       
+      // Check if it's likely a placeholder video
+      const isPlaceholder = videoUrl.includes("fal.cdn") && !audioUrl.includes(pluginId);
+      
       // Update the plugin with the new video URL
       await onSubmit({ videoUrl });
       setIsModalOpen(false);
-      toast.success("Video generated successfully");
-    } catch (error) {
+      
+      if (isPlaceholder) {
+        toast.success("Demo video created with placeholder content", { duration: 5000 });
+        toast((t) => (
+          <div>
+            <p className="font-medium">Your video was created with placeholder content</p>
+            <p className="text-sm mt-1 text-muted-foreground">
+              Due to technical limitations, we&apos;ve created a demo video with placeholder content.
+              You can upload your own video for a more customized result.
+            </p>
+            <div className="mt-3">
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  toggleEdit();
+                }}
+                className="px-3 py-2 bg-blue-500 text-white rounded-md text-sm w-full"
+              >
+                Upload Custom Video
+              </button>
+            </div>
+          </div>
+        ), { duration: 10000 });
+      } else {
+        toast.success("Video generated successfully");
+      }
+    } catch (error: any) {
       console.error("Error generating video:", error);
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : "Failed to generate video. Please try again.";
-      toast.error(errorMessage);
+      
+      // Get detailed error information
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Error response data:", error.response.data);
+        console.error("Error response status:", error.response.status);
+        console.error("Error response headers:", error.response.headers);
+        
+        const errorMessage = error.response.data?.message || 
+                            (typeof error.response.data === 'string' ? error.response.data : 'Unknown server error');
+        
+        // Special handling for FFmpeg errors
+        if (errorMessage.includes("ffmpeg error")) {
+          toast.error("Video generation failed: There was a problem processing your audio or image files. The system will try to create a simpler version.");
+        } else {
+          toast.error(`Video generation failed: ${errorMessage}`);
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("Error request:", error.request);
+        toast.error("Video generation failed: No response received from server");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        toast.error(`Video generation failed: ${error.message}`);
+      }
+      
+      // Show fallback options
+      toast((t) => (
+        <div>
+          <p className="font-medium">Video generation failed. You can:</p>
+          <div className="mt-2 flex flex-col gap-2">
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                setIsEditing(true);
+                toggleModal();
+              }}
+              className="px-3 py-2 bg-slate-200 dark:bg-slate-700 rounded-md text-sm"
+            >
+              Try again later
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                toggleEdit();
+              }}
+              className="px-3 py-2 bg-blue-500 text-white rounded-md text-sm"
+            >
+              Upload video manually
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                // Try with sample audio if we have a generated script
+                if (initialData.videoScript) {
+                  toast.loading("Trying with sample audio...");
+                  setProcessingStage("Using fallback method...");
+                  handleGenerate();
+                } else {
+                  toast.error("No script available for fallback method");
+                }
+              }}
+              className="px-3 py-2 bg-green-500 text-white rounded-md text-sm"
+            >
+              Try with sample audio
+            </button>
+          </div>
+        </div>
+      ), { duration: 10000 });
     } finally {
       setIsProcessing(false);
       setProcessingStage("");
@@ -230,6 +331,15 @@ export const PluginVideoForm = ({
         onClose={toggleModal}
       >
         <div className="space-y-4 py-2 pb-4">
+          {/* Alert for temporary limitations */}
+          <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-3 rounded-md">
+            <h4 className="text-sm font-medium text-amber-800 dark:text-amber-200">Video Generation Limitations</h4>
+            <p className="text-xs mt-1 text-amber-700 dark:text-amber-300">
+              Due to technical limitations, video generation may use a placeholder video for demonstration purposes.
+              For best results, prepare your audio file independently and upload it manually.
+            </p>
+          </div>
+          
           {/* Show audio upload progress when audio data exists */}
           {audioData && (
             <div className="w-full p-2 bg-slate-100 rounded-md">
