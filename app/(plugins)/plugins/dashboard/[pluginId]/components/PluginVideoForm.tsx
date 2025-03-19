@@ -48,6 +48,11 @@ export const PluginVideoForm = ({
   } | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'complete' | 'error'>('idle');
   
+  // Detect if we're in production
+  const isProduction = typeof window !== 'undefined' && 
+                       window.location.hostname !== 'localhost' && 
+                       !window.location.hostname.includes('127.0.0.1');
+  
   const router = useRouter();
 
   const toggleEdit = () => setIsEditing(!isEditing);
@@ -93,10 +98,15 @@ export const PluginVideoForm = ({
       
       if (audioResponse.data.audioUrl) {
         toast.success("Audio generated successfully!");
-        setProcessingStage("Audio ready! Creating video...");
-
-        // Proceed with video generation using the audio URL
-        await handleCreateVideo(audioResponse.data.audioUrl);
+        setProcessingStage("Audio ready! Click 'Create Video' to continue...");
+        setUploadStatus('complete');
+        
+        // Set audioData with empty base64 as a marker that we have server-uploaded audio
+        setAudioData({
+          base64: "",
+          filename: audioResponse.data.audioUrl,
+          pluginId: pluginId
+        });
       }
       else if (audioResponse.data.audioData) {
         setAudioData({
@@ -111,14 +121,26 @@ export const PluginVideoForm = ({
       else {
         throw new Error('Failed to generate audio - no data or URL received');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating audio:", error);
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : "Failed to generate audio. Please try again.";
-      toast.error(errorMessage);
-      setIsProcessing(false);
-      setProcessingStage("");
+      
+      if (error.response) {
+        console.log('Response status:', error.response.status);
+        console.log('Response data:', error.response.data);
+        
+        if (error.response.status === 404) {
+          toast.error("Plugin not found. Please make sure you have the correct access.");
+        } else if (error.response.status === 403) {
+          toast.error("You don't have permission to edit this plugin. Only admins or the plugin owner can generate scripts.");
+        } else {
+          toast.error(`Failed to generate audio: ${error.response.status} ${error.response.statusText}`);
+        }
+      } else if (error.request) {
+        console.log('No response received:', error.request);
+        toast.error("Failed to generate audio: No response from server");
+      } else {
+        toast.error(`Failed to generate audio: ${error.message}`);
+      }
     }
   };
 
@@ -126,6 +148,15 @@ export const PluginVideoForm = ({
     try {
       setProcessingStage("Creating video with generated audio...");
       const videoToastId = toast.loading('Creating video with AI...');
+      
+      // Check if we have a permanent audio URL from uploadthing or directly from server
+      console.log("Using audio URL:", audioUrl);
+      
+      if (!audioUrl) {
+        toast.error("No audio URL found. Please regenerate audio.");
+        toast.dismiss(videoToastId);
+        return;
+      }
       
       console.log('Starting video generation with params:', {
         audioUrl,
@@ -140,6 +171,9 @@ export const PluginVideoForm = ({
         coverImageUrl: coverImageUrl || "", 
         pluginId: pluginId,
         textLength: (scriptText || initialData.description || "").length
+      }, {
+        // Add longer timeout for video generation
+        timeout: 60000, // 60 seconds
       });
       
       toast.dismiss(videoToastId);
@@ -200,6 +234,8 @@ export const PluginVideoForm = ({
         // Special handling for FFmpeg errors
         if (errorMessage.includes("ffmpeg error")) {
           toast.error("Video generation failed: There was a problem processing your audio or image files. The system will try to create a simpler version.");
+        } else if (errorMessage.includes("service is currently unavailable") || error.response.status === 503) {
+          toast.error("Video generation is unavailable in the production environment due to server limitations. Please upload a video manually.");
         } else {
           toast.error(`Video generation failed: ${errorMessage}`);
         }
@@ -267,12 +303,21 @@ export const PluginVideoForm = ({
         Demo Video
         <div className="flex gap-x-2">
           <Button 
-            onClick={toggleModal} 
+            onClick={isProduction ? toggleEdit : toggleModal} 
             variant="outline"
             disabled={isEditing}
           >
-            <Wand2 className="h-4 w-4 mr-2" />
-            AI Generate
+            {isProduction ? (
+              <>
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Upload Video
+              </>
+            ) : (
+              <>
+                <Wand2 className="h-4 w-4 mr-2" />
+                AI Generate
+              </>
+            )}
           </Button>
           <Button onClick={toggleEdit} variant="outline" size="sm">
             {isEditing && (
@@ -336,8 +381,25 @@ export const PluginVideoForm = ({
             <h4 className="text-sm font-medium text-amber-800 dark:text-amber-200">Video Generation Limitations</h4>
             <p className="text-xs mt-1 text-amber-700 dark:text-amber-300">
               Due to technical limitations, video generation may use a placeholder video for demonstration purposes.
+              {isProduction && (
+                <strong className="block mt-1">
+                  Video generation is not available in production due to server limitations. 
+                  Please use the manual upload option below.
+                </strong>
+              )}
               For best results, prepare your audio file independently and upload it manually.
             </p>
+            {isProduction && (
+              <button
+                onClick={() => {
+                  toggleModal();
+                  toggleEdit();
+                }}
+                className="mt-2 w-full px-3 py-2 bg-blue-500 text-white rounded-md text-sm"
+              >
+                Go to Manual Upload
+              </button>
+            )}
           </div>
           
           {/* Show audio upload progress when audio data exists */}
@@ -411,6 +473,36 @@ export const PluginVideoForm = ({
                 <p className="text-xs text-muted-foreground text-center">
                   This may take up to 2-3 minutes depending on script length.
                 </p>
+                
+                {/* Only show the "Create Video" button when audio is ready */}
+                {audioData && uploadStatus === 'complete' && (
+                  <Button
+                    onClick={() => handleCreateVideo(audioData.filename)}
+                    className="mt-2"
+                    variant="default"
+                  >
+                    Create Video
+                  </Button>
+                )}
+
+                {/* If upload is still in progress, show a loading indicator */}
+                {audioData && uploadStatus === 'uploading' && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="animate-spin h-4 w-4 text-primary">⟳</div>
+                    <p className="text-sm">Uploading audio...</p>
+                  </div>
+                )}
+
+                {/* If upload failed, show a retry button */}
+                {audioData && uploadStatus === 'error' && (
+                  <Button
+                    onClick={handleGenerate}
+                    className="mt-2"
+                    variant="destructive"
+                  >
+                    Retry Audio Generation
+                  </Button>
+                )}
               </div>
             </div>
           )}
