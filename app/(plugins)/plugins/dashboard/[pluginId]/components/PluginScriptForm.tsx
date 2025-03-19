@@ -73,7 +73,7 @@ export const PluginScriptForm = ({
     try {
       setIsGenerating(true);
       // Using the absolute URL pattern to avoid routing issues
-      const response = await axios.post(`/api/plugins/generate-script`, {
+      const response = await axios.post(`/api/plugins/generate`, {
         pluginId,
         videoScript: initialData.videoScript || initialData.description
       });
