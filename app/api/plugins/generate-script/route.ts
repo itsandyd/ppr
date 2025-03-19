@@ -55,11 +55,15 @@ Script:
 `);
 
 export async function POST(req: Request) {
+  console.log("API route /api/plugins/generate-script called");
   try {
     const { userId } = auth();
-    const { pluginId, videoScript } = await req.json();
+    const body = await req.json();
+    console.log("Request body:", body);
+    const { pluginId, videoScript } = body;
 
     if (!userId) {
+      console.log("Unauthorized - no userId");
       return new NextResponse("Unauthorized", { status: 401 });
     }
 

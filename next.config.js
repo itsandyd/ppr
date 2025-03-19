@@ -7,6 +7,7 @@ const nextConfig = {
   staticPageGenerationTimeout: 300,
   experimental: {
     serverActions: true,
+    appDir: true,
   },
   images: {
     domains: [

@@ -72,6 +72,7 @@ export const PluginScriptForm = ({
 
     try {
       setIsGenerating(true);
+      // Using the absolute URL pattern to avoid routing issues
       const response = await axios.post(`/api/plugins/generate-script`, {
         pluginId,
         videoScript: initialData.videoScript || initialData.description
@@ -89,9 +90,19 @@ export const PluginScriptForm = ({
           router.refresh();
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating script:", error);
-      toast.error("Failed to generate script");
+      // More detailed error messaging
+      if (error.response) {
+        console.log('Response status:', error.response.status);
+        console.log('Response data:', error.response.data);
+        toast.error(`Failed to generate script: ${error.response.status} ${error.response.statusText}`);
+      } else if (error.request) {
+        console.log('No response received:', error.request);
+        toast.error("Failed to generate script: No response from server");
+      } else {
+        toast.error(`Failed to generate script: ${error.message}`);
+      }
     } finally {
       setIsGenerating(false);
     }
