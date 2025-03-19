@@ -86,3 +86,46 @@ export async function DELETE(
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
+
+export async function GET(
+  req: Request,
+  { params }: { params: { pluginId: string } }
+) {
+  try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    // Check if user is admin
+    const adminCheck = await db.user.findUnique({
+      where: { id: userId },
+      select: { admin: true }
+    });
+    
+    const isAdmin = adminCheck?.admin || false;
+
+    // Find the plugin
+    const plugin = await db.plugin.findUnique({
+      where: { id: params.pluginId }
+    });
+
+    if (!plugin) {
+      return new NextResponse("Not found", { status: 404 });
+    }
+
+    // Check if user can access this plugin
+    // Allow if: 1) user is admin, 2) plugin has no owner, or 3) plugin belongs to user
+    const canAccess = isAdmin || !plugin.userId || plugin.userId === userId;
+    
+    if (!canAccess) {
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
+
+    return NextResponse.json(plugin);
+  } catch (error) {
+    console.error("[PLUGIN_GET]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
