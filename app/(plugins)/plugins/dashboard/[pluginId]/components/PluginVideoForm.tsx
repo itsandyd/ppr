@@ -48,11 +48,6 @@ export const PluginVideoForm = ({
   } | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'complete' | 'error'>('idle');
   
-  // Detect if we're in production
-  const isProduction = typeof window !== 'undefined' && 
-                       window.location.hostname !== 'localhost' && 
-                       !window.location.hostname.includes('127.0.0.1');
-  
   const router = useRouter();
 
   const toggleEdit = () => setIsEditing(!isEditing);
@@ -303,21 +298,12 @@ export const PluginVideoForm = ({
         Demo Video
         <div className="flex gap-x-2">
           <Button 
-            onClick={isProduction ? toggleEdit : toggleModal} 
+            onClick={toggleModal} 
             variant="outline"
             disabled={isEditing}
           >
-            {isProduction ? (
-              <>
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Upload Video
-              </>
-            ) : (
-              <>
-                <Wand2 className="h-4 w-4 mr-2" />
-                AI Generate
-              </>
-            )}
+            <Wand2 className="h-4 w-4 mr-2" />
+            AI Generate
           </Button>
           <Button onClick={toggleEdit} variant="outline" size="sm">
             {isEditing && (
@@ -381,25 +367,8 @@ export const PluginVideoForm = ({
             <h4 className="text-sm font-medium text-amber-800 dark:text-amber-200">Video Generation Limitations</h4>
             <p className="text-xs mt-1 text-amber-700 dark:text-amber-300">
               Due to technical limitations, video generation may use a placeholder video for demonstration purposes.
-              {isProduction && (
-                <strong className="block mt-1">
-                  Video generation is not available in production due to server limitations. 
-                  Please use the manual upload option below.
-                </strong>
-              )}
               For best results, prepare your audio file independently and upload it manually.
             </p>
-            {isProduction && (
-              <button
-                onClick={() => {
-                  toggleModal();
-                  toggleEdit();
-                }}
-                className="mt-2 w-full px-3 py-2 bg-blue-500 text-white rounded-md text-sm"
-              >
-                Go to Manual Upload
-              </button>
-            )}
           </div>
           
           {/* Show audio upload progress when audio data exists */}
