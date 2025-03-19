@@ -4,8 +4,7 @@ import { db } from "@/lib/db";
 import { fal } from "@fal-ai/client";
 
 // Configure for Edge runtime to get longer timeouts on Vercel
-export const runtime = 'edge';
-export const maxDuration = 60; // 60 seconds for Pro plan, adjust as needed
+export const maxDuration = 300; // 60 seconds for Pro plan, adjust as needed
 
 export async function POST(req: Request) {
   console.log("API route /api/plugins/video-generator called");
