@@ -14,6 +14,7 @@ export const PluginEditButton = ({
     const router = useRouter();
 
     const handleEdit = () => {
+        // Use absolute path instead of relative path to avoid routing issues
         router.push(`/plugins/dashboard/${pluginId}`);
     };
 

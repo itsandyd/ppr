@@ -36,7 +36,7 @@ const PluginIdPage = async ({ params }: PluginPageProps) => {
         },
     });
 
-    // Check if user is admin
+    // Check if user is admin 
     const isAdmin = !!user?.admin;
 
     // Query the plugin without user restrictions
@@ -58,7 +58,7 @@ const PluginIdPage = async ({ params }: PluginPageProps) => {
     // Allow if user created the plugin OR user is admin
     const isCreator = plugin.userId === userId;
     
-    if (!isAdmin) {
+    if (!isCreator && !isAdmin) {
         return redirect("/plugins");
     }
 
