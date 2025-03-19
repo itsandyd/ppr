@@ -25,7 +25,7 @@ export const PluginEditButton = ({
             variant="outline"
         >
             <WrenchIcon className="w-4 h-4" />
-            {/* Edit Plugin */}
+            Edit Plugin
         </Button>
     );
 }

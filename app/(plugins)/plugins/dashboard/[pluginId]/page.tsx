@@ -35,7 +35,7 @@ const PluginIdPage = async ({ params }: PluginPageProps) => {
                 { id: params.pluginId },
                 { slug: params.pluginId }
             ],
-            userId,
+            // userId,
         },
     });
 
