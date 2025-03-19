@@ -34,10 +34,10 @@ const PluginIdPage = async ({ params }: PluginPageProps) => {
         where: {
             id: userId,
         },
-        select: {
-            admin: true,
-        }
     });
+
+    // Check if user is admin
+    const isAdmin = !!user?.admin;
 
     // Query the plugin without user restrictions
     const plugin = await db.plugin.findFirst({
@@ -54,9 +54,11 @@ const PluginIdPage = async ({ params }: PluginPageProps) => {
         return redirect("/");
     }
 
-    // Check if user is authorized to view this plugin
-    // Allow access only if user is the creator OR user is an admin
-    if (plugin.userId !== userId && !user?.admin) {
+    // Authorization check:
+    // Allow if user created the plugin OR user is admin
+    const isCreator = plugin.userId === userId;
+    
+    if (!isAdmin) {
         return redirect("/plugins");
     }
 
