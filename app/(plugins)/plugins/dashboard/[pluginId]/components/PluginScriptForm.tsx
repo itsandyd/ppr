@@ -72,6 +72,8 @@ export const PluginScriptForm = ({
 
     try {
       setIsGenerating(true);
+      console.log("Generating script for plugin:", pluginId);
+      
       // Using the absolute URL pattern to avoid routing issues
       const response = await axios.post(`/api/plugins/generate`, {
         pluginId,
@@ -96,7 +98,14 @@ export const PluginScriptForm = ({
       if (error.response) {
         console.log('Response status:', error.response.status);
         console.log('Response data:', error.response.data);
-        toast.error(`Failed to generate script: ${error.response.status} ${error.response.statusText}`);
+        
+        if (error.response.status === 404) {
+          toast.error("Plugin not found. Please make sure you have the correct access.");
+        } else if (error.response.status === 403) {
+          toast.error("You don't have permission to edit this plugin.");
+        } else {
+          toast.error(`Failed to generate script: ${error.response.status} ${error.response.statusText}`);
+        }
       } else if (error.request) {
         console.log('No response received:', error.request);
         toast.error("Failed to generate script: No response from server");

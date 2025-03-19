@@ -69,19 +69,31 @@ export async function POST(req: Request) {
     }
 
     if (!pluginId) {
+      console.log("Missing pluginId in request");
       return new NextResponse("Plugin ID is required", { status: 400 });
     }
 
-    // Find the plugin to verify ownership and get the name if description wasn't provided
+    console.log("Authenticated userId:", userId);
+    console.log("Looking for plugin with ID:", pluginId);
+
+    // First, try to find the plugin without userId constraint
     const plugin = await db.plugin.findUnique({
       where: { 
-        id: pluginId,
-        userId
+        id: pluginId
       }
     });
 
     if (!plugin) {
-      return new NextResponse("Plugin not found or you don't have permission to edit it", { status: 404 });
+      console.log("Plugin not found with id:", pluginId);
+      return new NextResponse("Plugin not found", { status: 404 });
+    }
+    
+    console.log("Plugin found:", plugin.name, "Plugin userId:", plugin.userId);
+
+    // Check if the plugin has no userId (public plugin) or if it belongs to the current user
+    if (plugin.userId && plugin.userId !== userId) {
+      console.log("Permission denied - plugin belongs to another user");
+      return new NextResponse("You don't have permission to edit this plugin", { status: 403 });
     }
 
     // Use the provided videoScript or fall back to the plugin's description
