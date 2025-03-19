@@ -76,6 +76,15 @@ export async function POST(req: Request) {
     console.log("Authenticated userId:", userId);
     console.log("Looking for plugin with ID:", pluginId);
 
+    // Check if the user is an admin
+    const adminCheck = await db.user.findUnique({
+      where: { id: userId },
+      select: { admin: true }
+    });
+    
+    const isAdmin = adminCheck?.admin || false;
+    console.log("Is user admin:", isAdmin);
+
     // First, try to find the plugin without userId constraint
     const plugin = await db.plugin.findUnique({
       where: { 
@@ -90,11 +99,10 @@ export async function POST(req: Request) {
     
     console.log("Plugin found:", plugin.name, "Plugin userId:", plugin.userId);
 
-    // Check if the plugin has no userId (public plugin) or if it belongs to the current user
-    if (plugin.userId && plugin.userId !== userId) {
-      console.log("Permission denied - plugin belongs to another user");
-      return new NextResponse("You don't have permission to edit this plugin", { status: 403 });
-    }
+    // Check if this is a plugin the user can modify (for saving)
+    // Allow if: 1) user is admin, 2) plugin has no owner, or 3) plugin belongs to user
+    const canModify = isAdmin || !plugin.userId || plugin.userId === userId;
+    console.log("User can modify plugin:", canModify);
 
     // Use the provided videoScript or fall back to the plugin's description
     const contentToUse = videoScript || plugin.videoScript || plugin.description;
@@ -116,16 +124,20 @@ export async function POST(req: Request) {
       description: contentToUse
     });
 
-    // Update the plugin with the generated script
-    await db.plugin.update({
-      where: { id: pluginId },
-      data: { videoScript: script }
-    });
+    // Only update the plugin if the user has permission
+    if (canModify) {
+      // Update the plugin with the generated script
+      await db.plugin.update({
+        where: { id: pluginId },
+        data: { videoScript: script }
+      });
+    }
 
-    // Return the generated script
+    // Return the generated script either way
     return NextResponse.json({ 
       script,
-      message: "Video script generated successfully"
+      message: canModify ? "Video script generated and saved successfully" : "Video script generated (preview only)",
+      saved: canModify
     }, {
       headers: {
         'Access-Control-Allow-Origin': '*',

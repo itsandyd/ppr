@@ -82,10 +82,17 @@ export const PluginScriptForm = ({
       
       if (response.data && response.data.script) {
         form.setValue("videoScript", response.data.script);
-        toast.success("Video script generated successfully");
         
-        // If not in edit mode, save the script immediately
-        if (!isEditing) {
+        if (response.data.saved) {
+          toast.success("Video script generated and saved successfully");
+        } else {
+          // Preview mode - just show the script but don't save
+          toast.success("Video script generated (preview only)");
+          setIsEditing(true); // Set to edit mode so user can see the script
+        }
+        
+        // If not in edit mode and the user has permission to save, update via API
+        if (!isEditing && response.data.saved) {
           await axios.patch(`/api/plugins/${pluginId}`, {
             videoScript: response.data.script
           });
@@ -102,7 +109,7 @@ export const PluginScriptForm = ({
         if (error.response.status === 404) {
           toast.error("Plugin not found. Please make sure you have the correct access.");
         } else if (error.response.status === 403) {
-          toast.error("You don't have permission to edit this plugin.");
+          toast.error("You don't have permission to edit this plugin. Only admins or the plugin owner can generate scripts.");
         } else {
           toast.error(`Failed to generate script: ${error.response.status} ${error.response.statusText}`);
         }
